@@ -1,7 +1,9 @@
 package homework.javaspring_model.Controllers;
 
 import homework.javaspring_model.Models.Clothes;
+
 import homework.javaspring_model.Services.ClothesService;
+import net.datafaker.Faker;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -11,17 +13,20 @@ import org.springframework.web.bind.annotation.*;
 public class ClothesController {
 
     private final  ClothesService clothesService;
+    public ClothesController(ClothesService clothesService) {this.clothesService = clothesService;}
 
-    public ClothesController(ClothesService clothesService) {
-        this.clothesService = clothesService;
-    }
+    @GetMapping({"/list", "/list/{page}", "/list/{page}/{size}"})
+    public String showClothes(@PathVariable(required = false) Integer page, @PathVariable(required = false) Integer size, Model model) {
+        int currentPage = (page != null) ? page : 0;
+        int pageSize = (size != null) ? size : 10;
 
-    @GetMapping("/list")
-    public String showClothes(Model model) {
-        var c = new Clothes();
-        c.setId(-1L);
-        model.addAttribute("clothes", c);
-        model.addAttribute("clothesList", clothesService.getFirstNElements(10));
+        model.addAttribute("title", "Список одежды");
+        model.addAttribute("currentPage", currentPage);
+        model.addAttribute("clothesList", clothesService.getFirstNElements(currentPage, pageSize));
+
+        IO.println("page: " + currentPage);
+        IO.println("size: " + pageSize);
+
         return "clothes";
     }
 
@@ -38,7 +43,7 @@ public class ClothesController {
         if(finded != null)
             model.addAttribute("clothes", finded);
 
-        model.addAttribute("clothesList", clothesService.getFirstNElements(25));
+        model.addAttribute("clothesList", clothesService.getFirstNElements(0, 25));
         return "clothes";
     }
     @PostMapping("/edit")
@@ -51,5 +56,10 @@ public class ClothesController {
         clothesService.deleteClothes(id);
 
         return "redirect:/clothes/list";
+    }
+    @GetMapping("/filter")
+    public String getFilteredList(String name, String color, String size, String type, String brand, Double price, Model model) {
+        model.addAttribute("clothesList", clothesService.getFilteredList(name, color, size,type ,brand, price));
+        return "clothes";
     }
 }

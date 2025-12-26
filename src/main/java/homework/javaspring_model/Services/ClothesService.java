@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -57,18 +58,33 @@ public class ClothesService {
         clothesRepository.deleteById(id);
     }
 
-    public List<Clothes> getFirstNElements(long n) {
-        return clothesRepository.findAll(PageRequest.of(0, (int) n, Sort.by("name").ascending())).stream().toList();
+    public List<Clothes> getFirstNElements(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int n) {
+
+        return clothesRepository.findAll(
+                PageRequest.of(page, n, Sort.by("name").ascending())
+        ).stream().toList();
     }
+
     public List<Clothes> findClothesByName(String name, int limit) {
         return clothesRepository.findByNameContainingIgnoreCaseOrderByName(
                 name,
                 PageRequest.of(0, limit)
         );
     }
-    public List<Clothes> getAll(){
-        return clothesRepository.findAll();
+    public List<Clothes> getFilteredList(String name, String color, String size,
+                                          String type, String brand, Double price){
+        return clothesRepository.findByFilter(name, color, size,type ,brand, price);
     }
+
+    public List<Clothes> findClothesByNameIsLikeIgnoreCase(String name){ return clothesRepository.findClothesByNameIsLikeIgnoreCase(name); }
+    public List<Clothes> findClothesByType(String type){ return clothesRepository.findClothesByTypeIgnoreCase(type); }
+    public List<Clothes> findClothesBySize(String size){ return clothesRepository.findClothesBySize(size); }
+    public List<Clothes> findClothesByBrand(String brand){ return clothesRepository.findClothesByBrand(brand); }
+    public List<Clothes> findClothesByColor(String color){ return clothesRepository.findClothesByColor(color); }
+    public List<Clothes> findClothesByPriceBetween(Double min, Double max){ return clothesRepository.findClothesByPriceBetween(min, max); }
+
 }
 
 

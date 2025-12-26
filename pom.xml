@@ -107,6 +107,12 @@
             <artifactId>hibernate-community-dialects</artifactId>
             <version>6.4.1.Final</version>
         </dependency>
+
+        <dependency>
+            <groupId>net.datafaker</groupId>
+            <artifactId>datafaker</artifactId>
+            <version>1.9.0</version>
+        </dependency>
     </dependencies>
 
     <build>

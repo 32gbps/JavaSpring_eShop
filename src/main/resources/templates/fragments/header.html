@@ -1,0 +1,21 @@
+<!--header block-->
+<div th:fragment="header" >
+    <img src="logo.svg" alt="logo">
+    <div>
+        <nav>
+            <ul>
+                <li><a th:href="@{/}">Главная</a></li>
+                <li><a th:href="@{/clothes/list}">Одежда</a></li>
+                <li><a th:href="@{/}">Техника</a></li>
+            </ul>
+        </nav>
+    </div>
+    <div>
+        <nav>
+            <ul>
+                <li><a th:href="@{/profile}">Профиль</a></li>
+                <li><a th:href="@{/profile/adminPanel}">Админ</a></li>
+            </ul>
+        </nav>
+    </div>
+</div>

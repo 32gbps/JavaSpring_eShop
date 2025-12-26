@@ -1,0 +1,58 @@
+header {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    background-color: #386185;
+    padding: 10px 0;
+}
+header a{
+    color: aliceblue;
+    text-decoration: none;
+}
+nav ul {
+    list-style: none;
+    padding: 0;
+    text-align: center;
+}
+nav li{
+    margin: 0 10px;
+    display: inline-block;
+    list-style: none;
+}
+main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+table{
+    width: 100%;
+}
+table td, table th{
+    padding: 2px;
+}
+form{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.form-group{
+    display: flex;
+    flex-direction: column;
+}
+.container{
+    padding: 10px;
+    text-align: center;
+}
+.controlElements, .content{
+    margin: 10px;
+}
+#filterForm{
+    display: flex;
+}
+#filterForm .form-group{
+    width: 80px;
+}
+#loginForm{
+    display: flex;
+    flex-direction: column;
+}

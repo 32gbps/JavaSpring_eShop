@@ -20,24 +20,12 @@ public interface ClothesRepository extends JpaRepository<Clothes, Long>{
 
     // SELECT * FROM clothesTable WHERE id = ?
     Optional<Clothes> findById(Long id);
-
-    // SELECT * FROM clothesTable WHERE name LIKE %?%
-    List<Clothes> findByName(String email);
-
-    // SELECT * FROM clothesTable WHERE type = ?
-    List<Clothes> findByType(String type);
-
-    // SELECT * FROM clothesTable WHERE size = ?
-    List<Clothes> findBySize(String size);
-
-    // SELECT * FROM clothesTable WHERE color = ?
-    Optional<Clothes> findByColor(String color);
-
-    // SELECT * FROM clothesTable WHERE size = ?
-    List<Clothes> findByBrand(String brand);
-
-    // SELECT * FROM clothesTable WHERE price >= min AND price <= max
-    List<Clothes> findByPriceBetween(Double min, Double max);
+    List<Clothes> findClothesByNameIsLikeIgnoreCase(String name);
+    List<Clothes> findClothesByTypeIgnoreCase(String type);
+    List<Clothes> findClothesBySize(String size);
+    List<Clothes> findClothesByColor(String color);
+    List<Clothes> findClothesByBrand(String brand);
+    List<Clothes> findClothesByPriceBetween(Double min, Double max);
 
     // SELECT * FROM clothesTable WHERE name LIKE %?%
     List<Clothes> getDistinctTopByName(String email);
@@ -87,4 +75,19 @@ public interface ClothesRepository extends JpaRepository<Clothes, Long>{
 
     @Query("SELECT c FROM Clothes c WHERE LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%')) ORDER BY c.name")
     List<Clothes> findByNameContainingIgnoreCaseOrderByName(@Param("name") String name, Pageable pageable);
+
+    @Query("SELECT c FROM Clothes c WHERE " +
+            "(:name IS NULL OR LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%'))) AND " +
+            "(:color IS NULL OR LOWER(c.color) LIKE LOWER(CONCAT('%', :color, '%'))) AND " +
+            "(:size IS NULL OR c.size = :size) AND " +
+            "(:type IS NULL OR c.type = :type) AND " +
+            "(:brand IS NULL OR LOWER(c.brand) LIKE LOWER(CONCAT('%', :brand, '%'))) AND " +
+            "(:price IS NULL OR c.price = :price)")
+    List<Clothes> findByFilter(
+            @Param("name") String name,
+            @Param("color") String color,
+            @Param("size") String size,
+            @Param("type") String type,
+            @Param("brand") String brand,
+            @Param("price") Double price);
 }

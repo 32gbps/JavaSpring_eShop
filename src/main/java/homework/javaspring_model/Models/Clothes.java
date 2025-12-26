@@ -39,7 +39,7 @@ public class Clothes {
     private Double price;
 
     //Копирующий конструктор
-    public Clothes(Clothes ref){
+    public Clothes(Clothes ref) {
         this.id = null;
         this.name = ref.name;
         this.type = ref.type;
@@ -48,6 +48,7 @@ public class Clothes {
         this.brand = ref.brand;
         this.price = ref.price;
     }
+
     public Clothes(String name, String type, String size,
                    String color, String brand, Double price) {
         this.name = name;
@@ -58,15 +59,17 @@ public class Clothes {
         this.price = price;
     }
 
-    public boolean equals(Clothes obj){
-        if(obj == null)
+    public boolean equals(Clothes obj) {
+        if (obj == null)
             return false;
-        return  this.name.equals(obj.name) &&
+        return this.name.equals(obj.name) &&
                 this.type.equals(obj.type) &&
                 this.size.equals(obj.size) &&
                 this.color.equals(obj.color) &&
                 this.brand.equals(obj.brand);
     }
+}
+
 //    public static List<Clothes> genClothes(int count){
 //        var r = new Random();
 //        String[] adjectives = {
@@ -107,4 +110,4 @@ public class Clothes {
 //        var adj = adjectives[r.nextInt(adjectives.length)];
 //        return String.format("%s %s %s", adj, color.toLowerCase(), typeName.getDisplayName());
 //    }
-}
+//}
