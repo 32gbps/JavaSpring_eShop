@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+    <head>
+        <meta charset="utf-8" />
+        <title>Авторизация</title>
+        <link rel="stylesheet" th:href="@{/css/styles.css}" />
+        <script th:src="@{/js/script.js}"></script>
+    </head>
+    <body>
+        <main>
+            <div class="container">
+                <!-- Форма -->
+                <div class="controlElements">
+                    <form id="loginForm" th:action="/profile/login" method="post">
+                        <!-- Логин -->
+                        <div class="form-group">
+                            <label>Логин</label>
+                            <input name="login" type="text" minlength="3" maxlength="32">
+                        </div>
+                        <!-- Пароль -->
+                        <div class="form-group">
+                            <label>Пароль</label>
+                            <input name="password" type="password" minlength="3" maxlength="32">
+                        </div>
+                        <div class="form-group">
+                            <button type="submit">Войти</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+        <footer>
+        </footer>
+    </body>
+</html>

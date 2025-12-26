@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <title th:text="title">Профиль</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <script th:src="@{/js/script.js}"></script>
+</head>
+    <body>
+        <header th:insert="fragments/header::header" class="header"></header>
+        <main>
+            <ul>
+                <li th:text="${user.name}">Имя</li>
+                <li th:text="${user.surname}">Фамилия</li>
+                <li th:text="${user.email}">Почтовый ящик</li>
+            </ul>
+        </main>
+        <footer>
+        </footer>
+    </body>
+</html>

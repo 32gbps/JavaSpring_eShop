@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+    <head>
+        <meta charset="utf-8" />
+        <title th:text="title">Список одежды</title>
+        <link rel="stylesheet" th:href="@{/css/styles.css}" />
+        <script th:src="@{/js/script.js}"></script>
+    </head>
+    <body>
+        <header th:insert="fragments/header::header" class="header"></header>
+        <main>
+            <div class="container">
+                <!-- Форма -->
+                <div class="controlElements">
+                    <form id="filterForm" th:action="@{filter}" method="get">
+                        <div class="form-group">
+                            <label>Название</label>
+                            <input name="name" type="text">
+                        </div>
+                        <div class="form-group">
+                            <label>Цвет</label>
+                            <input name="color" type="text">
+                        </div>
+                        <div class="form-group">
+                            <label>Размер</label>
+                            <select name="size">
+                                <option value="" selected>-- выберите размер --</option>
+                                <option value="S">S</option>
+                                <option value="M">M</option>
+                                <option value="L">L</option>
+                                <option value="XL">XL</option>
+                                <option value="XXL">XXL</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Тип</label>
+                            <select name="type">
+                                <option value="" selected>-- выберите тип --</option>
+                                <option value="SOCKS">Носки</option>
+                                <option value="SHIRT">Рубашка</option>
+                                <option value="T_SHIRT">Футболка</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Фирма</label>
+                            <input name="brand" type="text">
+                        </div>
+                        <div class="form-group">
+                            <label>Цена</label>
+                            <input name="price" type="number" min="0" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <button type="submit">Найти</button>
+                        </div>
+                    </form>
+                </div>
+                <!-- Список -->
+                <div class="content">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Название</th>
+                                <th>Тип</th>
+                                <th>Размер</th>
+                                <th>Цвет</th>
+                                <th>Фирма</th>
+                                <th>Цена</th>
+                                <th>Действие</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="item : ${clothesList}">
+                                <td th:text="${item.name}"></td>
+                                <td th:text="${item.type}"></td>
+                                <td th:text="${item.size}"></td>
+                                <td th:text="${item.color}"></td>
+                                <td th:text="${item.brand}"></td>
+                                <td th:text="'$' + ${#numbers.formatDecimal(item.price, 1, 2)}"></td>
+                                <td>*reserved*</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Пагинация -->
+<!--                <div class="content pagination-table">-->
+<!--                    <div>-->
+<!--                        <a th:href="@{0/${pageSize}}"> |<< </a>-->
+<!--                        <a th:href="@{${currentPage}-1/${pageSize}}"> < </a>-->
+<!--                    </div>-->
+<!--                    <div>-->
+<!--                        <select name="pageSize" th:value="${pageSize}">-->
+<!--                            <option value="10" selected>10</option>-->
+<!--                            <option value="25">25</option>-->
+<!--                            <option value="50">50</option>-->
+<!--                            <option value="100">100</option>-->
+<!--                        </select>-->
+<!--                    </div>-->
+<!--                    <div>-->
+<!--                        <a th:href="@{-1/${pageSize}}"> >>| </a>-->
+<!--                        <a th:href="@{${currentPage}+1/${pageSize}}"> > </a>-->
+<!--                    </div>-->
+<!--                </div>-->
+            </div>
+        </main>
+       <footer>
+        </footer>
+    </body>
+</html>
