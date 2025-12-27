@@ -56,6 +56,9 @@ public interface ClothesRepository extends JpaRepository<Clothes, Long>{
 
     // Проверка существования
     boolean existsById(Long id);
+
+    boolean existsClothesByName(String name);
+
     //@Modifying
     @Query("SELECT c FROM Clothes c WHERE " +
             "LOWER(c.name) = LOWER(:name) AND " +

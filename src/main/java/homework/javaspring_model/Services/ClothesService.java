@@ -77,7 +77,7 @@ public class ClothesService {
                                           String type, String brand, Double price){
         return clothesRepository.findByFilter(name, color, size,type ,brand, price);
     }
-
+    public boolean isExistByName(String name){ return clothesRepository.existsClothesByName(name);};
     public List<Clothes> findClothesByNameIsLikeIgnoreCase(String name){ return clothesRepository.findClothesByNameIsLikeIgnoreCase(name); }
     public List<Clothes> findClothesByType(String type){ return clothesRepository.findClothesByTypeIgnoreCase(type); }
     public List<Clothes> findClothesBySize(String size){ return clothesRepository.findClothesBySize(size); }
