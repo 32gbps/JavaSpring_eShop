@@ -4,17 +4,17 @@
     <div>
         <nav>
             <ul>
-                <li><a th:href="@{/}">Главная</a></li>
-                <li><a th:href="@{/clothes/list}">Одежда</a></li>
-                <li><a th:href="@{/}">Техника</a></li>
+                <li><a th:href="@{/}" th:text="#{menu.home}">Главная</a></li>
+                <li><a th:href="@{/clothes/list}" th:text="#{menu.clothes}">Одежда</a></li>
+                <li><a th:href="@{/}" th:text="#{menu.electronics}">Техника</a></li>
             </ul>
         </nav>
     </div>
     <div>
         <nav>
             <ul>
-                <li><a th:href="@{/profile}">Профиль</a></li>
-                <li><a th:href="@{/profile/adminPanel}">Админ</a></li>
+                <li><a th:href="@{/profile}" th:text="#{menu.profile}">Профиль</a></li>
+                <li><a th:href="@{/profile/adminPanel}" th:text="#{menu.adminPanel}">Админ</a></li>
             </ul>
         </nav>
     </div>
