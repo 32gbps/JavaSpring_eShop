@@ -1,13 +1,17 @@
-header {
+.header {
     display: flex;
     justify-content: space-between;
     flex-direction: row;
     background-color: #386185;
     padding: 10px 0;
 }
-header a{
+.header a{
     color: aliceblue;
     text-decoration: none;
+}
+.header img{
+    height: 50px;
+    margin: 0 10px;
 }
 nav ul {
     list-style: none;
