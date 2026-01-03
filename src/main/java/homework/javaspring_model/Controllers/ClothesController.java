@@ -3,7 +3,6 @@ package homework.javaspring_model.Controllers;
 import homework.javaspring_model.Models.Clothes;
 
 import homework.javaspring_model.Services.ClothesService;
-import net.datafaker.Faker;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;

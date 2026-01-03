@@ -9,13 +9,24 @@
     <body>
         <main>
             <div class="container">
+                <!-- ⭐ Сообщение об ошибке -->
+                <div th:if="${param.error}" style="color: red; margin-bottom: 15px;">
+                    <p>Неверный логин или пароль</p>
+                    <span th:text="${error}"></span>
+                </div>
+
+                <!-- ⭐ Сообщение о выходе -->
+                <div th:if="${param.logout}" style="color: green; margin-bottom: 15px;">
+                    Вы успешно вышли из системы
+                </div>
+
                 <!-- Форма -->
                 <div class="controlElements">
-                    <form id="loginForm" th:action="/profile/login" method="post">
+                    <form id="loginForm" th:action="@{/login}" th:object="${user}" method="post">
                         <!-- Логин -->
                         <div class="form-group">
                             <label>Логин</label>
-                            <input name="login" type="text" minlength="3" maxlength="32">
+                            <input name="username" type="text" minlength="3" maxlength="32">
                         </div>
                         <!-- Пароль -->
                         <div class="form-group">
@@ -27,6 +38,10 @@
                         </div>
                     </form>
                 </div>
+
+                <p>
+                    Нет аккаунта? <a th:href="@{/register}">Зарегистрироваться</a>
+                </p>
             </div>
         </main>
         <footer>

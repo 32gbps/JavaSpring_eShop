@@ -4,26 +4,29 @@ import homework.javaspring_model.Models.Clothes;
 import homework.javaspring_model.Models.ClothesType;
 import homework.javaspring_model.Models.User;
 import homework.javaspring_model.Services.ClothesService;
+import homework.javaspring_model.Services.UserDetailsServiceImpl;
 import net.datafaker.Faker;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Random;
 
 @Controller
-@RequestMapping("/profile")
 public class ProfileController {
     private final ClothesService clothesService;
     private final Faker faker;
 
-    public ProfileController(ClothesService clothesService) {
+    public ProfileController(ClothesService clothesService, UserDetailsServiceImpl userService) {
         faker = new Faker();
         this.clothesService = clothesService;
     }
 
-    @GetMapping()
+    @GetMapping("/login")
+    public String getLoginScreen() {
+        return "loginPage";
+    }
+    @GetMapping("/profile")
     public String getProfile(Model model) {
         model.addAttribute("title", "Личный кабинет");
         var user = new User();

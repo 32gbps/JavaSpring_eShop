@@ -28,4 +28,10 @@ public class HomeController {
 
         return "index";
     }
+
+    //test
+    @GetMapping("/home")
+    public String home() {
+        return "redirect:/profile"; // или на другую страницу
+    }
 }

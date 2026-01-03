@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -14,15 +15,35 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", nullable = false)
-    @NotBlank(message = "Поле не может быть пустым")
+    @Column(name = "name")
     private String name;
 
-    @Column(name = "surname", nullable = false)
-    @NotBlank(message = "Поле не может быть пустым")
+    @Column(name = "surname")
     private String surname;
 
     @Column(name = "email")
-    @NotBlank(message = "Поле не может быть пустым")
     private String email;
+
+    @Column(name = "username", unique = true, nullable = false)
+    @NotBlank(message = "Поле не может быть пустым")
+    private String username;
+
+    @Column(name = "password",nullable = false)
+    @NotBlank(message = "Поле не может быть пустым")
+    private String password;
+
+    private boolean enabled = true;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+//    @JoinTable(
+//            name = "user_roles",
+//            joinColumns = @JoinColumn(name = "user_id"),
+//            inverseJoinColumns = @JoinColumn(name = "role_id")
+//    )
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = @JoinColumn(name = "users_id"),
+            inverseJoinColumns = @JoinColumn(name = "roles_id")
+    )
+    private Set<Role> roles;
 }
