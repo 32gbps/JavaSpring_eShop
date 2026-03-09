@@ -1,62 +1,219 @@
-.header {
+*{
+    box-sizing: border-box;
+}
+body{
+    margin: 0;
+}
+/*Header base*/
+header{
+    height: 75px;
+    width: 100%;
+    padding: 10px;
+    background-color: #6495ed
+}
+a{
+    text-decoration: none;
+    color: white;
+}
+/* ----------- */
+/*Nav elements*/
+#header-logo{
+    width: 50px;
+}
+.header-navigation{
     display: flex;
     justify-content: space-between;
-    flex-direction: row;
-    background-color: #386185;
-    padding: 10px 0;
+    height: 100%
 }
-.header a{
-    color: aliceblue;
-    text-decoration: none;
-}
-.header img{
-    height: 50px;
-    margin: 0 10px;
-}
-nav ul {
-    list-style: none;
+.v-list, .h-list{
+    margin: 0;
     padding: 0;
-    text-align: center;
-}
-nav li{
-    margin: 0 10px;
-    display: inline-block;
-    list-style: none;
-}
-main {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-table{
-    width: 100%;
-}
-table td, table th{
-    padding: 2px;
-}
-form{
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-}
-.form-group{
     display: flex;
+    list-style: none;
+    align-items: center;
+    text-align-last: center;
+}
+.h-list li{
+    padding: 1rem;
+}
+.v-list{
     flex-direction: column;
 }
-.container{
-    padding: 10px;
-    text-align: center;
+.v-list *{
+    margin: 0;
+    padding: 5px;
+    width: 100%;
 }
-.controlElements, .content{
-    margin: 10px;
+.hideble-list li:not(.active) {
+    opacity: 0;
+    visibility: hidden;
+    height: 0;
+    padding: 0;
+    margin: 0;
+    transition:
+            opacity 0.3s ease,
+            visibility 0s linear 0.5s, /* Задержка перед скрытием */
+            height 0s linear 0.5s,
+            padding 0s linear 0.5s,
+            margin 0s linear 0.5s;
 }
-#filterForm{
+
+/* Показываем при наведении */
+.hideble-list:hover li{
+    opacity: 1;
+    visibility: visible;
+    height: auto;
+    margin: 0;
+    background-color: #3a6bc1;
+    transition:
+            opacity 0.3s ease,
+            visibility 0s linear 0s,
+            height 0s linear 0s,
+            padding 0s linear 0s,
+            margin 0s linear 0s;
+}
+.hideble-list:hover li:not(.active){
+    padding: 5px;
+}
+.hideble-list:hover{
+    border-radius: 10px;
+}
+.active{
+    padding: 1rem;
+}
+.hideble-list li:not(.active) hr {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.hideble-list:hover li:not(.active) hr {
+    opacity: 1;
+}
+.hideble-list:hover li:first-of-type {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.hideble-list:hover li:last-of-type {
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+/* -----------------------Main-------------------------- */
+main, .content, .col, .row{
     display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
-#filterForm .form-group{
-    width: 80px;
+.content{
+    width: 60%;
 }
+.table-form, .row, table, thead, tbody, tr{
+    width: 100%;
+}
+.row{
+    flex-direction: row;
+}
+.table-column{
+    margin: 2px;
+    padding: 5px;
+    text-align: center;
+    min-width: min-content;
+}
+#filterForm {
+    display: table;
+    width: 100%;
+    border-collapse: collapse;
+}
+#filterForm > div {
+    display: table-cell;
+    padding: 5px;
+}
+
+#filterForm input,
+#filterForm select,
+#filterForm button {
+    width: 100%;
+    box-sizing: border-box;
+}
+.column-name{width: 240px;}
+.column-type{width: 70px;}
+.column-size{width: 60px;}
+.column-color{width: 60px;}
+.column-brand{width: 80px;}
+.column-price{width: 70px;}
+.column-action{width: 80px;}
 #loginForm{
     display: flex;
     flex-direction: column;
 }
+/* ---------------------------Admin panel---------------------------------- */
+.table-form-admin {
+    padding: 5px;
+    display: grid;
+    grid-template-columns: 4fr 1fr;  /* Пропорция 4:1 */
+    grid-template-rows: 1fr;
+    gap: 10px;  /* Отступ между элементами */
+    width: 100%;
+    align-items: center;
+}
+
+.table-form-admin input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;  /* Важно! Учитывает padding в ширине */
+    height: 40px;  /* Фиксированная высота для выравнивания */
+}
+
+.table-form-admin button {
+    width: 100%;
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    height: 40px;
+    box-sizing: border-box;
+    white-space: nowrap;  /* Текст кнопки не переносится */
+}
+
+.table-form-admin button:hover {
+    background-color: #0056b3;
+}
+
+.table-form-adm{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+.table-column-admin{
+    padding: 2px;
+}
+.table-column-admin input, .table-column-admin button{
+    margin: 2px;
+}
+.row{
+    flex-direction: row;
+}
+
+.table-form-adm *{
+    width: 100%;
+}
+.column-id{
+    width: 20%;
+}
+/* --------------------------Пагинация---------------------------*/
+.pagination{
+    display: flex;
+    flex-direction: row;
+    padding: 5px;
+}
+.pagination *{
+    color: black;
+    padding: 5px;
+    align-content: center;
+}
+/* ------------------------ТЕСТ----------------------------- */

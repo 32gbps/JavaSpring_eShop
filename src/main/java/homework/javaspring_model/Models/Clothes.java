@@ -16,27 +16,27 @@ public class Clothes {
 
     @Column(name = "name", nullable = false)
     @NotBlank(message = "Поле не может быть пустым")
-    private String name;
+    public String name;
 
     @Column(name = "type", nullable = false)
     @NotBlank(message = "Поле не может быть пустым")
-    private String type;
+    public String type;
 
     @Column(name = "size", nullable = false)
     @NotBlank(message = "Поле не может быть пустым")
-    private String size;
+    public String size;
 
     @Column(name = "color", nullable = false)
     @NotBlank(message = "Поле не может быть пустым")
-    private String color;
+    public String color;
 
     @Column(name = "brand", nullable = false)
     @NotBlank(message = "Поле не может быть пустым")
-    private String brand;
+    public String brand;
 
     @Column(name = "price", nullable = false)
     @Min(value = 0, message = "Цена не может быть отрицательной")
-    private Double price;
+    public Double price;
 
     //Копирующий конструктор
     public Clothes(Clothes ref) {

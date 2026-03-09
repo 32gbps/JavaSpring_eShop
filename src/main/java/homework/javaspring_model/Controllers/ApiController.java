@@ -1,14 +1,16 @@
 package homework.javaspring_model.Controllers;
 
+import homework.javaspring_model.Models.ApiResponse;
 import homework.javaspring_model.Models.Clothes;
 import homework.javaspring_model.Models.ClothesType;
+import homework.javaspring_model.Models.DTOClothes;
 import homework.javaspring_model.Services.ClothesService;
-import net.datafaker.Faker;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
+import net.datafaker.Faker;
+import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -66,6 +68,115 @@ public class ApiController {
 
         return Service.findClothesByName(name, limit);
     }
+
+    @GetMapping(value = "/getClothesById", params = {"id"})
+    public ResponseEntity<?> getClotheById(@RequestParam Integer id) {
+        try {
+            String status = "";
+            String message = "";
+            ApiResponse response;
+            if(!Service.isExistById(id.longValue())) {
+                status = "fail";
+                message = "Товар с данным ID не найден!";
+            }
+            else{
+                status = "success";
+                message = "";
+            }
+            // Успешный ответ с сообщением
+            response = new ApiResponse(
+                    status,
+                    message,
+                    Service.getClothesById(id.longValue())
+            );
+
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            // Ответ с ошибкой
+            ApiResponse errorResponse = new ApiResponse("error", "Ошибка: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
+    @PostMapping(value = "/deleteClothesById", params = {"id"})
+    public ResponseEntity<?> deleteClotheById(@RequestParam Integer id) {
+        try {
+            String status = "";
+            String message = "";
+            ApiResponse response;
+            if(!Service.isExistById(id.longValue())) {
+                status = "fail";
+                message = "Товар с данным ID не найден!";
+            }
+            else{
+                status = "success";
+                message = "Предмет успешно удалён!";
+            }
+            // Успешный ответ с сообщением
+            response = new ApiResponse(status, message);
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            // Ответ с ошибкой
+            ApiResponse errorResponse = new ApiResponse("error", "Ошибка при удалении: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
+    @PostMapping(value = "/editClothesById")
+    public ResponseEntity<?> editClotheById(@RequestBody DTOClothes clothesDto) {
+        try {
+            IO.println("Что пришло: " + clothesDto);
+            String status;
+            String message;
+            // Проверяем существование товара
+            if (!Service.isExistById(clothesDto.getId())) {
+                status = "fail";
+                message = "Товар с данным ID не найден!";
+            } else {
+                // Обновляем товар
+                Service.updateClothes(clothesDto.getId(), clothesDto.toEntity());
+                status = "success";
+                message = "Товар успешно обновлён!";
+            }
+
+            var response = new ApiResponse(status, message);
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            ApiResponse errorResponse = new ApiResponse("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
+    @PostMapping(value = "/addClothes")
+    public ResponseEntity<?> addClothes(@RequestBody DTOClothes clothesDto) {
+        try {
+            String status;
+            String message;
+
+            // Проверяем существование товара
+            if (Service.isExistByName(clothesDto.getName())) {
+                status = "fail";
+                message = "Товар с данным названием уже существует!";
+
+                return ResponseEntity.ok(new ApiResponse(status, message));
+            }
+            var res = Service.addClothes(clothesDto.toEntity());
+            if (res == null){
+                status = "fail";
+                message = "Ошибка при добавлении товара";
+                return ResponseEntity.ok(new ApiResponse(status, message));
+            }
+            status = "success";
+            message = "Товар успешно добавлен! ID:" + res.getId();
+            var response = new ApiResponse(status, message);
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            ApiResponse errorResponse = new ApiResponse("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
+
     @GetMapping("/filter/name/{name}")
     public List<Clothes> findByName(String name){ return Service.findClothesByNameIsLikeIgnoreCase(name); }
     @GetMapping("/filter/type/{type}")

@@ -80,11 +80,11 @@ public interface ClothesRepository extends JpaRepository<Clothes, Long>{
     List<Clothes> findByNameContainingIgnoreCaseOrderByName(@Param("name") String name, Pageable pageable);
 
     @Query("SELECT c FROM Clothes c WHERE " +
-            "(:name IS NULL OR LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%'))) AND " +
-            "(:color IS NULL OR LOWER(c.color) LIKE LOWER(CONCAT('%', :color, '%'))) AND " +
-            "(:size IS NULL OR c.size = :size) AND " +
-            "(:type IS NULL OR c.type = :type) AND " +
-            "(:brand IS NULL OR LOWER(c.brand) LIKE LOWER(CONCAT('%', :brand, '%'))) AND " +
+            "(:name IS NULL OR :name = '' OR LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%'))) AND " +
+            "(:color IS NULL OR :color = '' OR LOWER(c.color) LIKE LOWER(CONCAT('%', :color, '%'))) AND " +
+            "(:size IS NULL OR :size = '' OR c.size = :size) AND " +
+            "(:type IS NULL OR :type = '' OR c.type = :type) AND " +
+            "(:brand IS NULL OR :brand = '' OR LOWER(c.brand) LIKE LOWER(CONCAT('%', :brand, '%'))) AND " +
             "(:price IS NULL OR c.price = :price)")
     List<Clothes> findByFilter(
             @Param("name") String name,

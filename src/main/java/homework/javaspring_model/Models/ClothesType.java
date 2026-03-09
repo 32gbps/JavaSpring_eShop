@@ -1,5 +1,8 @@
 package homework.javaspring_model.Models;
 
+import lombok.Getter;
+
+@Getter
 public enum ClothesType {
     PANTS("Штаны"),
     SNEAKERS("Кеды"),
@@ -21,7 +24,4 @@ public enum ClothesType {
         this.displayName = displayName;
     }
 
-    public String getDisplayName() {
-        return displayName;
-    }
 }

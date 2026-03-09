@@ -2,6 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="ru">
     <head>
         <meta charset="utf-8" />
+<!--        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">-->
+<!--        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>-->
         <title th:text="title">Список одежды</title>
         <link rel="stylesheet" th:href="@{/css/styles.css}" />
         <script th:src="@{/js/script.js}"></script>
@@ -9,97 +11,97 @@
     <body>
         <header th:insert="~{fragments/header::header}"></header>
         <main>
-            <div class="container">
+            <div class="content">
                 <!-- Форма -->
-                <div class="controlElements">
-                    <form id="filterForm" th:action="@{filter}" method="get">
-                        <div class="form-group">
-                            <label>Название</label>
-                            <input name="name" type="text">
-                        </div>
-                        <div class="form-group">
-                            <label>Цвет</label>
-                            <input name="color" type="text">
-                        </div>
-                        <div class="form-group">
-                            <label>Размер</label>
-                            <select name="size">
-                                <option value="" selected>-- выберите размер --</option>
-                                <option value="S">S</option>
-                                <option value="M">M</option>
-                                <option value="L">L</option>
-                                <option value="XL">XL</option>
-                                <option value="XXL">XXL</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Тип</label>
-                            <select name="type">
-                                <option value="" selected>-- выберите тип --</option>
-                                <option value="SOCKS">Носки</option>
-                                <option value="SHIRT">Рубашка</option>
-                                <option value="T_SHIRT">Футболка</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Фирма</label>
-                            <input name="brand" type="text">
-                        </div>
-                        <div class="form-group">
-                            <label>Цена</label>
-                            <input name="price" type="number" min="0" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <button type="submit">Найти</button>
-                        </div>
-                    </form>
-                </div>
+                <form class="table-form" id="filterForm" th:action="@{filter}" method="get" th:object="${filter}">
+                    <div class="table-column column-name">
+                        <!--<label for="input-name"></label>-->
+                        <input id="input-name" name="name" type="text" placeholder="Название" th:field="*{name}">
+                    </div>
+                    <div class="table-column column-type">
+                        <!--<label class="" for="input-type">Тип</label>-->
+                        <select class="" id="input-type" name="type">
+                            <option value=""> -- Выберите тип -- </option>
+                            <option th:each="ltype : ${T(homework.javaspring_model.Models.ClothesType).values()}"
+                                    th:value="${ltype.getDisplayName()}"
+                                    th:text="${ltype.displayName}"
+                                    th:selected="${filter != null && filter.type == ltype}">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="table-column column-size">
+                        <!--<label class="" for="input-size">Размер</label>-->
+                        <select class="" id="input-size" name="size">
+                            <option value="" selected>-- размер --</option>
+                            <option value="XS" th:selected="${filter != null && filter.size == 'XS'}">XS</option>
+                            <option value="S" th:selected="${filter != null && filter.size == 'S'}">S</option>
+                            <option value="M" th:selected="${filter != null && filter.size == 'M'}">M</option>
+                            <option value="L" th:selected="${filter != null && filter.size == 'L'}">L</option>
+                            <option value="XL" th:selected="${filter != null && filter.size == 'XL'}">XL</option>
+                            <option value="XXL" th:selected="${filter != null && filter.size == 'XXL'}">XXL</option>
+                        </select>
+                    </div>
+                    <div class="table-column column-color">
+                        <!--<label class="" for="input-color">Цвет</label>-->
+                        <input class="" id="input-color" name="color" type="text" placeholder="Цвет" th:field="*{color}">
+                    </div>
+                    <div class="table-column column-brand">
+                        <!--<label class="" for="input-brand">Фирма</label>-->
+                        <input class="" id="input-brand" name="brand" type="text" placeholder="Фирма" th:field="*{brand}">
+                    </div>
+                    <div class="table-column column-price">
+                        <!--<label class="" for="input-price">Цена</label>-->
+                        <input class="" id="input-price" name="price" type="number" min="0" step="0.01" placeholder="Цена" th:field="*{price}">
+                    </div>
+                    <div class="table-column column-action">
+                        <button class="" type="submit">Найти</button>
+                    </div>
+                </form>
                 <!-- Список -->
-                <div class="content">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Название</th>
-                                <th>Тип</th>
-                                <th>Размер</th>
-                                <th>Цвет</th>
-                                <th>Фирма</th>
-                                <th>Цена</th>
-                                <th>Действие</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="item : ${clothesList}">
-                                <td th:text="${item.name}"></td>
-                                <td th:text="${item.type}"></td>
-                                <td th:text="${item.size}"></td>
-                                <td th:text="${item.color}"></td>
-                                <td th:text="${item.brand}"></td>
-                                <td th:text="'$' + ${#numbers.formatDecimal(item.price, 1, 2)}"></td>
-                                <td>*reserved*</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                <table class="table-product">
+                    <thead class="table-header">
+                    <tr>
+                        <th class="table-column column-name">Название</th>
+                        <th class="table-column column-type">Тип</th>
+                        <th class="table-column column-size">Размер</th>
+                        <th class="table-column column-color">Цвет</th>
+                        <th class="table-column column-brand">Фирма</th>
+                        <th class="table-column column-price">Цена</th>
+                        <th class="table-column column-action">Действие</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="item : ${clothesList}">
+                        <td class="table-column column-name" th:text="${item.name}">Куртка рваная</td>
+                        <td class="table-column column-type" th:text="${item.type}">Куртка</td>
+                        <td class="table-column column-size" th:text="${item.size}">XXL</td>
+                        <td class="table-column column-color" th:text="${item.color}">Розовая</td>
+                        <td class="table-column column-brand" th:text="${item.brand}">Puma</td>
+                        <td class="table-column column-price" th:text="'$' + ${#numbers.formatDecimal(item.price, 1, 2)}">123.45</td>
+                        <td class="table-column column-action">*reserved*</td>
+                    </tr>
+                    </tbody>
+                </table>
                 <!-- Пагинация -->
-<!--                <div class="content pagination-table">-->
-<!--                    <div>-->
-<!--                        <a th:href="@{0/${pageSize}}"> |<< </a>-->
-<!--                        <a th:href="@{${currentPage}-1/${pageSize}}"> < </a>-->
-<!--                    </div>-->
-<!--                    <div>-->
-<!--                        <select name="pageSize" th:value="${pageSize}">-->
-<!--                            <option value="10" selected>10</option>-->
-<!--                            <option value="25">25</option>-->
-<!--                            <option value="50">50</option>-->
-<!--                            <option value="100">100</option>-->
-<!--                        </select>-->
-<!--                    </div>-->
-<!--                    <div>-->
-<!--                        <a th:href="@{-1/${pageSize}}"> >>| </a>-->
-<!--                        <a th:href="@{${currentPage}+1/${pageSize}}"> > </a>-->
-<!--                    </div>-->
-<!--                </div>-->
+                    <div class="pagination">
+                        <div>
+                            <a th:href="@{/clothes/list(page=${0}, size=${pageSize})}"> <<| </a>
+                            <a th:href="@{/clothes/list(page=${currentPage > 0 ? currentPage - 1:0}, size=${pageSize})}"> < </a>
+                        </div>
+                        <div>
+                            <select name="pageSize"
+                                    th:value="${pageSize}"
+                                    onchange="window.location.href = window.location.pathname + '?page=0&size=' + this.value">
+                                <option value="10" th:selected="${pageSize == 10}">10</option>
+                                <option value="25" th:selected="${pageSize == 25}">25</option>
+                                <option value="50" th:selected="${pageSize == 50}">50</option>
+                                <option value="100" th:selected="${pageSize == 100}">100</option>
+                            </select>
+                        </div>
+                        <div>
+                            <a th:href="@{/clothes/list(page=${currentPage + 1}, size=${pageSize})}"> > </a>
+                        </div>
+                    </div>
             </div>
         </main>
        <footer>

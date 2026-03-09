@@ -13,21 +13,40 @@ public class ClothesController {
 
     private final  ClothesService clothesService;
     public ClothesController(ClothesService clothesService) {this.clothesService = clothesService;}
+    private static final int DEFAULT_PAGE = 0;  // Страницы с 0
+    private static final int DEFAULT_SIZE = 10; // 10 элементов на странице
 
-    @GetMapping({"/list", "/list/{page}", "/list/{page}/{size}"})
-    public String showClothes(@PathVariable(required = false) Integer page, @PathVariable(required = false) Integer size, Model model) {
-        int currentPage = (page != null) ? page : 0;
-        int pageSize = (size != null) ? size : 10;
+    @GetMapping(value = "/list", params = {"page", "size"})
+    public String getClothesList(@RequestParam Integer page,
+                             @RequestParam Integer size,
+                             Model model) {
+        //Пагинация, значения по-умолчанию
+        int currentPage = (page != null) ? page : DEFAULT_PAGE;
+        int pageSize = (size != null) ? size : DEFAULT_SIZE;
 
+        //Данные отправляемые на страницу
+        //Заголовок
         model.addAttribute("title", "Список одежды");
+        //Пагинация. Текущая страница
         model.addAttribute("currentPage", currentPage);
+        model.addAttribute("pageSize", pageSize);
+        //Список запрошенных объектов
         model.addAttribute("clothesList", clothesService.getFirstNElements(currentPage, pageSize));
+        //Модель для фильтра
+        model.addAttribute("filter", new Clothes());
 
+        //для дебага
         IO.println("page: " + currentPage);
         IO.println("size: " + pageSize);
 
+        //Отображаемый шаблон (clothes.html)
         return "clothes";
     }
+    @GetMapping({"", "/", "/list"})
+    public String GetRedirect() {
+        return "redirect:/clothes/list?page=" + DEFAULT_PAGE + "&size=" + DEFAULT_SIZE;
+    }
+
 
     @PostMapping("/add")
     public String addClothes(@ModelAttribute Clothes clothes) {
@@ -36,19 +55,20 @@ public class ClothesController {
         clothesService.addClothes(clothes);
         return "redirect:/clothes/list";
     }
-    @GetMapping("/edit/{id}")
-    public String getEditClothesForm(@PathVariable int id, Model model) {
+
+
+    @GetMapping(value = "/getClothes", params = {"id"})
+    public String getClotheById(@RequestParam Integer id, Model model) {
         var finded = clothesService.getClothesById(id);
         if(finded != null)
-            model.addAttribute("clothes", finded);
+            model.addAttribute("editable", finded);
 
-        model.addAttribute("clothesList", clothesService.getFirstNElements(0, 25));
-        return "clothes";
+        return "adminPanel";
     }
-    @PostMapping("/edit")
-    public String editClothes(@ModelAttribute Clothes clothes) {
-        clothesService.updateClothes(clothes.getId(), clothes);
-        return "redirect:/clothes/list";
+    @PostMapping(value = "/edit", params = {"editable"})
+    public String editClothes(@RequestParam Clothes editable) {
+        clothesService.updateClothes(editable.getId(), editable);
+        return "adminPanel";
     }
     @GetMapping("/delete/{id}")
     public String deleteClothes(@PathVariable Long id) {
@@ -57,8 +77,15 @@ public class ClothesController {
         return "redirect:/clothes/list";
     }
     @GetMapping("/filter")
-    public String getFilteredList(String name, String color, String size, String type, String brand, Double price, Model model) {
-        model.addAttribute("clothesList", clothesService.getFilteredList(name, color, size,type ,brand, price));
+    public String getFilteredList(@ModelAttribute Clothes filter, Model model) {
+        var list = clothesService.getFilteredList(filter.name, filter.color, filter.size,filter.type ,filter.brand, filter.price);
+        IO.println("list size: " + list.size());
+        model.addAttribute("title", "Список одежды");
+        //Список запрошенных объектов
+        model.addAttribute("clothesList", list);
+        //Модель для фильтра
+        model.addAttribute("filter", new Clothes());
+
         return "clothes";
     }
 }
