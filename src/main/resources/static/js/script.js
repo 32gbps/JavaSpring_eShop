@@ -1,6 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Инициализация обработчиков событий
-    document.getElementById('getById-form').addEventListener('submit', function(event) {
+    var form = document.getElementById('getById-form');
+    if(form == null)
+        return;
+    form.addEventListener('submit', function(event) {
         event.preventDefault();
         getClothesById();
     });
@@ -27,9 +30,10 @@ function getClothesById() {
 
         fetch(url)
             .then(response => response.json())
-            .then(data => showClothesProperties(data.data))
-            .then(data => console.log(data))
-            .catch(error => console.error('Ошибка:', error));
+            .then(json => {
+                printMessage(json.message,json.status);
+                showClothesProperties(json.data);
+            });
     }
 }
 function deleteClothesById() {
@@ -53,8 +57,9 @@ function deleteClothesById() {
 
         fetch(request)
             .then(response => response.json())
-            .then(data => console.log(data))
-            .catch(error => console.error('Ошибка:', error));
+            .then(json => {
+                printMessage(json.message,json.status);
+            });
     }
 }
 function editClothes() {
@@ -76,23 +81,11 @@ function editClothes() {
         },
         body: JSON.stringify(clothesData)  // Преобразуем в JSON
     })
-        .then(response => {
-            if (!response.ok) {
-                return response.json().then(err => { throw err; });
-            }
-            return response.json();
-        })
-        .then(apiResponse => {
-            if (apiResponse.status === 'success') {
-                alert(apiResponse.message);
-                getClothesById(); // Обновляем таблицу
-            } else if (apiResponse.status === 'fail') {
-                alert('Ошибка: ' + apiResponse.message);
-            }
-        })
-        .catch(error => {
-            console.error('Ошибка:', error);
-            alert('Произошла ошибка при сохранении');
+        .then(response => response.json())
+        .then(json => {
+            printMessage(json.message,json.status);
+            if(json.status === 'success')
+                showClothesProperties(json.data);
         });
 }
 function addClothes() {
@@ -114,32 +107,21 @@ function addClothes() {
         },
         body: JSON.stringify(clothesData)  // Преобразуем в JSON
     })
-        .then(response => {
-            if (!response.ok) {
-                return response.json().then(err => { throw err; });
-            }
-            return response.json();
-        })
-        .then(apiResponse => {
-            if (apiResponse.status === 'success') {
-                alert(apiResponse.message);
-
-            } else if (apiResponse.status === 'fail') {
-                alert('Ошибка: ' + apiResponse.message);
-            }
-        })
-        .catch(error => {
-            console.error('Ошибка:', error);
-            alert('Произошла ошибка при сохранении');
+        .then(response => response.json())
+        .then(json => {
+            printMessage(json.message, json.status);
         });
 }
 function showClothesProperties(clothesData){
-    //var clothesData = JSON.parse(data);
-
-    console.log('typeof data:', typeof clothesData);
     // Проверяем, что данные существуют и являются объектом
     if (!clothesData || typeof clothesData !== 'object') {
-        console.error('Некорректные данные:', clothesData);
+        document.getElementById('input-id').value = '';
+        document.getElementById('input-name').value = '';
+        document.getElementById('input-type').value = '';
+        document.getElementById('input-size').value = '';
+        document.getElementById('input-color').value = '';
+        document.getElementById('input-brand').value = '';
+        document.getElementById('input-price').value = '';
         return;
     }
 
@@ -170,4 +152,8 @@ function showClothesProperties(clothesData){
     if (input_color) input_color.value = clothesData.color || '';
     if (input_brand) input_brand.value = clothesData.brand || '';
     if (input_price) input_price.value = clothesData.price || '';
+}
+function printMessage(message, status){
+    let container = document.getElementById('messageOut-span')
+    container.innerText = message;
 }

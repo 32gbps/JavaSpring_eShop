@@ -1,11 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ru">
-<head>
-    <meta charset="utf-8" />
-    <title th:text="title">Профиль</title>
-    <link rel="stylesheet" th:href="@{/css/styles.css}" />
-    <script th:src="@{/js/script.js}"></script>
-</head>
+    <head th:replace="fragments/head :: head('Профиль пользователя')"></head>
     <body>
         <header th:insert="~{fragments/header::header}"></header>
         <main>

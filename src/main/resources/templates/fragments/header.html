@@ -3,7 +3,7 @@
     <div id="block-logo">
         <a class="navbar-brand">
             <!-- *Origin* <img th:src="logo.png" alt="logo" class="d-inline-block align-text-top"> -->
-            <img th:src="logo.png" id="header-logo" alt="logo">
+            <img th:src="@{/logo.png}" id="header-logo" alt="logo">
         </a>
     </div>
     <div id="block-products">
@@ -16,8 +16,9 @@
     <div id="block-profile" class="hideble-list">
         <ul class="v-list">
             <li class="active"><a th:href="@{/profile}" th:text="#{menu.profile}">Профиль</a></li>
-            <li><hr></li>
             <li><a th:href="@{/adminPanel}" th:text="#{menu.adminPanel}">Админ</a></li>
+            <li><hr></li>
+            <li><a th:href="@{/logout}">Выход</a></li>
         </ul>
     </div>
 </nav>

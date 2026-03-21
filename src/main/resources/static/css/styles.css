@@ -147,6 +147,9 @@ main, .content, .col, .row{
     display: flex;
     flex-direction: column;
 }
+.table-product a{
+    color: black;
+}
 /* ---------------------------Admin panel---------------------------------- */
 .table-form-admin {
     padding: 5px;
@@ -215,5 +218,11 @@ main, .content, .col, .row{
     color: black;
     padding: 5px;
     align-content: center;
+}
+/* -----------------------Product info view-------------------------- */
+.feedback{
+    background-color: rgba(255, 137, 157, 0.5);
+    width: 60%;
+    min-height: 250px;
 }
 /* ------------------------ТЕСТ----------------------------- */

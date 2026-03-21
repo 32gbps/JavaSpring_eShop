@@ -1,14 +1,13 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ru">
-    <head>
-        <meta charset="utf-8" />
-        <title th:text="title">Панель администратора</title>
-        <link rel="stylesheet" th:href="@{/css/styles.css}" />
-        <script th:src="@{/js/script.js}"></script>
-    </head>
+    <head th:replace="fragments/head :: head('Панель администратора')"></head>
     <body>
     <header th:insert="~{fragments/header::header}"></header>
         <main>
+        <!-- Messages -->
+        <div class="messageOut">
+            <span id="messageOut-span"></span>
+        </div>
         <!-- getByIdForm -->
         <div class="content">
             <form class="table-form-admin" id="getById-form" method="get">

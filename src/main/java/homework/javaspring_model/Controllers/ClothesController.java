@@ -2,6 +2,7 @@ package homework.javaspring_model.Controllers;
 
 import homework.javaspring_model.Models.Clothes;
 
+import homework.javaspring_model.Models.DTOClothes;
 import homework.javaspring_model.Services.ClothesService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -46,36 +47,44 @@ public class ClothesController {
     public String GetRedirect() {
         return "redirect:/clothes/list?page=" + DEFAULT_PAGE + "&size=" + DEFAULT_SIZE;
     }
+    @GetMapping("/product/{id}")
+    public String getProductInfo(@PathVariable Long id, Model model) {
+        if(!clothesService.isExistById(id))
+            return "redirect:/clothes";
 
-
-    @PostMapping("/add")
-    public String addClothes(@ModelAttribute Clothes clothes) {
-        IO.println(String.format("Controller /add; form Clothes{id: %d}", clothes.getId()));
-
-        clothesService.addClothes(clothes);
-        return "redirect:/clothes/list";
+        var product = clothesService.getClothesById(id);
+        model.addAttribute("productData", new DTOClothes(product));
+        return "productInfoView";
     }
+//Теперь через API
+//    @PostMapping("/add")
+//    public String addClothes(@ModelAttribute Clothes clothes) {
+//        IO.println(String.format("Controller /add; form Clothes{id: %d}", clothes.getId()));
+//
+//        clothesService.addClothes(clothes);
+//        return "redirect:/clothes/list";
+//    }
+//    @GetMapping(value = "/getClothes", params = {"id"})
+//    public String getClotheById(@RequestParam Integer id, Model model) {
+//        var finded = clothesService.getClothesById(id);
+//        if(finded != null)
+//            model.addAttribute("editable", finded);
+//
+//        return "adminPanel";
+//    }
+//    @PostMapping(value = "/edit", params = {"editable"})
+//    public String editClothes(@RequestParam Clothes editable) {
+//        clothesService.updateClothes(editable.getId(), editable);
+//        return "adminPanel";
+//    }
+//    @GetMapping("/delete/{id}")
+//    public String deleteClothes(@PathVariable Long id) {
+//        clothesService.deleteClothes(id);
+//
+//        return "redirect:/clothes/list";
+//    }
 
 
-    @GetMapping(value = "/getClothes", params = {"id"})
-    public String getClotheById(@RequestParam Integer id, Model model) {
-        var finded = clothesService.getClothesById(id);
-        if(finded != null)
-            model.addAttribute("editable", finded);
-
-        return "adminPanel";
-    }
-    @PostMapping(value = "/edit", params = {"editable"})
-    public String editClothes(@RequestParam Clothes editable) {
-        clothesService.updateClothes(editable.getId(), editable);
-        return "adminPanel";
-    }
-    @GetMapping("/delete/{id}")
-    public String deleteClothes(@PathVariable Long id) {
-        clothesService.deleteClothes(id);
-
-        return "redirect:/clothes/list";
-    }
     @GetMapping("/filter")
     public String getFilteredList(@ModelAttribute Clothes filter, Model model) {
         var list = clothesService.getFilteredList(filter.name, filter.color, filter.size,filter.type ,filter.brand, filter.price);

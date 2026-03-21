@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head th:replace="fragments/head :: head('Информация о продукте')"></head>
+<body>
+<header th:insert="~{fragments/header::header}"></header>
+<main>
+    <div>
+        <img th:src="@{/PhotoIconTemplate.png}" alt="PhotoTemplate">
+    </div>
+    <!--/*@thymesVar id="productData" type="homework.javaspring_model.Models.DTOClothes"*/-->
+    <div th:if="${productData != null}" class="content productInfo">
+        <p>Название: <span th:text="${productData.name}"></span></p>
+        <p>Тип: <span th:text="${productData.type}"></span></p>
+        <p>Размер: <span th:text="${productData.size}"></span></p>
+        <p>Цвет: <span th:text="${productData.color}"></span></p>
+        <p>Фирма: <span th:text="${productData.brand}"></span></p>
+        <p>Цена: <span th:text="${productData.price}"></span></p>
+    </div>
+    <div class="content feedback">
+
+    </div>
+</main>
+<footer>
+</footer>
+</body>
+</html>

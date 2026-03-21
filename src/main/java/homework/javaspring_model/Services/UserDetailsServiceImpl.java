@@ -2,6 +2,7 @@ package homework.javaspring_model.Services;
 
 import homework.javaspring_model.Models.User;
 import homework.javaspring_model.Repositories.UserRepository;
+import org.jspecify.annotations.NullMarked;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,6 +21,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public List<User> getAllUsers(){
         return userRepository.getUsersByIdGreaterThan(0L);
     }
+
     @Override
     public UserDetails loadUserByUsername(String username) {
         User user = userRepository.findUserByUsername(username)
@@ -31,13 +33,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         System.out.println("Roles: " + user.getRoles());
         System.out.println("==================");
 
+
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getUsername())
                 .password(user.getPassword())
                 .roles(user.getRoles().stream()
                         .map(role -> role.getName().replace("ROLE_", "")) // Убираем ROLE_ префикс
                         .toArray(String[]::new))
-                .build();
+                        .build();
     }
 
 }

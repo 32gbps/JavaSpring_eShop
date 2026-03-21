@@ -74,24 +74,18 @@ public class ApiController {
         try {
             String status = "";
             String message = "";
-            ApiResponse response;
-            if(!Service.isExistById(id.longValue())) {
-                status = "fail";
-                message = "Товар с данным ID не найден!";
-            }
-            else{
+
+            if(Service.isExistById(id.longValue())) {
                 status = "success";
                 message = "";
+                var dto = new DTOClothes(Service.getClothesById(id.longValue()));
+                return ResponseEntity.ok(new ApiResponse(status, message, dto));
             }
-            // Успешный ответ с сообщением
-            response = new ApiResponse(
-                    status,
-                    message,
-                    Service.getClothesById(id.longValue())
-            );
-
-            return ResponseEntity.ok(response);
-
+            else{
+                status = "fail";
+                message = "Товар с данным ID не найден!";
+                return ResponseEntity.ok(new ApiResponse(status, message));
+            }
         } catch (Exception e) {
             // Ответ с ошибкой
             ApiResponse errorResponse = new ApiResponse("error", "Ошибка: " + e.getMessage());
