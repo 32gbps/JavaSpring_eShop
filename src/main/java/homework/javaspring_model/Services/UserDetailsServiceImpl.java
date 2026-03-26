@@ -21,7 +21,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public List<User> getAllUsers(){
         return userRepository.getUsersByIdGreaterThan(0L);
     }
-
+    public Boolean isUserHasRole(String username, String role){
+        var user = userRepository.findUserByUsername(username);
+        if(user.isEmpty())
+            return false;
+        var userObj = user.get();
+        return userObj.getRoles().stream()
+                .anyMatch(r -> r.getName().equals(role));
+    }
     @Override
     public UserDetails loadUserByUsername(String username) {
         User user = userRepository.findUserByUsername(username)

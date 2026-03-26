@@ -114,6 +114,9 @@ main, .content, .col, .row{
 .row{
     flex-direction: row;
 }
+.col{
+    flex-direction: column;
+}
 .table-column{
     margin: 2px;
     padding: 5px;
@@ -198,10 +201,6 @@ main, .content, .col, .row{
 .table-column-admin input, .table-column-admin button{
     margin: 2px;
 }
-.row{
-    flex-direction: row;
-}
-
 .table-form-adm *{
     width: 100%;
 }
@@ -219,10 +218,98 @@ main, .content, .col, .row{
     padding: 5px;
     align-content: center;
 }
-/* -----------------------Product info view-------------------------- */
-.feedback{
+/* ---------------------------Product info styles---------------------------------------- */
+#Product-ShortInfo-container{
+    margin: 10px 0;
+    width: 60%;
+    background-color: antiquewhite;
+    display: grid;
+    grid-template-columns: 50% 50%;
+
+}
+#Product-Photo-container{
+    background-color: #b190eb;
+}
+#Product-Photo-container img{
+    background-color: #fe494d;
+    width: 80%;
+}
+#Product-ShortParameters-container{
+    background-color: rgba(254, 250, 73, 0.39);
+    padding: 10px;
+}
+#Product-ShortParameters-container p{
+    margin: 0;
+    padding: 0;
+}
+/* ============================= */
+#Product-FullInfo-container{
+    width: 60%;
+    margin: 10px 0;
+    padding: 0 10px;
+    background-color: beige;
+}
+#Product-FullInfo-container h2, #Product-FullInfo-container h3{
+    text-align: center;
+}
+/* ============================= */
+#Product-Reviews-container{
+    margin: 10px 0;
     background-color: rgba(255, 137, 157, 0.5);
     width: 60%;
     min-height: 250px;
+    padding: 10px;
+    border-radius: 20px;
 }
+.Review-card{
+    padding: 10px;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.10);
+}
+/*
+.Review-card div{
+    padding: 2px 4px;
+}
+*/
+.Review-card label{
+    font-weight: bold;
+}
+.comment-date{
+    color: grey;
+}
+.comment-controls{
+    display: flex;
+    justify-content: space-between;
+    padding: 5px;
+}
+.Review-card-new-comment-form{
+    background-color: rgba(0, 0, 0, 0.15);
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+}
+
+.Review-card-new-comment-form textarea{
+    max-width: 100%;
+    width: 100%;
+    min-width: 40%;
+    min-height: 40px;
+    height: fit-content;
+    max-height: 120px;
+}
+.Review-card-new-comment-form button{
+    padding: 5px;
+    width: fit-content;
+    height: fit-content;
+    align-self: flex-end;
+}
+.Review-card-new-comment-form *{
+    margin: 5px;
+}
+.Review-card-comment{
+    padding: 5px 5px 5px 20px;
+}
+/* ====================================================================================== */
+
 /* ------------------------ТЕСТ----------------------------- */

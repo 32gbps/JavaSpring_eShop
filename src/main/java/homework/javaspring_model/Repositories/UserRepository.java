@@ -14,4 +14,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> getUsersById(Long id);
 
     List<User> getUsersByIdGreaterThan(Long idIsGreaterThan);
+
+    List<User> getUserByName(String name);
 }

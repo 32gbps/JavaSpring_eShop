@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.datafaker.providers.base.Bool;
+
 import java.util.Set;
 
 @Data

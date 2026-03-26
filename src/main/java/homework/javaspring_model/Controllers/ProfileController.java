@@ -1,15 +1,16 @@
 package homework.javaspring_model.Controllers;
 
-import homework.javaspring_model.Models.Clothes;
-import homework.javaspring_model.Models.ClothesType;
+import homework.javaspring_model.Config.DatabaseInitializer;
 import homework.javaspring_model.Models.Role;
 import homework.javaspring_model.Models.User;
 import homework.javaspring_model.Repositories.RoleRepository;
 import homework.javaspring_model.Repositories.UserRepository;
-import homework.javaspring_model.Services.ClothesService;
 import homework.javaspring_model.Services.UserDetailsServiceImpl;
 import jakarta.annotation.security.RolesAllowed;
-import net.datafaker.Faker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,26 +19,24 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.Random;
 import java.util.Set;
 
 @Controller
 public class ProfileController {
-    private final ClothesService clothesService;
-    private final Faker faker;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final UserDetailsServiceImpl userService;
+    private static final Logger log = LoggerFactory.getLogger(DatabaseInitializer.class);
 
-    public ProfileController(ClothesService clothesService,
-                             UserDetailsServiceImpl userService,
+
+    public ProfileController(UserDetailsServiceImpl userService,
                              UserRepository userRepository,
                              RoleRepository roleRepository,
                              PasswordEncoder passwordEncoder
                              ) {
-        faker = new Faker();
-        this.clothesService = clothesService;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.userService = userService;
     }
 
     @GetMapping("/login")
@@ -50,43 +49,31 @@ public class ProfileController {
         return "redirect:/";
     }
     @GetMapping("/profile")
-    public String getProfile(Model model) {
-        model.addAttribute("title", "Личный кабинет");
-        model.addAttribute("user", new User());
-        return "profile";
+    public String getProfile(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+        try {
+            var currentUser = userRepository.findUserByUsername(userDetails.getUsername());
+            if (currentUser.isPresent())
+                model.addAttribute("user", currentUser.get());
+            else
+                model.addAttribute("message", "Данные пользователя не найдены");
+            return "profile";
+        } catch (Exception e) {
+            model.addAttribute("message", "Непредвиденная ошибка!");
+            log.debug("Метод: getProfile; Сообщение: {}", e.getMessage());
+            return "redirect:/";
+        }
     }
+
     @RolesAllowed("ROLE_ADMIN")
     @GetMapping("/adminPanel")
-    public String getAdminPanel(Model model) {
+    public String getAdminPanel(@AuthenticationPrincipal UserDetails userDetails) {
+
+        //Из-за Spring Security досюда даже не дойдёт
+        if(!userService.isUserHasRole(userDetails.getUsername(), "ADMIN"))
+            return "redirect:/";
+
         return "adminPanel";
     }
-    @GetMapping("/fillBaseRandObjects{count}")
-    public String fillBase(int count) {
-        Random r = new Random();
-        String[] size = new String[]{"XS", "S", "M", "L", "XL", "XXL"};
-        int i = 0;
-        int added = 0;
-        while(i < count) {
-            var c = new Clothes(
-                    faker.commerce().productName(),
-                    ClothesType.values()[r.nextInt(ClothesType.values().length)].getDisplayName(),
-                    size[r.nextInt(size.length)],
-                    faker.color().name(),
-                    faker.commerce().brand(),
-                    Double.parseDouble(faker.commerce().price(10.0, 3000.0).replace(',','.')));
-
-            if(!clothesService.isExistByName(c.getName()))
-            {
-                clothesService.addClothes(c);
-                ++added;
-            }
-
-            ++i;
-        }
-        IO.println("Added objects into db: " + added);
-        return "redirect:/profile/adminPanel";
-    }
-
 
     @GetMapping("/register")
     public String registerForm(Model model) {

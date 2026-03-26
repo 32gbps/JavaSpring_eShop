@@ -154,6 +154,102 @@ function showClothesProperties(clothesData){
     if (input_price) input_price.value = clothesData.price || '';
 }
 function printMessage(message, status){
-    let container = document.getElementById('messageOut-span')
+    let container = document.getElementById('messageOut-span');
     container.innerText = message;
+}
+function setLike(commentId){
+    let url = `/api/comments/setLike?id=${commentId}`;
+    const request = new Request(url, {
+        method: "POST",
+    });
+
+    fetch(request)
+        .then(response => response.json())
+        .then(json => {
+            if(json.status === 'success'){
+                //красим цифру в зелёный
+            }
+        });
+}
+function setDislike(commentId){
+    let url = `/api/comments/setDislike?id=${commentId}`;
+    const request = new Request(url, {
+        method: "POST",
+    });
+
+    fetch(request)
+        .then(response => response.json())
+        .then(json => {
+            if(json.status === 'success'){
+                //красим цифру в красный
+            }
+        });
+}
+function loadReviews(productId){
+    let url = `/api/reviews?id=${productId}`;
+    const request = new Request(url, {
+        method: "GET",
+    });
+    let reviewContainer = document.getElementById("Product-Reviews-container");
+    fetch(request)
+        .then(response => response.json())
+        .then(json => {
+            if(json.status === 'success'){
+                json.data.forEach((review)=>{
+                    let rev = getReviewCard(review);
+                    reviewContainer.appendChild(rev);
+                });
+            }
+        });
+}
+function getReviewCard(reviewData){
+    let reviewCardhtml = `
+    <div class="Review-card">
+            <div class="comment-userinfo">
+                        <img src="userProfileAvatar.jpg" alt="User-avatar">
+                        <span>${reviewData.author.nickname}</span>
+                    </div>
+            <div class="Review-card-statline">
+                <div class="comment-date">
+                    <span>${reviewData.pubDate}</span>
+                </div>
+            </div>
+            <div class="Review-card-text">
+                <label for="Review-card-positiveSide">Достоинства</label>
+                <div id="Review-card-positiveSide">
+                    <span>
+                        ${reviewData.review.positive}
+                    </span>
+                </div>
+                <label for="Review-card-negativeSide">Недостатки</label>
+                <div id="Review-card-negativeSide">
+                    <span>
+                        ${reviewData.review.negative}
+                    </span>
+                </div>
+                <label for="Review-card-comment-author">Комментарий</label>
+                <div id="Review-card-comment-author">
+                    <span>
+                        ${reviewData.review.comment}
+                    </span>
+                </div>
+            </div>
+            <div class="comment-controls">
+                <button class="comment-controls-button-like">Like</button>
+                <span class="comment-controls-comment-score">${reviewData.review.likeScore}</span>
+                <button class="comment-controls-button-dislike">Dislike</button>
+            </div>
+            <div class="Review-card-comments">
+            </div>
+        </div>`;
+}
+function showComments(reviewId){
+    let revDiv = document.getElementById(`review-id-${reviewId}`);
+    //===
+    //сначала добавить форму для отправки комментария
+    //revDiv.append()
+    //===
+}
+function getReviewComments(reviewId){
+
 }
