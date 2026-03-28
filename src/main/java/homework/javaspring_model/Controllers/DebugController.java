@@ -1,7 +1,7 @@
 package homework.javaspring_model.Controllers;
 
-import homework.javaspring_model.Models.User;
-import homework.javaspring_model.Services.UserDetailsServiceImpl;
+import homework.javaspring_model.Models.User.User;
+import homework.javaspring_model.Services.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,8 +11,8 @@ import java.util.List;
 @RestController
 public class DebugController {
 
-    private final UserDetailsServiceImpl userService;
-    public DebugController(UserDetailsServiceImpl userService){
+    private final UserService userService;
+    public DebugController(UserService userService){
         this.userService = userService;
     }
 

@@ -1,9 +1,10 @@
-package homework.javaspring_model.Controllers.View;
+package homework.javaspring_model.Controllers;
 
 import homework.javaspring_model.Services.ProductService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -45,8 +46,8 @@ public class ProductController {
     public String GetRedirect() {
         return "redirect:/product/list?page=" + DEFAULT_PAGE + "&size=" + DEFAULT_SIZE;
     }
-    @GetMapping(value = "/", params = {"id"})
-    public String getProductInfo(@RequestParam Long id, Model model) {
+    @GetMapping("/{id}")
+    public String getProductInfo(@PathVariable Long id, Model model) {
         try {
             if(!productService.isExistById(id)){
                 model.addAttribute("message", "Товар не найден!");
@@ -56,7 +57,7 @@ public class ProductController {
             var product = productService.getProductById(id);
 
             model.addAttribute("productData", product);
-            return "productInfoView";
+            return "productDetail";
         } catch (Exception e) {
             model.addAttribute("message", "Внутренняя ошибка при запросе товара");
             return "redirect:/";

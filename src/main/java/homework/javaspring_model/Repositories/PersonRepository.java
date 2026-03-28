@@ -1,14 +1,13 @@
 package homework.javaspring_model.Repositories;
 
-import homework.javaspring_model.Models.User.User;
+import homework.javaspring_model.Models.User.Person.Person;
 import org.jspecify.annotations.NonNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<@NonNull User, @NonNull Long> {
-    Optional<User> findByUsername(String login);
+public interface PersonRepository  extends JpaRepository<@NonNull Person, @NonNull Long> {
+    Optional<Person> findByName(String name);
 }

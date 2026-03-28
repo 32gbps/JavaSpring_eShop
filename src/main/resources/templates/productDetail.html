@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ru">
-<head th:replace="fragments/head :: head('Информация о продукте')"></head>
+<head th:replace="fragments/head :: head(${productData.getName()})"></head>
 <body>
 <header th:insert="~{fragments/header::header}"></header>
 <main>
@@ -24,7 +24,7 @@
             </div>
             <div>
                 <label for="Product-Price">Цена</label>
-                <span id="Product-Price" th:value="${productData.productId}">12345</span>
+                <span id="Product-Price" th:value="${productData.getPrice()}">12345</span>
                 <span id="Product-Price-Valute-Sign">Р</span>
             </div>
             <button>Купить</button> <!-- Добавить обработчик -->
@@ -34,15 +34,15 @@
     <div id="Product-FullInfo-container">
         <h2>Описание</h2>
         <div id="Product-Description-container">
-            <span th:value="${productData.description}">
+            <span th:value="${productData.getDescription()}">
                 *Description*
             </span>
         </div>
         <h3>Характеристики</h3>
         <div id="Product-FullParameters-container">
             <div class="Product-About-FullInfo-List">
-                <div class="Product-About-FullInfo-block" th:if="${!productData?.parameters.isEmpty()}">
-                    <div class="Product-About-FullInfo-KeyValuePair" th:each="param : ${productData.parameters}">
+                <div class="Product-About-FullInfo-block" th:if="${productData.getParameters() != null && !productData.getParameters().isEmpty()}">
+                    <div class="Product-About-FullInfo-KeyValuePair" th:each="param : ${productData.getParameters()}">
                         <span class="Product-About-FullInfo-Key" th:text="${param.key}">Key:</span>
                         <span class="Product-About-FullInfo-Value" th:text="${param.value}">value</span>
                         <hr>
@@ -53,7 +53,7 @@
     </div>
     <!--Отзывы-->
     <h2>Отзывы</h2>
-    <div id="Product-Reviews-container" th:onload="|loadReviews(${productData.productId})|">
+    <div id="Product-Reviews-container" th:onload="|loadReviews(${productData.getId()})|">
 <!--        <div id="review-id-${reviewId}" class="Review-card">-->
 <!--            <div class="comment-userinfo">-->
 <!--                <img src="userProfileAvatar.jpg" alt="User-avatar">-->

@@ -1,17 +1,17 @@
 package homework.javaspring_model.Controllers;
 
 import homework.javaspring_model.Config.DatabaseInitializer;
-import homework.javaspring_model.Models.Role;
-import homework.javaspring_model.Models.User;
-import homework.javaspring_model.Repositories.RoleRepository;
-import homework.javaspring_model.Repositories.UserRepository;
-import homework.javaspring_model.Services.UserDetailsServiceImpl;
+import homework.javaspring_model.Models.User.Role;
+import homework.javaspring_model.Models.User.User;
+import homework.javaspring_model.Models.User.UserDto;
+import homework.javaspring_model.Services.RoleService;
+import homework.javaspring_model.Services.UserService;
 import jakarta.annotation.security.RolesAllowed;
+import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,25 +19,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.Set;
 
 @Controller
+@AllArgsConstructor
 public class ProfileController {
-    private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
-    private final UserDetailsServiceImpl userService;
+    private final RoleService roleService;
+    private final UserService userService;
     private static final Logger log = LoggerFactory.getLogger(DatabaseInitializer.class);
-
-
-    public ProfileController(UserDetailsServiceImpl userService,
-                             UserRepository userRepository,
-                             RoleRepository roleRepository,
-                             PasswordEncoder passwordEncoder
-                             ) {
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.userService = userService;
-    }
 
     @GetMapping("/login")
     public String getLoginScreen() {
@@ -51,7 +39,7 @@ public class ProfileController {
     @GetMapping("/profile")
     public String getProfile(@AuthenticationPrincipal UserDetails userDetails, Model model) {
         try {
-            var currentUser = userRepository.findUserByUsername(userDetails.getUsername());
+            var currentUser = userService.findByUsername(userDetails.getUsername());
             if (currentUser.isPresent())
                 model.addAttribute("user", currentUser.get());
             else
@@ -82,36 +70,30 @@ public class ProfileController {
     }
 
     @PostMapping("/register")
-    public String registerUser(@ModelAttribute User user,
+    public String registerUser(@ModelAttribute UserDto userDto,
                                RedirectAttributes redirectAttributes) {
         try {
             // Проверяем существование пользователя
-            if (userRepository.findUserByUsername(user.getUsername()).isPresent()) {
+            if (userService.findByUsername(userDto.getUsername()).isPresent()) {
                 redirectAttributes.addFlashAttribute("error",
                         "Пользователь с таким логином уже существует");
                 return "redirect:/register";
             }
 
             // Создаем пользователя
-//            User user = new User();
-//            user.setUsername(dto.getUsername());
-//            user.setPassword(passwordEncoder.encode(dto.getPassword()));
-//            user.setEmail(dto.getEmail());
-//            user.setName(dto.getName());
-//            user.setSurname(dto.getSurname());
-//            user.setEnabled(true);
+            User user = new User(userDto);
 
             // Получаем или создаем роль USER
-            Role userRole = roleRepository.findByName("USER")
+            Role userRole = roleService.findByName("USER")
                     .orElseGet(() -> {
                         Role role = new Role();
                         role.setName("USER");
-                        return roleRepository.save(role);
+                        return roleService.addRole(role).orElseThrow();
                     });
 
-            user.setRoles(Set.of(userRole));
+            user.setRole(userRole);
 
-            userRepository.save(user);
+            userService.addUser(user);
 
             redirectAttributes.addFlashAttribute("success",
                     "Регистрация успешна! Теперь вы можете войти.");

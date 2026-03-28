@@ -1,95 +1,155 @@
 package homework.javaspring_model.Config;
 
-import homework.javaspring_model.Models.Role;
-import homework.javaspring_model.Models.User;
-import homework.javaspring_model.Repositories.RoleRepository;
-import homework.javaspring_model.Repositories.UserRepository;
+import homework.javaspring_model.Models.Product.Product;
+import homework.javaspring_model.Models.User.Company.Company;
+import homework.javaspring_model.Models.User.Person.Person;
+import homework.javaspring_model.Models.User.Role;
+import homework.javaspring_model.Models.User.User;
+import homework.javaspring_model.Services.*;
 import jakarta.annotation.PostConstruct;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;           // @Component
 import org.slf4j.Logger;                                  // Logger
 import org.slf4j.LoggerFactory;                           // LoggerFactory
 import org.springframework.security.crypto.password.PasswordEncoder; // PasswordEncoder
 
+import java.time.LocalDate;
+
 // User
 
 @Component
+@AllArgsConstructor
 public class DatabaseInitializer {
 
     private static final Logger log = LoggerFactory.getLogger(DatabaseInitializer.class);
 
-    private final RoleRepository roleRepository;
-    private final UserRepository userRepository;
+    private final RoleService roleService;
+    private final UserService userService;
+    private final PersonService personService;
+    private final CompanyService companyService;
+    private final ProductService productService;
+
     private final PasswordEncoder passwordEncoder;
 
-    public DatabaseInitializer(UserRepository userRepository,
-                               PasswordEncoder passwordEncoder,
-                               RoleRepository roleRepository) {
-        this.roleRepository = roleRepository;
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
-
     @PostConstruct
-    public void initTestUsers() {
-
-        log.info("Добавление пользователей");
+    public void initTestData() {
+        //ClearAllTables();
+        printCountAll();
         // Администратор
-        addUserWithRole("admin", "admin123", "ADMIN", "admin@example.com");
-
+        log.info("Добавление администратора");
+        var roleAdmin = addRole("ADMIN");
+        addUserWithRole("admin", "admin123", "admin@example.com", roleAdmin);
+        // Модератор
+        log.info("Добавление модератора");
+        var roleModerator = addRole("MODERATOR");
+        addUserWithRole("moderator", "moderator123", "moderator@example.com", roleModerator);
         // Обычный пользователь
-        addUserWithRole("user", "user123", "USER", "user@example.com");
+        log.info("Добавление обычного пользователя");
+        var roleUser = addRole("USER");
+        var userPerson = addUserWithRole("user", "user123", "user@example.com", roleUser);
+        var person = addPersonWitchUserAndRoleInfo("John", "Dow", LocalDate.of(1970,1,1), userPerson);
+        // Компания
+        log.info("Добавление компании");
+        var roleCompany = addRole("COMPANY");
+        var userCompany = addUserWithRole("company", "company123", "company@example.com", roleCompany);
+        var company = addCompanyWitchUserAndRoleInfo("ООО \"Рога и копыта\"", "1234-5678-9abc-defg", userCompany);
+
+
+        log.info("Добавление товаров");
+
+        String s0 = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla mauris felis, facilisis ut turpis eu, tempor venenatis ipsum. Donec aliquet mattis venenatis. Phasellus id sodales ligula, nec pretium quam. Integer eget gravida erat. Vivamus efficitur eu lacus eu rutrum. Sed iaculis consequat erat, et dapibus arcu consequat at. Proin ullamcorper, felis non euismod porta, eros nulla tempus nunc, et condimentum urna mi eget magna. Integer bibendum pharetra pulvinar. Etiam nec lectus placerat, finibus orci id, laoreet quam. Quisque non augue vitae nulla fermentum maximus. Curabitur ut libero lorem. Nullam ultricies tellus quis tincidunt semper. Nulla ultrices, nulla vitae cursus finibus, urna urna lobortis metus, nec gravida enim odio sit amet arcu. Sed eu mattis sem, et vehicula eros.";
+        String s1 = "Nunc viverra libero non turpis euismod, imperdiet accumsan diam dignissim. Proin nec tincidunt nunc. Phasellus tristique erat ut leo volutpat dapibus eu in tortor. Morbi cursus ultricies nunc non laoreet. Ut fringilla vulputate risus, ut rhoncus lacus eleifend in. Nunc iaculis ornare est vel pulvinar. Vivamus ac ante commodo, malesuada augue pulvinar, eleifend odio. Vivamus eleifend dolor a erat varius, id porttitor nunc posuere. Nullam malesuada porttitor dolor vel sagittis. ";
+        String s2 = "Mauris feugiat eu arcu blandit lobortis. Cras efficitur viverra lacus, id elementum nulla. Cras lobortis purus congue sapien consequat placerat. Ut in arcu eget purus ullamcorper eleifend vitae vitae nunc. Pellentesque interdum dolor nibh, vitae efficitur dolor ullamcorper a. Mauris erat lacus, tristique ac dapibus nec, vehicula eu nunc. Cras vel hendrerit risus, vitae iaculis quam. Pellentesque cursus dui felis, eu scelerisque turpis feugiat a. Nam tincidunt velit at consectetur ornare. Etiam ultricies lacus at aliquet tempor. Suspendisse semper cursus orci id molestie. Aliquam id mauris nisi. Nullam lorem est, ullamcorper ac lectus vel, dapibus blandit tortor. Pellentesque a sollicitudin metus, ut dapibus libero.";
+        String s3 = "Morbi iaculis, ligula in accumsan ultrices, augue diam blandit augue, vitae aliquam justo sem in est. Mauris porta, mi eu porttitor aliquet, nisi velit feugiat diam, ut aliquam dui ante at mauris. Nullam id tortor metus. Suspendisse nec nisl et elit interdum iaculis non a nunc. Donec imperdiet dolor augue, ac sollicitudin risus fermentum id. Ut in purus convallis, luctus eros imperdiet, cursus tellus. Praesent eget gravida magna. In dui elit, sagittis at mollis eu, interdum eget purus. Fusce nunc risus, gravida nec massa quis, fermentum porttitor felis. Sed eleifend pretium cursus. Nullam vulputate tortor in lectus dapibus, eget feugiat felis volutpat. Phasellus dignissim feugiat porta. Nunc sed quam non turpis condimentum aliquam. Duis quam lacus, laoreet eu eros et, tristique tempor sem.";
+        String s4 = "Sed commodo mattis est, et semper libero dapibus id. Mauris vulputate augue lobortis lectus malesuada finibus. Nullam tempor tempor risus, et venenatis elit aliquet eget. Maecenas a scelerisque velit. Nulla rhoncus nunc sed sem feugiat faucibus. Maecenas non augue lorem. Nulla in magna vitae turpis porttitor laoreet. Ut ullamcorper in velit in laoreet. Fusce eleifend accumsan maximus. Integer vel est eros. Pellentesque mattis libero nunc, non posuere libero rhoncus a. Etiam malesuada enim et diam mattis malesuada vel quis quam. Vivamus feugiat maximus posuere. Vivamus molestie mauris mauris, a sodales nisi imperdiet nec.";
+
+        addProduct("Наволочка",s0, 400, company);
+        addProduct("Ботинок (левый)",s1, 700, company);
+        addProduct("Мокрый биткоин",s2, 275490, company);
+        addProduct("Ведро компрессии",s3, 27800, company);
+        addProduct("Бублик (без дырки)",s4, 40, company);
+        addProduct("Дырка (от бублика)", "o", 8, company);
+
+        printCountAll();
     }
 
-    private void addUserWithRole(String username,
-                         String rawPassword,
-                         String role,
-                         String email) {
-        User currentUser;
-        Role currentUserRole;
-        //Проверить существование пользователя
-        var userEntity = userRepository.findUserByUsername(username);
-        //Если нет - добавляем
-        if(userEntity.isEmpty()){
-            log.info("Пользователь {} не найден в базе", username);
-            currentUser = new User();
-            currentUser.setUsername(username);
-            currentUser.setPassword(passwordEncoder.encode(rawPassword));
-            currentUser.setEmail(email);
-            log.info("Создание новой учётной записи с именем {} и ролью {}", username, role);
-        }
-        //Если есть - тянем из базы
-        else{
-            currentUser = userEntity.get();
-            log.info("Пользователь {} уже присутствует в базе", username);
-        }
+    private Product addProduct(String name, String description, Integer price, Company company) {
 
-        //Проверить роль
-        var roleEntity = roleRepository.findByName(role);
-        //Если такой роли ещё нет - добавляем
-        if(roleEntity.isEmpty())
-        {
-            log.info("Роль {} не найдена в базе", role);
-            currentUserRole = new Role();
-            currentUserRole.setName(role);
-            roleRepository.save(currentUserRole);
-            log.info("Роль {} добавлена в базу", role);
-        }
-        else{
-            currentUserRole = roleEntity.get();
-            log.info("Роль {} уже присутствует в базе", currentUserRole.getName());
-        }
+        var addedProduct = productService.findByName(name).orElseGet(()->{
+            var nProduct = new Product();
+            nProduct.setName(name);
+            nProduct.setDescription(description);
+            nProduct.setPrice(price);
+            nProduct.setCompany(company);
+            return productService.addProduct(nProduct).orElseThrow();
+        });
+        log.info("Добавлен Product {}", addedProduct.getName());
+        return addedProduct;
+    }
+    private Company addCompanyWitchUserAndRoleInfo(String companyName, String identifier, User user) {
 
+        var company = companyService.findByName(companyName).orElseGet(()->{
+            Company nCompany = new Company();
+            nCompany.setUser(user);
+            nCompany.setIdentifier(identifier);
+            nCompany.setName(companyName);
+            return companyService.addCompany(nCompany).orElseThrow();
+        });
+        log.info("Добавлен Company {}", company);
+        return company;
+    }
+    private Person addPersonWitchUserAndRoleInfo(String name, String surname, LocalDate birthdate, User user) {
 
-        if(!currentUser.getRoles().contains(currentUserRole))
-        {
-            log.info("У пользователя {} отсутствует роль {}. Добавление роли.",username, role);
-            var setRoles = currentUser.getRoles();
-            setRoles.add(currentUserRole);
-            currentUser.setRoles(setRoles);
-            log.info("Роль добавлена");
-        }
+        var person = personService.findByName(name).orElseGet(()->{
+            Person nPerson = new Person();
+            nPerson.setUser(user);
+            nPerson.setName(name);
+            nPerson.setSurname(surname);
+            nPerson.setBirthDate(birthdate);
+            return personService.addPerson(nPerson).orElseThrow();
+        });
+        log.info("Добавлен Person {}", person);
+        return person;
+    }
+    private User addUserWithRole(String username, String rawPassword, String email, Role role) {
+        User user = userService.findByUsername(username)
+                .orElseGet(
+                        ()-> {
+                            User nUser = new User();
+                            nUser.setUsername(username);
+                            nUser.setPassword(passwordEncoder.encode(rawPassword));
+                            nUser.setEmail(email);
+                            nUser.setRole(role);
+                            return userService.addUser(nUser).orElseThrow();
+                        });
+        log.info("Добавлен User {}", user);
+        return user;
+    }
+    private Role addRole(String roleName){
+        //Ищем уже имеющуюся роль или добавляем новую или копаемся в ошибках...
+        var role = roleService.findByName(roleName)
+                .orElseGet(
+                        ()-> roleService.addRole(new Role(roleName))
+                                .orElseThrow()
+                );
 
-        userRepository.save(currentUser);
-        log.info("Данные базы обновлены. Пользователь {}, с ролью {}", username, role);
+        log.info("Добавлен Role {}", role.getName());
+        return role;
+    }
+
+    private void printCountAll(){
+        log.info("Количество записей в таблицах.");
+        log.info("Role: {}", roleService.getCount());
+        log.info("User: {}", userService.getCount());
+        log.info("Person: {}", personService.getCount());
+        log.info("Company: {}", companyService.getCount());
+        log.info("Product: {}", productService.getCount());
+    }
+    private void ClearAllTables(){
+        roleService.ClearTable();
+        userService.ClearTable();
+        personService.ClearTable();
+        companyService.ClearTable();
+        productService.ClearTable();
     }
 }

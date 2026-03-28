@@ -5,10 +5,9 @@
         <header th:insert="~{fragments/header::header}"></header>
         <main>
             <ul th:if="${user != null}">
-                <li>Имя: <span th:text="${user.name}"></span></li>
-                <li>Фамилия: <span th:text="${user.surname}"></span></li>
-                <li>Почтовый ящик: <span th:text="${user.email}"></span></li>
-                <li>Роль: <span th:text="${user.getRoles()}"></span></li>
+                <li>Логин: <span th:text="${user.getUsername()}"></span></li>
+                <li>Почтовый ящик: <span th:text="${user.getEmail()}"></span></li>
+                <li>Роль: <span th:text="${user.getRole().name}"></span></li>
             </ul>
             <div th:unless="${user != null}">
                 <p th:text="message"></p>

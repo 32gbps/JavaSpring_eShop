@@ -1,11 +1,14 @@
 package homework.javaspring_model.Repositories;
 
-import homework.javaspring_model.Models.Product.ProductEntity;
+import homework.javaspring_model.Models.Product.Product;
+import homework.javaspring_model.Models.User.Role;
+import org.jspecify.annotations.NonNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
-public interface ProductRepository  extends JpaRepository<ProductEntity, Long> {
-    @Override
-    boolean existsById(Long aLong);
+public interface ProductRepository  extends JpaRepository<@NonNull Product, @NonNull Long> {
+    Optional<Product> findByName(String name);
 }

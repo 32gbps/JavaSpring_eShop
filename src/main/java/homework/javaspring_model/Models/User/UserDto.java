@@ -1,4 +1,4 @@
-package homework.javaspring_model.Models;
+package homework.javaspring_model.Models.User;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -13,7 +13,9 @@ import lombok.Data;
 @AllArgsConstructor
 @Schema(description = "Пользователь")
 public class UserDto {
-    private String name;
+    @Size(min = 8, max = 32)
+    @NotBlank
+    private String username;
 
     @Schema(description = "&quot;Электронная почта&quot;, example = &quot;junior@example.com&quot;")
     @Email
