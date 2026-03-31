@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ru">
-<head th:replace="fragments/head :: head(${productData.getName()})"></head>
+<head th:replace="fragments/head :: head(${productData.name})"></head>
 <body>
 <header th:insert="~{fragments/header::header}"></header>
 <main>
@@ -24,7 +24,7 @@
             </div>
             <div>
                 <label for="Product-Price">Цена</label>
-                <span id="Product-Price" th:value="${productData.getPrice()}">12345</span>
+                <span id="Product-Price" th:text="${productData.price}">12345</span>
                 <span id="Product-Price-Valute-Sign">Р</span>
             </div>
             <button>Купить</button> <!-- Добавить обработчик -->
@@ -34,7 +34,7 @@
     <div id="Product-FullInfo-container">
         <h2>Описание</h2>
         <div id="Product-Description-container">
-            <span th:value="${productData.getDescription()}">
+            <span th:text="${productData.description}">
                 *Description*
             </span>
         </div>

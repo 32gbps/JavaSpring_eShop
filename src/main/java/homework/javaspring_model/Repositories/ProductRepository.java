@@ -4,6 +4,7 @@ import homework.javaspring_model.Models.Product.Product;
 import homework.javaspring_model.Models.User.Role;
 import org.jspecify.annotations.NonNull;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;

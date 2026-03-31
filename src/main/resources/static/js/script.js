@@ -1,16 +1,16 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // Инициализация обработчиков событий
-    var form = document.getElementById('getById-form');
-    if(form == null)
-        return;
-    form.addEventListener('submit', function(event) {
-        event.preventDefault();
-        getClothesById();
-    });
-    document.getElementById('deleteById-button').addEventListener('click', deleteClothesById);
-    document.getElementById('editById-button').addEventListener('click', editClothes);
-    document.getElementById('addClothes-button').addEventListener('click', addClothes);
-});
+// document.addEventListener('DOMContentLoaded', function() {
+//     // Инициализация обработчиков событий
+//     var form = document.getElementById('getById-form');
+//     if(form == null)
+//         return;
+//     form.addEventListener('submit', function(event) {
+//         event.preventDefault();
+//         getClothesById();
+//     });
+//     document.getElementById('deleteById-button').addEventListener('click', deleteClothesById);
+//     //document.getElementById('editById-button').addEventListener('click', editClothes);
+//     document.getElementById('addProduct-button').addEventListener('click', addProduct);
+// });
 
 function getClothesById() {
     let idInput = document.getElementById('table-form-input-id');
@@ -88,24 +88,20 @@ function editClothes() {
                 showClothesProperties(json.data);
         });
 }
-function addClothes() {
+function addProduct() {
     // Собираем данные из формы
-    const clothesData = {
-        id: document.getElementById('input-id').value,
+    const productData = {
         name: document.getElementById('input-name').value,
-        type: document.getElementById('input-type').value,
-        size: document.getElementById('input-size').value,
-        color: document.getElementById('input-color').value,
-        brand: document.getElementById('input-brand').value,
+        description: document.getElementById('input-description').value,
         price: document.getElementById('input-price').value
     };
 
-    fetch('/api/clothes/addClothes', {
+    fetch('/api/product/addProduct', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'  // Важно!
         },
-        body: JSON.stringify(clothesData)  // Преобразуем в JSON
+        body: JSON.stringify(productData)  // Преобразуем в JSON
     })
         .then(response => response.json())
         .then(json => {

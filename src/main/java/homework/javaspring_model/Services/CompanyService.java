@@ -19,6 +19,9 @@ public class CompanyService {
     public Optional<Company> findByName(String name){
         return companyRepository.findByName(name);
     }
+    public Optional<Company> findByUsername(String name){
+        return companyRepository.findByUsername(name);
+    }
     public Optional<Company> addCompany(Company company){
         try{
             return Optional.of(companyRepository.save(company));

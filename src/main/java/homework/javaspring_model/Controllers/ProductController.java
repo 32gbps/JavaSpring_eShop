@@ -1,5 +1,6 @@
 package homework.javaspring_model.Controllers;
 
+import homework.javaspring_model.Models.Product.ProductDto;
 import homework.javaspring_model.Services.ProductService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -54,9 +55,10 @@ public class ProductController {
                 return "redirect:/";
             }
 
-            var product = productService.getProductById(id);
+            var product = productService.findById(id).orElseThrow();
 
-            model.addAttribute("productData", product);
+            model.addAttribute("productData", new ProductDto(product));
+
             return "productDetail";
         } catch (Exception e) {
             model.addAttribute("message", "Внутренняя ошибка при запросе товара");

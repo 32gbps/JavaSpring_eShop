@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="ru">
     <head th:replace="fragments/head :: head('Панель администратора')"></head>
     <body>
-    <header th:insert="~{fragments/header::header}"></header>
+        <header th:insert="~{fragments/header::header}"></header>
         <main>
         <!-- Messages -->
         <div class="messageOut">
@@ -17,68 +17,45 @@
             </form>
         </div>
         <!-- editForm -->
-<!--        <div class="content">-->
-<!--            <form class="table-form-adm" id="editForm" method="post">-->
-<!--                <div class="col">-->
-<!--                    <div class="row">-->
-<!--                        <div class="table-column-admin column-id">-->
-<!--                            &lt;!&ndash;<label for="input-name"></label>&ndash;&gt;-->
-<!--                            <input id="input-id" name="id" type="text" placeholder="ID">-->
-<!--                        </div>-->
-<!--                        <div class="table-column-admin column-name">-->
-<!--                            &lt;!&ndash;<label for="input-name"></label>&ndash;&gt;-->
-<!--                            <input id="input-name" name="name" type="text" placeholder="Название">-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    <div class="row">-->
-<!--                        <div class="table-column-admin column-type">-->
-<!--                            &lt;!&ndash;<label class="" for="input-type">Тип</label>&ndash;&gt;-->
-<!--                            <select class="" id="input-type" name="type">-->
-<!--                                <option value=""> &#45;&#45; Выберите тип &#45;&#45; </option>-->
-<!--                                <option th:each="ltype : ${T(homework.javaspring_model.Models.ClothesType).values()}"-->
-<!--                                        th:value="${ltype.getDisplayName()}"-->
-<!--                                        th:text="${ltype.displayName}">-->
-<!--                                </option>-->
-<!--                            </select>-->
-<!--                        </div>-->
-<!--                        <div class="table-column-admin column-size">-->
-<!--                            &lt;!&ndash;<label class="" for="input-size">Размер</label>&ndash;&gt;-->
-<!--                            <select class="" id="input-size" name="size">-->
-<!--                                <option value="" selected>&#45;&#45; размер &#45;&#45;</option>-->
-<!--                                <option value="XS">XS</option>-->
-<!--                                <option value="S">S</option>-->
-<!--                                <option value="M">M</option>-->
-<!--                                <option value="L">L</option>-->
-<!--                                <option value="XL">XL</option>-->
-<!--                                <option value="XXL">XXL</option>-->
-<!--                            </select>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    <div class="row">-->
-<!--                        <div class="table-column-admin column-color">-->
-<!--                            &lt;!&ndash;<label class="" for="input-color">Цвет</label>&ndash;&gt;-->
-<!--                            <input class="" id="input-color" name="color" type="text" placeholder="Цвет">-->
-<!--                        </div>-->
-<!--                        <div class="table-column-admin column-brand">-->
-<!--                            &lt;!&ndash;<label class="" for="input-brand">Фирма</label>&ndash;&gt;-->
-<!--                            <input class="" id="input-brand" name="brand" type="text" placeholder="Фирма">-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    <div class="row">-->
-<!--                        <div class="table-column-admin column-price">-->
-<!--                            &lt;!&ndash;<label class="" for="input-price">Цена</label>&ndash;&gt;-->
-<!--                            <input class="" id="input-price" name="price" type="number" min="0" step="0.01" placeholder="Цена">-->
-<!--                        </div>-->
-<!--                        <div class="table-column-admin column-action">-->
-<!--                            <button class="" id="addClothes-button" type="button">Добавить</button>-->
-<!--                        </div>-->
-<!--                        <div class="table-column-admin column-action">-->
-<!--                            <button class="" id="editById-button" type="button">Обновить</button>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </form>-->
-<!--        </div>-->
+        <div class="content">
+            <form class="table-form-adm" id="editForm" method="post">
+                <div class="col">
+                    <div class="row">
+                        <!--
+                        <div class="table-column-admin column-id">
+                            <label for="input-name"></label>
+                            <input id="input-id" name="id" type="text" placeholder="ID">
+                        </div>
+                        -->
+                        <div class="table-column-admin column-name">
+                            <!--<label for="input-name"></label>-->
+                            <input id="input-name" name="name" type="text" placeholder="Название">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="table-column-admin column-size">
+                            <!--<label class="" for="input-size">Размер</label>-->
+                            <textarea class="" id="input-description" placeholder="Описани товара">
+                            </textarea>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="table-column-admin column-price">
+                            <!--<label class="" for="input-price">Цена</label>-->
+                            <input class="" id="input-price" name="price" type="number" min="0" step="1" placeholder="Цена">
+                        </div>
+                        <div class="table-column-admin column-action">
+                            <button class="" id="addProduct-button" type="button">Добавить</button>
+                        </div>
+                        <!--
+                        <div class="table-column-admin column-action">
+                            <button class="" id="editById-button" type="button">Обновить</button>
+                        </div>
+                        -->
+                    </div>
+                </div>
+            </form>
+        </div>
     </main>
         <footer>
         </footer>

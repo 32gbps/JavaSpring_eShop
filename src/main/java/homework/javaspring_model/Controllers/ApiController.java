@@ -3,8 +3,12 @@ package homework.javaspring_model.Controllers;
 import homework.javaspring_model.Models.ApiResponse;
 import homework.javaspring_model.Models.Product.Product;
 import homework.javaspring_model.Models.Product.ProductDto;
+import homework.javaspring_model.Services.CompanyService;
 import homework.javaspring_model.Services.ProductService;
+import homework.javaspring_model.Services.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +24,8 @@ import java.util.concurrent.atomic.AtomicReference;
 @RequestMapping("/api/product")
 public class ApiController {
     private final ProductService Service;
+    private final CompanyService Companies;
+    private final UserService Users;
 
     @GetMapping("/getProductById/{id}")
     public ResponseEntity<?> getById(@PathVariable Long id) {
@@ -32,14 +38,13 @@ public class ApiController {
             Service.findById(id).ifPresentOrElse(p->{
                         dto.set(new ProductDto(p));
                         status.set("success");
-                        message.set("Предмет успешно удалён!");
                     },
                     () -> {
                         status.set("fail");
                         message.set("Товар с данным ID не найден!");
                     });
             // Успешный ответ с сообщением
-            response = new ApiResponse(status.get(), message.get());
+            response = new ApiResponse(status.get(), message.get(),dto.get());
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
@@ -74,19 +79,23 @@ public class ApiController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
-    @PostMapping(value = "/addProduct")
-    public ResponseEntity<?> addClothes(@RequestBody ProductDto dto) {
+    @PostMapping("/addProduct")
+    public ResponseEntity<?> addClothes(@RequestBody ProductDto productDto) {
         try {
             AtomicReference<String> status = new AtomicReference<>("");
             AtomicReference<String> message = new AtomicReference<>("");
             ApiResponse response;
-
-            Service.findByName(dto.getName()).ifPresentOrElse(p->{
+            //TODO: Реализовать бэк для добавления товара с фронта: 1. Связывание товара с компанией, которая прислала товар.
+            Service.findByName(productDto.getName()).ifPresentOrElse(p->{
                         status.set("fail");
                         message.set("Товар с таким названием уже существует!");
                     },
                     () -> {
-                        Service.addProduct(new Product(dto)).orElseThrow();
+                        var username = "company";
+                        var company = Companies.findByUsername(username);
+                        var product = new Product(productDto);
+                        product.setCompany(company.orElseThrow());
+                        Service.addProduct(product).orElseThrow();
                         status.set("success");
                         message.set("Предмет успешно добавлен!");
                     });

@@ -1,19 +1,48 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ru">
-    <head th:replace="fragments/head :: head('Профиль пользователя')"></head>
-    <body>
-        <header th:insert="~{fragments/header::header}"></header>
-        <main>
-            <ul th:if="${user != null}">
-                <li>Логин: <span th:text="${user.getUsername()}"></span></li>
-                <li>Почтовый ящик: <span th:text="${user.getEmail()}"></span></li>
-                <li>Роль: <span th:text="${user.getRole().name}"></span></li>
-            </ul>
-            <div th:unless="${user != null}">
-                <p th:text="message"></p>
+<head th:replace="fragments/head :: head('Профиль пользователя')"></head>
+<body>
+<header th:insert="~{fragments/header::header}"></header>
+<main>
+    <ul th:if="${user != null}">
+        <li>Логин: <span th:text="${user.getUsername()}"></span></li>
+        <li>Почтовый ящик: <span th:text="${user.getEmail()}"></span></li>
+        <li>Роль: <span th:text="${user.getRole().name}"></span></li>
+    </ul>
+    <div th:unless="${user != null}">
+        <p th:text="message"></p>
+    </div>
+    <!-- Messages -->
+    <div class="messageOut">
+        <span id="messageOut-span"></span>
+    </div>
+    <!-- editForm -->
+    <div class="content">
+        <form class="table-form-adm" id="addProductForm" method="post">
+            <div class="col">
+                <div class="row">
+                    <div class="table-column-admin column-name">
+                        <input id="input-name" name="name" type="text" placeholder="Название">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="table-column-admin column-size">
+                                <textarea class="" id="input-description"></textarea>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="table-column-admin column-price">
+                        <input class="" id="input-price" name="price" type="number" min="0" step="1" placeholder="Цена">
+                    </div>
+                    <div class="table-column-admin column-action">
+                        <button class="" id="addProduct-button" onclick="addProduct()" type="button">Добавить</button>
+                    </div>
+                </div>
             </div>
-        </main>
-        <footer>
-        </footer>
-    </body>
+        </form>
+    </div>
+</main>
+<footer>
+</footer>
+</body>
 </html>
