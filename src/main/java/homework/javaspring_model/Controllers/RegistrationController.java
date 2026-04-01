@@ -19,12 +19,14 @@ public class RegistrationController {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public RegistrationController(UserRepository userRepository,
                                   RoleRepository roleRepository,
                                   PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping("/register")
@@ -43,16 +45,6 @@ public class RegistrationController {
                         "Пользователь с таким логином уже существует");
                 return "redirect:/register";
             }
-
-            // Создаем пользователя
-//            User user = new User();
-//            user.setUsername(dto.getUsername());
-//            user.setPassword(passwordEncoder.encode(dto.getPassword()));
-//            user.setEmail(dto.getEmail());
-//            user.setName(dto.getName());
-//            user.setSurname(dto.getSurname());
-//            user.setEnabled(true);
-
             // Получаем или создаем роль USER
             Role userRole = roleRepository.findByName("USER")
                     .orElseGet(() -> {
@@ -62,7 +54,7 @@ public class RegistrationController {
                     });
 
             user.setRoles(Set.of(userRole));
-
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
             userRepository.save(user);
 
             redirectAttributes.addFlashAttribute("success",
