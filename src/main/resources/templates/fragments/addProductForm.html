@@ -1,0 +1,27 @@
+<div th:fragment="addProductForm">
+    <!-- editForm -->
+    <div class="content">
+        <form class="table-form-adm" id="addProductForm" method="post">
+            <div class="col">
+                <div class="row">
+                    <div class="table-column-admin column-name">
+                        <input id="input-name" name="name" type="text" placeholder="Название">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="table-column-admin column-size">
+                        <textarea class="" id="input-description"></textarea>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="table-column-admin column-price">
+                        <input class="" id="input-price" name="price" type="number" min="0" step="1" placeholder="Цена">
+                    </div>
+                    <div class="table-column-admin column-action">
+                        <button class="" id="addProduct-button" onclick="addProduct()" type="button">Добавить</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

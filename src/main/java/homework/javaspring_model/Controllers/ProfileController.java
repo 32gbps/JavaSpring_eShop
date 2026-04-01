@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Objects;
+
 
 @Controller
 @AllArgsConstructor
@@ -40,10 +42,13 @@ public class ProfileController {
     public String getProfile(@AuthenticationPrincipal UserDetails userDetails, Model model) {
         try {
             var currentUser = userService.findByUsername(userDetails.getUsername());
-            if (currentUser.isPresent())
-                model.addAttribute("user", currentUser.get());
-            else
+            currentUser.ifPresentOrElse(p->{
+                model.addAttribute("user", p);
+                if(Objects.equals(p.getRole().getName(), "COMPANY"))
+                    model.addAttribute("isAddProductFormActive", true);
+            }, ()->{
                 model.addAttribute("message", "Данные пользователя не найдены");
+                    });
             return "profile";
         } catch (Exception e) {
             model.addAttribute("message", "Непредвиденная ошибка!");
