@@ -2,7 +2,6 @@
 <nav th:fragment="header" id="nav-header" class="header-navigation">
     <div id="block-logo">
         <a class="navbar-brand">
-            <!-- *Origin* <img th:src="logo.png" alt="logo" class="d-inline-block align-text-top"> -->
             <img th:src="@{/logo.png}" id="header-logo" alt="logo">
         </a>
     </div>
@@ -12,12 +11,25 @@
             <li><a th:href="@{/product}" th:text="#{menu.product}">Товары</a></li>
         </ul>
     </div>
-    <div id="block-profile" class="hideble-list">
-        <ul class="v-list">
-            <li class="active"><a th:href="@{/profile}" th:text="#{menu.profile}">Профиль</a></li>
-            <li><a th:href="@{/adminPanel}" th:text="#{menu.adminPanel}">Админ</a></li>
-            <li><hr></li>
-            <li><a th:href="@{/logout}">Выход</a></li>
-        </ul>
+    <div id="header-buttons" class="header-buttons">
+        <div id="header-buttons-wishlist" class="header-button">
+            <a th:href="@{/profile/wishlist}">
+                <span></span>
+                <span>Избранное</span>
+            </a>
+        </div>
+        <div id="header-buttons-cart" class="header-button">
+            <a th:href="@{/cart}">
+                <span></span>
+                <span>Корзина</span>
+            </a>
+        </div>
+        <div id="header-buttons-account" class="hideble-list header-button">
+            <ul class="v-list">
+                <li class="active"><a th:href="@{/profile}" th:text="#{menu.profile}">Профиль</a></li>
+                <li><hr></li>
+                <li><a th:href="@{/logout}">Выход</a></li>
+            </ul>
+        </div>
     </div>
 </nav>

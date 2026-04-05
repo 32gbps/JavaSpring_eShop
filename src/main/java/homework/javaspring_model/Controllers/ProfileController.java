@@ -1,9 +1,12 @@
 package homework.javaspring_model.Controllers;
 
 import homework.javaspring_model.Config.DatabaseInitializer;
+import homework.javaspring_model.Models.Product.Product;
+import homework.javaspring_model.Models.Product.ProductDto;
 import homework.javaspring_model.Models.User.Role;
 import homework.javaspring_model.Models.User.User;
 import homework.javaspring_model.Models.User.UserDto;
+import homework.javaspring_model.Services.PersonService;
 import homework.javaspring_model.Services.RoleService;
 import homework.javaspring_model.Services.UserService;
 import jakarta.annotation.security.RolesAllowed;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 
@@ -27,6 +31,7 @@ import java.util.Objects;
 public class ProfileController {
     private final RoleService roleService;
     private final UserService userService;
+    private final PersonService personService;
     private static final Logger log = LoggerFactory.getLogger(DatabaseInitializer.class);
 
     @GetMapping("/login")
@@ -46,6 +51,10 @@ public class ProfileController {
                 model.addAttribute("user", p);
                 if(Objects.equals(p.getRole().getName(), "COMPANY"))
                     model.addAttribute("isAddProductFormActive", true);
+                else if(Objects.equals(p.getRole().getName(), "PERSON")){
+                    ArrayList<Product> orders = new ArrayList<>();
+                    model.addAttribute("OrdersList", orders);
+                }
             }, ()->{
                 model.addAttribute("message", "Данные пользователя не найдены");
                     });
@@ -108,6 +117,26 @@ public class ProfileController {
             redirectAttributes.addFlashAttribute("error",
                     "Ошибка при регистрации: " + e.getMessage());
             return "redirect:/register";
+        }
+    }
+    @GetMapping("/profile/wishlist")
+    public String getProductInfo(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+        try {
+            ArrayList<ProductDto> wishlist = new ArrayList<>();
+            personService.findByUsername(userDetails.getUsername()).ifPresentOrElse(person -> {
+                person.getProducts().forEach(product -> {
+                    wishlist.add(new ProductDto(product));
+                });
+            }, ()->{
+                model.addAttribute("message", "Внутренняя ошибка: Список желаемого не найден");
+            });
+
+            model.addAttribute("wishlist", wishlist);
+
+            return "wishlist";
+        } catch (Exception e) {
+            model.addAttribute("message", "Внутренняя ошибка при запросе товара");
+            return "redirect:/";
         }
     }
 }

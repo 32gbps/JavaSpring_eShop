@@ -13,6 +13,11 @@ import lombok.Data;
 @AllArgsConstructor
 @Schema(description = "Пользователь")
 public class UserDto {
+    public UserDto(User user){
+        this.username = user.getUsername();
+        this.password = user.getPassword();
+        this.email = user.getEmail();
+    }
     @Size(min = 8, max = 32)
     @NotBlank
     private String username;

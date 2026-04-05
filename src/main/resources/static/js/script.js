@@ -11,29 +11,24 @@
 //     //document.getElementById('editById-button').addEventListener('click', editClothes);
 //     document.getElementById('addProduct-button').addEventListener('click', addProduct);
 // });
-
-function getClothesById() {
-    let idInput = document.getElementById('table-form-input-id');
-    console.log(idInput);
-    let idValue = idInput.value.trim();
-
-    // Если поле не заполнено, не добавляем параметр
+function getProductById(idValue){
     if (idValue !== '') {
         let id = parseInt(idValue, 10);
 
         if (isNaN(id) || id < 0) {
-            alert('ID должен быть положительным числом');
             return;
         }
 
-        let url = `/api/clothes/getClothesById?id=${id}`;
+        let url = `/api/product/getProductById/${id}`;
 
-        fetch(url)
-            .then(response => response.json())
-            .then(json => {
-                printMessage(json.message,json.status);
-                showClothesProperties(json.data);
-            });
+        return fetch(url);
+            // .then(response => response.json())
+            // .then(json => {
+            //     if(json.status === 'success')
+            //         return json.data;
+            //     else
+            //         throw new Error(json.message);
+            // });
     }
 }
 function deleteClothesById() {
@@ -239,6 +234,108 @@ function getReviewCard(reviewData){
             </div>
         </div>`;
 }
+//=============================Shopping cart============================================
+const CART_KEY = 'shopping_cart';
+
+// Получить корзину (всегда возвращает массив)
+function getCart() {
+    const cart = localStorage.getItem(CART_KEY);
+    return cart ? JSON.parse(cart) : [];
+}
+
+// Сохранить корзину
+function saveCart(cart) {
+    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+}
+
+// Добавить или удалить товар
+function toggleProduct(productId) {
+    let cart = getCart();
+    const index = cart.indexOf(productId);
+
+    if (index === -1) {
+        // Товара нет - добавляем
+        cart.push(productId);
+        console.log(`Товар ${productId} добавлен в корзину`);
+    } else {
+        // Товар есть - удаляем
+        cart.splice(index, 1);
+        console.log(`Товар ${productId} удален из корзины`);
+    }
+
+    saveCart(cart);
+    //updateCartUI(); // Обновляем UI
+}
+
+// Проверить, есть ли товар в корзине
+function isInCart(productId) {
+    const cart = getCart();
+    return cart.includes(productId);
+}
+//==================================================================================
+//=============================Wishlist============================================
+function initWishlist() {
+    try {
+        let cart = getCart();
+        let container = document.getElementById('wishlist-catalog');
+        if(container == null)
+            return;
+
+        cart.forEach(c => {
+            let productData = getProductById(c);
+            productData
+                .then(response => response.json())
+                .then(json => {
+                    if(json.status === 'success'){
+                        const widget = getProductWidget(json.data);
+                        container.appendChild(widget);
+                    }
+                    else
+                        console.log(json.message);
+                });
+        })
+    }
+    catch (e) {
+        console.log(e);
+    }
+}
+function getProductWidget(productData) {
+    const div = document.createElement('div');
+    div.className = 'catalog-product-widget';
+    div.innerHTML = `
+        <div class="block-major-view">
+            <div class="block-minor-view">
+                <img src="#" alt="productPhoto">
+            </div>
+        </div>
+        <div class="block-major-info">
+            <div class="block-minor-info">
+                <span>${escapeHtml(productData.name)}</span>
+            </div>
+        </div>
+        <div class="block-major-price">
+            <div class="block-minor-price">
+                <span>${productData.price} ₽</span>
+            </div>
+            <div class="block-minor-price">
+                <button class="buy-btn" data-id="${productData.id}">Купить</button>
+            </div>
+        </div>
+    `;
+    return div;
+}
+
+// Функция для защиты от XSS
+function escapeHtml(str) {
+    if (!str) return '';
+    return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+//=================================================================================
 function showComments(reviewId){
     let revDiv = document.getElementById(`review-id-${reviewId}`);
     //===

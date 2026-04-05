@@ -4,20 +4,38 @@
 <body>
 <header th:insert="~{fragments/header::header}"></header>
 <main>
-    <ul th:if="${user != null}">
-        <li>Логин: <span th:text="${user.getUsername()}"></span></li>
-        <li>Почтовый ящик: <span th:text="${user.getEmail()}"></span></li>
-        <li>Роль: <span th:text="${user.getRole().name}"></span></li>
-    </ul>
-    <div th:unless="${user != null}">
-        <p th:text="message"></p>
-    </div>
-    <!-- Messages -->
-    <div class="messageOut">
-        <span id="messageOut-span"></span>
+    <div class="content" th:if="${user != null}">
+
+        <!--/*@thymesVar id="MODERATOR" type="homework"*/-->
+        <div class="content-container" th:if="${user.getRole().getName() == 'MODERATOR' || user.getRole().getName() == 'ADMIN'}">
+            <nav class="header-navigation controlPanel">
+                <div th:replace="fragments/controlPanelModerator"></div>
+            </nav>
+        </div>
+        <div class="content-container" th:unless="${user.getRole().getName() == 'MODERATOR' || user.getRole().getName() == 'ADMIN'}">
+            <nav class="header-navigation controlPanel">
+                <div th:replace="fragments/controlPanelUser"></div>
+            </nav>
+        </div>
+        <!-- Messages -->
+        <div th:if="${message != null}">
+            <p th:text="message"></p>
+        </div>
+        <div class="messageOut">
+            <span id="messageOut-span"></span>
+        </div>
+        <ul>
+            <li>Логин: <span th:text="${user.getUsername()}"></span></li>
+            <li>Почтовый ящик: <span th:text="${user.getEmail()}"></span></li>
+            <li>Роль: <span th:text="${user.getRole().name}"></span></li>
+        </ul>
     </div>
     <div th:if="${isAddProductFormActive != null && isAddProductFormActive == true}">
         <div th:replace="fragments/addProductForm"></div>
+    </div>
+    <!--/*@thymesVar id="OrdersList" type="homework"*/-->
+    <div th:if="${OrdersList != null}">
+        <div th:replace="fragments/orders(OrdersList)"></div>
     </div>
 </main>
 <footer>

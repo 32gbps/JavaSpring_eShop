@@ -2,6 +2,7 @@ package homework.javaspring_model.Controllers;
 
 import homework.javaspring_model.Models.Product.ProductDto;
 import homework.javaspring_model.Services.ProductService;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,16 +11,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
+@AllArgsConstructor
 @RequestMapping("/product")
 public class ProductController {
     private final ProductService productService;
     private static final int DEFAULT_PAGE = 0;  // Страницы с 0
     private static final int DEFAULT_SIZE = 10; // 10 элементов на странице
 
-
-    public ProductController(ProductService productService) {
-        this.productService = productService;
-    }
     @GetMapping(value = "/list", params = {"page", "size"})
     public String getProducts(@RequestParam Integer page,
                               @RequestParam Integer size,

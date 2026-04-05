@@ -1,0 +1,18 @@
+<div th:fragment="orders(OrdersList)">
+    <table class="table-product">
+        <thead class="table-header">
+        <tr>
+            <th class="table-column column-name">Название</th>
+            <th class="table-column column-price">Цена</th>
+            <th class="table-column column-action">Действие</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item : ${OrdersList}">
+            <td class="table-column column-name" ><a th:href="@{/product/{id}(id=${item.id})}" th:text="${item.name}">Название товара</a></td>
+            <td class="table-column column-price" th:text="${item.price}">123.45</td>
+            <td class="table-column column-action">*reserved*</td>
+        </tr>
+        </tbody>
+    </table>
+</div>

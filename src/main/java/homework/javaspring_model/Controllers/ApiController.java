@@ -5,18 +5,11 @@ import homework.javaspring_model.Models.Product.Product;
 import homework.javaspring_model.Models.Product.ProductDto;
 import homework.javaspring_model.Services.CompanyService;
 import homework.javaspring_model.Services.ProductService;
-import homework.javaspring_model.Services.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicReference;
 
 @AllArgsConstructor
@@ -25,7 +18,6 @@ import java.util.concurrent.atomic.AtomicReference;
 public class ApiController {
     private final ProductService Service;
     private final CompanyService Companies;
-    private final UserService Users;
 
     @GetMapping("/getProductById/{id}")
     public ResponseEntity<?> getById(@PathVariable Long id) {
@@ -80,7 +72,7 @@ public class ApiController {
         }
     }
     @PostMapping("/addProduct")
-    public ResponseEntity<?> addClothes(@RequestBody ProductDto productDto) {
+    public ResponseEntity<?> addProduct(@RequestBody ProductDto productDto) {
         try {
             AtomicReference<String> status = new AtomicReference<>("");
             AtomicReference<String> message = new AtomicReference<>("");

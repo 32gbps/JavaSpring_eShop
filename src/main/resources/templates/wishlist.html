@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+    <head th:replace="fragments/head :: head('Список желаемого')"></head>
+    <body onload="initWishlist()">
+        <header th:insert="~{fragments/header::header}"></header>
+        <main>
+            <div id="wishlist-catalog" class="catalog">
+
+            </div>
+        </main>
+        <footer>
+        </footer>
+    </body>
+</html>

@@ -4,11 +4,15 @@
 <body>
 <header th:insert="~{fragments/header::header}"></header>
 <main>
+    <!-- Messages -->
+    <div class="messageOut">
+        <span id="messageOut-span"></span>
+    </div>
     <!--Краткое инфо о товаре-->
     <div id="Product-ShortInfo-container">
         <!-- Фото товара -->
         <div id="Product-Photo-container">
-            <img src="PhotoIconTemplate.png" alt="PhotoTemplate">
+            <img th:src="@{/PhotoIconTemplate.png}" alt="PhotoTemplate">
         </div>
         <!--Характеристики-->
         <div id="Product-ShortParameters-container">
@@ -22,12 +26,25 @@
                     <hr>
                 </div>
             </div>
-            <div>
-                <label for="Product-Price">Цена</label>
-                <span id="Product-Price" th:text="${productData.price}">12345</span>
-                <span id="Product-Price-Valute-Sign">Р</span>
+            <div class="actionBar product-buy-action">
+                <div class="flex-container">
+                    <label class="p3" for="Product-Price">Цена</label>
+                    <span class="p3" id="Product-Price" th:text="${productData.price}">12345</span>
+                    <span class="p3" id="Product-Price-Valute-Sign">Р</span>
+                </div>
+                <div class="flex-container">
+                    <div class="flex-container">
+                        <button id="btn-wishlist" th:onclick="|toggleProduct(${productData.id})|">
+                            <svg th:replace="~{fragments/icons/wishlist_icon :: wishlist_icon}"></svg>
+                        </button>
+                    </div>
+                    <div class="flex-container">
+                        <!-- TODO: Добавить обработчик -->
+                        <!--Добавление в корзину-->
+                        <button id="btn-buyProduct" th:onclick="|toggleProduct(${productData.id})|">Купить</button>
+                    </div>
+                </div>
             </div>
-            <button>Купить</button> <!-- Добавить обработчик -->
         </div>
     </div>
     <!--Полная информация о товаре-->

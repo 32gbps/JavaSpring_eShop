@@ -1,5 +1,6 @@
 package homework.javaspring_model.Services;
 
+import homework.javaspring_model.Models.User.Company.Company;
 import homework.javaspring_model.Models.User.Person.Person;
 import homework.javaspring_model.Repositories.PersonRepository;
 import lombok.AllArgsConstructor;
@@ -19,6 +20,9 @@ public class PersonService {
     }
     public Optional<Person> findByName(String name){
         return personRepository.findByName(name);
+    }
+    public Optional<Person> findByUsername(String username){
+        return personRepository.findByUsername(username);
     }
     public Optional<Person> addPerson(Person person){
         try{

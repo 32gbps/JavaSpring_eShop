@@ -1,11 +1,15 @@
 package homework.javaspring_model.Models.User.Person;
 
+import homework.javaspring_model.Models.Product.Product;
 import homework.javaspring_model.Models.User.User;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -28,4 +32,19 @@ public class Person {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "users_id")
     private User user;
+
+    @ManyToMany
+    @JoinTable(
+            name = "person_products",
+            joinColumns = @JoinColumn(name = "person_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id")
+    )
+    private List<Product> products = new ArrayList<>(); //wishlist
+
+    // Метод для получения ID товаров
+    public List<Long> getProductIds() {
+        return products.stream()
+                .map(Product::getId)
+                .collect(Collectors.toList());
+    }
 }
