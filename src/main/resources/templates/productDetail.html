@@ -4,73 +4,77 @@
 <body>
 <header th:insert="~{fragments/header::header}"></header>
 <main>
-    <!-- Messages -->
-    <div class="messageOut">
-        <span id="messageOut-span"></span>
+    <div class="side-container">
     </div>
-    <!--Краткое инфо о товаре-->
-    <div id="Product-ShortInfo-container">
-        <!-- Фото товара -->
-        <div id="Product-Photo-container">
-            <img th:src="@{/PhotoIconTemplate.png}" alt="PhotoTemplate">
+    <div class="main-container">
+        <!-- Messages -->
+        <div class="messageOut">
+            <span id="messageOut-span"></span>
         </div>
-        <!--Характеристики-->
-        <div id="Product-ShortParameters-container">
-            <h3>О товаре</h3>
-            <div class="Product-About-ShortInfo-List">
-                <div class="Product-About-ShortInfo-block">
-                    <div class="Product-About-ShortInfo-KeyValuePair">
-                        <span class="Product-About-ShortInfo-Key">Key:</span>
-                        <span class="Product-About-ShortInfo-Value">value</span>
-                    </div>
-                    <hr>
-                </div>
+        <!--Краткое инфо о товаре-->
+        <div id="Product-ShortInfo-container">
+            <!-- Фото товара -->
+            <div id="Product-Photo-container">
+                <img th:src="@{/PhotoIconTemplate.png}" alt="PhotoTemplate">
             </div>
-            <div class="actionBar product-buy-action">
-                <div class="flex-container">
-                    <label class="p3" for="Product-Price">Цена</label>
-                    <span class="p3" id="Product-Price" th:text="${productData.price}">12345</span>
-                    <span class="p3" id="Product-Price-Valute-Sign">Р</span>
-                </div>
-                <div class="flex-container">
-                    <div class="flex-container">
-                        <button id="btn-wishlist" th:onclick="|toggleProduct(${productData.id})|">
-                            <svg th:replace="~{fragments/icons/wishlist_icon :: wishlist_icon}"></svg>
-                        </button>
-                    </div>
-                    <div class="flex-container">
-                        <!-- TODO: Добавить обработчик -->
-                        <!--Добавление в корзину-->
-                        <button id="btn-buyProduct" th:onclick="|toggleProduct(${productData.id})|">Купить</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!--Полная информация о товаре-->
-    <div id="Product-FullInfo-container">
-        <h2>Описание</h2>
-        <div id="Product-Description-container">
-            <span th:text="${productData.description}">
-                *Description*
-            </span>
-        </div>
-        <h3>Характеристики</h3>
-        <div id="Product-FullParameters-container">
-            <div class="Product-About-FullInfo-List">
-                <div class="Product-About-FullInfo-block" th:if="${productData.getParameters() != null && !productData.getParameters().isEmpty()}">
-                    <div class="Product-About-FullInfo-KeyValuePair" th:each="param : ${productData.getParameters()}">
-                        <span class="Product-About-FullInfo-Key" th:text="${param.key}">Key:</span>
-                        <span class="Product-About-FullInfo-Value" th:text="${param.value}">value</span>
+            <!--Характеристики-->
+            <div id="Product-ShortParameters-container">
+                <h3>О товаре</h3>
+                <div class="Product-About-ShortInfo-List">
+                    <div class="Product-About-ShortInfo-block">
+                        <div class="Product-About-ShortInfo-KeyValuePair">
+                            <span class="Product-About-ShortInfo-Key">Key:</span>
+                            <span class="Product-About-ShortInfo-Value">value</span>
+                        </div>
                         <hr>
                     </div>
                 </div>
+                <div class="actionBar product-buy-action">
+                    <div class="flex-container">
+                        <label class="p3" for="Product-Price">Цена</label>
+                        <span class="p3" id="Product-Price" th:text="${productData.price}">12345</span>
+                        <span class="p3" id="Product-Price-Valute-Sign">Р</span>
+                    </div>
+                    <div class="flex-container">
+                        <div class="flex-container">
+                            <button id="btn-wishlist" th:onclick="|toggleProduct(${productData.id})|">
+                                <svg th:replace="~{fragments/icons/wishlist_icon :: wishlist_icon}"></svg>
+                            </button>
+                        </div>
+                        <div class="flex-container">
+                            <!-- TODO: Добавить обработчик -->
+                            <!--Добавление в корзину-->
+                            <button id="btn-buyProduct" th:onclick="|toggleProduct(${productData.id})|">Купить</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-    <!--Отзывы-->
-    <h2>Отзывы</h2>
-    <div id="Product-Reviews-container" th:onload="|loadReviews(${productData.getId()})|">
+        <!--Полная информация о товаре-->
+        <div id="Product-FullInfo-container">
+            <h2>Описание</h2>
+            <div id="Product-Description-container">
+                <span th:text="${productData.description}">
+                    *Description*
+                </span>
+            </div>
+            <h3>Характеристики</h3>
+            <div id="Product-FullParameters-container">
+                <div class="Product-About-FullInfo-List">
+                    <div class="Product-About-FullInfo-block" th:if="${productData.getParameters() != null && !productData.getParameters().isEmpty()}">
+                        <div class="Product-About-FullInfo-KeyValuePair" th:each="param : ${productData.getParameters()}">
+                            <span class="Product-About-FullInfo-Key" th:text="${param.key}">Key:</span>
+                            <span class="Product-About-FullInfo-Value" th:text="${param.value}">value</span>
+                            <hr>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Отзывы-->
+        <h2>Отзывы</h2>
+        <!-- TODO: Добавить обработчик-->
+        <div id="Product-Reviews-container" th:onload="|loadReviews(${productData.getId()})|">
 <!--        <div id="review-id-${reviewId}" class="Review-card">-->
 <!--            <div class="comment-userinfo">-->
 <!--                <img src="userProfileAvatar.jpg" alt="User-avatar">-->
@@ -144,6 +148,7 @@
 <!--                </div>-->
 <!--            </div>-->
 <!--        </div>-->
+    </div>
     </div>
 </main>
 <footer>

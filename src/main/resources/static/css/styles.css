@@ -3,6 +3,7 @@
 }
 body{
     margin: 0;
+    /*background-color: lightgrey*/
 }
 /*Header base*/
 header{
@@ -264,7 +265,7 @@ main, .content, .col, .row{
 /* ---------------------------Product info styles---------------------------------------- */
 #Product-ShortInfo-container{
     margin: 10px 0;
-    width: 60%;
+    width: 100%;
     background-color: antiquewhite;
     display: grid;
     grid-template-columns: 50% 50%;
@@ -293,6 +294,21 @@ main, .content, .col, .row{
     padding: 10px;
     width: max-content;
 }
+.toggleWishlist-btn svg{
+    height: 100%;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+}
+.toggleWishlist-btn svg:not(.active){
+    fill: none;
+    stroke: black;
+    stroke-width: 10px;
+}
+.toggleWishlist-btn.active svg{
+    fill: red;
+    stroke:none;
+}
+/*
 #wishlist_icon{
     fill: none;
     stroke: black;
@@ -300,6 +316,7 @@ main, .content, .col, .row{
     height: 100%;
     stroke-width: 20px;
 }
+*/
 .product-buy-action{
     justify-content: space-between;
 }
@@ -313,7 +330,7 @@ main, .content, .col, .row{
 
 /* ============================= */
 #Product-FullInfo-container{
-    width: 60%;
+    width: 100%;
     margin: 10px 0;
     padding: 0 10px;
     background-color: beige;
@@ -325,7 +342,7 @@ main, .content, .col, .row{
 #Product-Reviews-container{
     margin: 10px 0;
     background-color: rgba(255, 137, 157, 0.5);
-    width: 60%;
+    width: 100%;
     min-height: 250px;
     padding: 10px;
     border-radius: 20px;
@@ -381,4 +398,116 @@ main, .content, .col, .row{
 }
 /* ====================================================================================== */
 
-/* ------------------------ТЕСТ----------------------------- */
+/* ------------------------ТЕСТ wishlist----------------------------- */
+main{
+    width: 76% !important;
+    margin: 0 12%;
+    display: grid;
+    justify-content: start;
+    align-items: start;
+    grid-template-columns: 20% 80%;
+}
+.side-container{
+    background-color: white;
+    display: flex;
+    padding: 10px;
+    margin: 10px;
+}
+.main-container{
+    margin: 10px;
+    height: 100%;
+    max-width: 100%;
+}
+.catalog{
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: auto;
+    overflow: hidden;
+    gap: 10px;
+    padding: 20px;
+}
+
+.product-widget{
+    background-color: whitesmoke;
+    height: auto;
+    width: auto;
+    border-radius: 15px;
+    padding: 10px;
+    display: grid;
+    grid-template-columns: 1fr;
+    box-shadow: 10px 5px 15px #888888;
+}
+.block-major.media{
+    border-radius: 10px 10px 0 0;
+    background-color: lightgrey;
+    border-width: 2px;
+    border-color: black;
+    border-left-style: inset;
+    border-right-style: inset;
+    border-top-style: inset;
+    padding: 4px;
+}
+.block-major.info{
+    border-radius: 0 0 10px 10px;
+    background-color: lightgrey;
+    border-width: 2px;
+    border-color: black;
+    border-left-style: inset;
+    border-right-style: inset;
+    border-bottom-style:inset;
+    padding: 4px;
+}
+.block-major{
+    width: 100%;
+    display: grid;
+}
+.block-minor{
+    width: 100%;
+    display: grid;
+    grid-auto-flow: column;
+    justify-items: center;
+}
+.block-minor span{
+    max-height: 60px;
+    overflow: hidden;
+}
+.block-minor .buyActions{
+    display: grid;
+    grid-auto-flow: column;
+    justify-items: end;
+    justify-content: end;
+}
+.block-micro{
+    padding: 5px;
+    align-items: center;
+    display: grid;
+}
+.media{
+    width: 100%;
+    aspect-ratio: 1 / 1;
+}
+.media *{
+    max-width: 100%;
+}
+.info{
+    display: grid;
+    grid-template-columns: 1fr;
+}
+.buyActions{
+    align-items: center;
+}
+.buyActions .block-minor{
+    width: 100%;
+    display: grid;
+    grid-auto-flow: column;
+    justify-items: end;
+    justify-content: end;
+}
+.block-micro button{
+    padding: 5px;
+    height: 40px;
+    background-color:#6495ed;
+    border-radius: 8px;
+    color: white;
+}

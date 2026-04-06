@@ -301,24 +301,56 @@ function initWishlist() {
 }
 function getProductWidget(productData) {
     const div = document.createElement('div');
-    div.className = 'catalog-product-widget';
+    div.className = 'product-widget';
+    div.setAttribute('data-widget-id', productData.id)
     div.innerHTML = `
-        <div class="block-major-view">
-            <div class="block-minor-view">
-                <img src="#" alt="productPhoto">
+        <div class="block-major media">
+            <div class="block-minor">
+                <img src="PhotoIconTemplate.png" alt="productPhoto">
             </div>
         </div>
-        <div class="block-major-info">
-            <div class="block-minor-info">
-                <span>${escapeHtml(productData.name)}</span>
+        <div class="block-major info">
+            <div class="block-minor info">
+                <span>
+                    ${escapeHtml(productData.name)}
+                </span>
+            </div>
+            <div class="block-minor rating">
+                <div class="block-micro">
+                    <span> *rating* </span>
+                </div>
+                <div class="block-micro">
+                    <span> *reserved* </span>
+                </div>
             </div>
         </div>
-        <div class="block-major-price">
-            <div class="block-minor-price">
-                <span>${productData.price} ₽</span>
+        <div class="block-major buyActions">
+            <div class="block-minor">
+                <div class="block-micro price">
+                    <span>${productData.price} ₽</span>
+                </div>
             </div>
-            <div class="block-minor-price">
-                <button class="buy-btn" data-id="${productData.id}">Купить</button>
+            <div class="block-minor">
+                <div class="block-micro buy">
+                    <!-- TODO: Добавить обработчик -->
+                    <button class="buy-btn" onclick="addToBuy(${productData.id})">Купить</button>
+                </div>
+                <div class="block-micro wishlist">
+                    <button class="toggleWishlist-btn active" onclick="wishlistSetOff(${productData.id})">
+                        <svg class="wishlist_icon"
+                             xmlns="http://www.w3.org/2000/svg"
+                             xmlns:xlink="http://www.w3.org/1999/xlink"
+                             viewBox="0 0 176 157"
+                             width="40"
+                             height="40">
+                            <path d="M148.136,84.904 L94.518,138.471 C92.748,140.239 90.562,141.338 88.275,141.771 C84.480,142.518 80.394,141.425 77.453,138.487 L23.835,84.920 C6.685,67.786 6.685,40.006 23.835,22.872 C40.986,5.738 68.792,5.738 85.942,22.872 L85.977,22.907 L86.029,22.855 C103.179,5.721 130.985,5.721 148.136,22.855 C165.286,39.989 165.286,67.769 148.136,84.904 Z"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="block-micro buycheck">
+                    <!-- TODO: Добавить обработчик -->
+                    <input type="checkbox" name="addToBuyCheckbox"/>
+                </div>
             </div>
         </div>
     `;
@@ -334,6 +366,13 @@ function escapeHtml(str) {
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;');
+}
+function wishlistSetOff(productId) {
+    toggleProduct(productId);
+    const elements = document.querySelectorAll(`[data-widget-id="${productId}"]`);
+    elements.forEach(el=>{
+        el.remove();
+    })
 }
 //=================================================================================
 function showComments(reviewId){

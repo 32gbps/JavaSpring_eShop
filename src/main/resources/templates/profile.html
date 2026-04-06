@@ -4,7 +4,10 @@
 <body>
 <header th:insert="~{fragments/header::header}"></header>
 <main>
-    <div class="content" th:if="${user != null}">
+    <div class="side-container">
+    </div>
+    <div class="main-container">
+        <div class="content" th:if="${user != null}">
 
         <!--/*@thymesVar id="MODERATOR" type="homework"*/-->
         <div class="content-container" th:if="${user.getRole().getName() == 'MODERATOR' || user.getRole().getName() == 'ADMIN'}">
@@ -29,13 +32,14 @@
             <li>Почтовый ящик: <span th:text="${user.getEmail()}"></span></li>
             <li>Роль: <span th:text="${user.getRole().name}"></span></li>
         </ul>
-    </div>
-    <div th:if="${isAddProductFormActive != null && isAddProductFormActive == true}">
-        <div th:replace="fragments/addProductForm"></div>
-    </div>
-    <!--/*@thymesVar id="OrdersList" type="homework"*/-->
-    <div th:if="${OrdersList != null}">
-        <div th:replace="fragments/orders(OrdersList)"></div>
+        </div>
+        <div th:if="${isAddProductFormActive != null && isAddProductFormActive == true}">
+            <div th:replace="fragments/addProductForm"></div>
+        </div>
+        <!--/*@thymesVar id="OrdersList" type="homework"*/-->
+        <div th:if="${OrdersList != null}">
+            <div th:replace="fragments/orders(OrdersList)"></div>
+        </div>
     </div>
 </main>
 <footer>
