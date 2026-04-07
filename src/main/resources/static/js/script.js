@@ -234,47 +234,177 @@ function getReviewCard(reviewData){
             </div>
         </div>`;
 }
-//=============================Shopping cart============================================
+//=============================Shopping cart and Wishlist============================================
 const CART_KEY = 'shopping_cart';
+const WISHLIST_KEY = 'wishlist';
 
 // Получить корзину (всегда возвращает массив)
-function getCart() {
-    const cart = localStorage.getItem(CART_KEY);
-    return cart ? JSON.parse(cart) : [];
+function getProductArray(arrayKey) {
+    const array = localStorage.getItem(arrayKey);
+    return array ? JSON.parse(array) : [];
 }
-
+function getCart() {return getProductArray(CART_KEY);}
+function getWishlist() {return getProductArray(WISHLIST_KEY);}
 // Сохранить корзину
-function saveCart(cart) {
-    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+function saveProductArray(key, array) {
+    localStorage.setItem(key, JSON.stringify(array));
 }
-
+function saveCart(cart) {
+    saveProductArray(CART_KEY, cart);
+}
+function saveWishlist(wishlist) {
+    saveProductArray(WISHLIST_KEY, wishlist);
+}
 // Добавить или удалить товар
-function toggleProduct(productId) {
-    let cart = getCart();
-    const index = cart.indexOf(productId);
+function toggleProduct(arrayKey, productId) {
+    //arrayKey - CART_KEY || WISHLIST_KEY - ключ локального хранилища
+    let array = [];
+
+    if (arrayKey === CART_KEY)
+        array = getCart();
+    else if (arrayKey === WISHLIST_KEY)
+        array = getWishlist();
+    else
+        return;
+
+    const index = array.indexOf(productId);
 
     if (index === -1) {
         // Товара нет - добавляем
-        cart.push(productId);
-        console.log(`Товар ${productId} добавлен в корзину`);
+        array.push(productId);
+        console.log(`Товар ${productId} добавлен в ${arrayKey}`);
     } else {
         // Товар есть - удаляем
-        cart.splice(index, 1);
-        console.log(`Товар ${productId} удален из корзины`);
+        array.splice(index, 1);
+        console.log(`Товар ${productId} удален из ${arrayKey}`);
     }
-
-    saveCart(cart);
-    //updateCartUI(); // Обновляем UI
+    saveProductArray(arrayKey, array);
 }
-
+function toggleCartProduct(productId){toggleProduct(CART_KEY, productId);}
+function toggleWishlistProduct(productId){toggleProduct(WISHLIST_KEY, productId);}
 // Проверить, есть ли товар в корзине
 function isInCart(productId) {
     const cart = getCart();
     return cart.includes(productId);
 }
+function isInWishlist(productId) {
+    const wishlist = getWishlist();
+    return wishlist.includes(productId);
+}
 //==================================================================================
 //=============================Wishlist============================================
-function initWishlist() {
+function initCatalog(catalogId, ProductIdArray) {
+    try {
+        console.log(`initCatalog is activate! \n args: catalogId = ${catalogId}; ProductIdArray = ${ProductIdArray}`);
+        if(!Array.isArray(ProductIdArray))
+            return;
+        let container = document.getElementById(catalogId);
+        console.log(`container: ${container}`);
+        if(container == null)
+            return;
+
+        ProductIdArray.forEach(c => {
+            console.log(`c: ${c}`);
+            if(!Number.isInteger(c))
+            {
+                return;
+            }
+
+            let productData = getProductById(c);
+            productData
+                .then(response => response.json())
+                .then(json => {
+                    if(json.status === 'success'){
+                        const widget = getProductWidget(json.data);
+                        container.appendChild(widget);
+                    }
+                    else
+                        console.log(json.message);
+                });
+        })
+    }
+    catch (e) {
+        console.log(e);
+    }
+}
+function wishlistSetOff(productId) {
+    toggleProduct(productId);
+    const elements = document.querySelectorAll(`[data-widget-id="${productId}"]`);
+    elements.forEach(el=>{
+        el.remove();
+    })
+}
+function getProductWidget(productData) {
+    const div = document.createElement('div');
+    div.className = 'product-widget';
+    div.setAttribute('data-widget-id', productData.id)
+    div.innerHTML = `
+        <div class="block-major media">
+            <div class="block-minor">
+                <img src="/PhotoIconTemplate.png" alt="productPhoto">
+            </div>
+        </div>
+        <div class="block-major info">
+            <div class="block-minor info">
+                <a href="/product/${productData.id}">
+                    <span class="product-name-text">
+                        ${escapeHtml(productData.name)}
+                    </span>
+                </a>
+            </div>
+            <div class="block-minor rating">
+                <div class="block-micro">
+                    <span> *rating* </span>
+                </div>
+                <div class="block-micro">
+                    <span> *reserved* </span>
+                </div>
+            </div>
+        </div>
+        <div class="block-major buyActions">
+            <div class="block-minor">
+                <div class="block-micro price">
+                    <span>${productData.price} ₽</span>
+                </div>
+            </div>
+            <div class="block-minor">
+                <div class="block-micro buy">
+                    <button class="buy-btn" onclick="toggleCartProduct(${productData.id})">Купить</button>
+                </div>
+                <div class="block-micro wishlist">
+                    <button class="toggleWishlist-btn active" onclick="toggleWishlistProduct(${productData.id})">
+                        <svg class="wishlist_icon"
+                             xmlns="http://www.w3.org/2000/svg"
+                             xmlns:xlink="http://www.w3.org/1999/xlink"
+                             viewBox="0 0 176 157"
+                             width="40"
+                             height="40">
+                            <path d="M148.136,84.904 L94.518,138.471 C92.748,140.239 90.562,141.338 88.275,141.771 C84.480,142.518 80.394,141.425 77.453,138.487 L23.835,84.920 C6.685,67.786 6.685,40.006 23.835,22.872 C40.986,5.738 68.792,5.738 85.942,22.872 L85.977,22.907 L86.029,22.855 C103.179,5.721 130.985,5.721 148.136,22.855 C165.286,39.989 165.286,67.769 148.136,84.904 Z"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="block-micro buycheck">
+                    <!-- TODO: Добавить обработчик -->
+                    <input type="checkbox" name="addToBuyCheckbox"/>
+                </div>
+            </div>
+        </div>
+    `;
+    return div;
+}
+// Функция для защиты от XSS
+function escapeHtml(str) {
+    if (!str) return '';
+    return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+//=================================================================================
+//=============================ShoppingCart============================================
+function initShoppingCart() {
     try {
         let cart = getCart();
         let container = document.getElementById('wishlist-catalog');
@@ -298,81 +428,6 @@ function initWishlist() {
     catch (e) {
         console.log(e);
     }
-}
-function getProductWidget(productData) {
-    const div = document.createElement('div');
-    div.className = 'product-widget';
-    div.setAttribute('data-widget-id', productData.id)
-    div.innerHTML = `
-        <div class="block-major media">
-            <div class="block-minor">
-                <img src="PhotoIconTemplate.png" alt="productPhoto">
-            </div>
-        </div>
-        <div class="block-major info">
-            <div class="block-minor info">
-                <span>
-                    ${escapeHtml(productData.name)}
-                </span>
-            </div>
-            <div class="block-minor rating">
-                <div class="block-micro">
-                    <span> *rating* </span>
-                </div>
-                <div class="block-micro">
-                    <span> *reserved* </span>
-                </div>
-            </div>
-        </div>
-        <div class="block-major buyActions">
-            <div class="block-minor">
-                <div class="block-micro price">
-                    <span>${productData.price} ₽</span>
-                </div>
-            </div>
-            <div class="block-minor">
-                <div class="block-micro buy">
-                    <!-- TODO: Добавить обработчик -->
-                    <button class="buy-btn" onclick="addToBuy(${productData.id})">Купить</button>
-                </div>
-                <div class="block-micro wishlist">
-                    <button class="toggleWishlist-btn active" onclick="wishlistSetOff(${productData.id})">
-                        <svg class="wishlist_icon"
-                             xmlns="http://www.w3.org/2000/svg"
-                             xmlns:xlink="http://www.w3.org/1999/xlink"
-                             viewBox="0 0 176 157"
-                             width="40"
-                             height="40">
-                            <path d="M148.136,84.904 L94.518,138.471 C92.748,140.239 90.562,141.338 88.275,141.771 C84.480,142.518 80.394,141.425 77.453,138.487 L23.835,84.920 C6.685,67.786 6.685,40.006 23.835,22.872 C40.986,5.738 68.792,5.738 85.942,22.872 L85.977,22.907 L86.029,22.855 C103.179,5.721 130.985,5.721 148.136,22.855 C165.286,39.989 165.286,67.769 148.136,84.904 Z"/>
-                        </svg>
-                    </button>
-                </div>
-                <div class="block-micro buycheck">
-                    <!-- TODO: Добавить обработчик -->
-                    <input type="checkbox" name="addToBuyCheckbox"/>
-                </div>
-            </div>
-        </div>
-    `;
-    return div;
-}
-
-// Функция для защиты от XSS
-function escapeHtml(str) {
-    if (!str) return '';
-    return str
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
-}
-function wishlistSetOff(productId) {
-    toggleProduct(productId);
-    const elements = document.querySelectorAll(`[data-widget-id="${productId}"]`);
-    elements.forEach(el=>{
-        el.remove();
-    })
 }
 //=================================================================================
 function showComments(reviewId){

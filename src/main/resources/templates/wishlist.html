@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ru">
     <head th:replace="fragments/head :: head('Список желаемого')"></head>
-    <body onload="initWishlist()">
+    <body onload="initCatalog('wishlist-catalog', getWishlist())">
         <header th:insert="~{fragments/header::header}"></header>
         <main>
             <div class="side-container">

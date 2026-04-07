@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
+
 @Controller
 @AllArgsConstructor
 @RequestMapping("/product")
@@ -32,7 +34,6 @@ public class ProductController {
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("pageSize", pageSize);
         try {
-            //Список запрошенных объектов
             model.addAttribute("productsList", productService.getFirstNElements(currentPage, pageSize));
             return "catalog";
         } catch (Exception e) {
@@ -58,6 +59,16 @@ public class ProductController {
             model.addAttribute("productData", new ProductDto(product));
 
             return "productDetail";
+        } catch (Exception e) {
+            model.addAttribute("message", "Внутренняя ошибка при запросе товара");
+            return "redirect:/";
+        }
+    }
+    @GetMapping("/cart")
+    public String getShoppingCart(Model model) {
+        try {
+
+            return "shoppingCart";
         } catch (Exception e) {
             model.addAttribute("message", "Внутренняя ошибка при запросе товара");
             return "redirect:/";

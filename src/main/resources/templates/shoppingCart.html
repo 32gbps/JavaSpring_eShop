@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ru">
     <head th:replace="fragments/head :: head('Корзина')"></head>
-    <body>
+    <body onload="initCatalog('shoppingCart-catalog', getCart())">
         <header th:insert="~{fragments/header::header}"></header>
         <main>
-
+            <div class="side-container">
+            </div>
+            <div class="main-container">
+                <div id="shoppingCart-catalog" class="catalog">
+                </div>
+            </div>
         </main>
         <footer>
         </footer>

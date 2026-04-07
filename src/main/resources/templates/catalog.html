@@ -7,44 +7,96 @@
             <div class="side-container">
             </div>
             <div class="main-container">
-                <div class="content">
-                    <table class="table-product">
-                    <thead class="table-header">
-                    <tr>
-                        <th class="table-column column-name">Название</th>
-                        <th class="table-column column-price">Цена</th>
-                        <th class="table-column column-action">Действие</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="item : ${productsList}">
-                        <td class="table-column column-name" ><a th:href="@{/product/{id}(id=${item.id})}" th:text="${item.name}">Название товара</a></td>
-                        <td class="table-column column-price" th:text="${item.price}">123.45</td>
-                        <td class="table-column column-action">*reserved*</td>
-                    </tr>
-                    </tbody>
-                </table>
-                    <!-- Пагинация -->
-                    <div class="pagination">
-                        <div>
-                            <a th:href="@{/clothes/list(page=${0}, size=${pageSize})}"> <<| </a>
-                            <a th:href="@{/clothes/list(page=${currentPage > 0 ? currentPage - 1:0}, size=${pageSize})}"> < </a>
+                <div id="main-catalog" class="catalog">
+                    <!--/*@thymesVar id="item" type="homework.javaspring_model.Models.Product.ProductDto"*/-->
+                    <div  th:each="item : ${productsList}" class="product-widget" th:data-widget-id="${item.id}">
+                        <div class="block-major media">
+                            <div class="block-minor">
+                                <img src="/PhotoIconTemplate.png" alt="productPhoto">
+                            </div>
                         </div>
-                        <div>
-                            <select name="pageSize"
-                                    th:value="${pageSize}"
-                                    onchange="window.location.href = window.location.pathname + '?page=0&size=' + this.value">
-                                <option value="10" th:selected="${pageSize == 10}">10</option>
-                                <option value="25" th:selected="${pageSize == 25}">25</option>
-                                <option value="50" th:selected="${pageSize == 50}">50</option>
-                                <option value="100" th:selected="${pageSize == 100}">100</option>
-                            </select>
+                        <div class="block-major info">
+                            <div class="block-minor info">
+                                <a class="product-name-text" th:href="@{/product/{id}(id=${item.id})}" th:text="${item.name}"></a>
+                            </div>
+                            <div class="block-minor rating">
+                                <div class="block-micro">
+                                    <span> *rating* </span>
+                                </div>
+                                <div class="block-micro">
+                                    <span> *reserved* </span>
+                                </div>
+                            </div>
                         </div>
-                        <div>
-                            <a th:href="@{/clothes/list(page=${currentPage + 1}, size=${pageSize})}"> > </a>
+                        <div class="block-major buyActions">
+                            <div class="block-minor">
+                                <div class="block-micro price">
+                                    <span th:text="${item.price}+'₽'"></span>
+                                </div>
+                            </div>
+                            <div class="block-minor">
+                                <div class="block-micro buy">
+                                    <button class="buy-btn" th:onclick="|toggleCartProduct(${item.id})|">Купить</button>
+                                </div>
+                                <div class="block-micro wishlist">
+                                    <!-- TODO: При добавлении/удалении товара из вишлиста кнопка должна реагировать-->
+                                    <button class="toggleWishlist-btn" th:onclick="|toggleWishlistProduct(${item.id})|">
+                                        <svg class="wishlist_icon"
+                                             xmlns="http://www.w3.org/2000/svg"
+                                             xmlns:xlink="http://www.w3.org/1999/xlink"
+                                             viewBox="0 0 176 157"
+                                             width="40"
+                                             height="40">
+                                            <path d="M148.136,84.904 L94.518,138.471 C92.748,140.239 90.562,141.338 88.275,141.771 C84.480,142.518 80.394,141.425 77.453,138.487 L23.835,84.920 C6.685,67.786 6.685,40.006 23.835,22.872 C40.986,5.738 68.792,5.738 85.942,22.872 L85.977,22.907 L86.029,22.855 C103.179,5.721 130.985,5.721 148.136,22.855 C165.286,39.989 165.286,67.769 148.136,84.904 Z"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="block-micro buycheck">
+                                    <!-- TODO: Добавить обработчик -->
+                                    <input type="checkbox" name="addToBuyCheckbox"/>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+<!--                <div class="content">-->
+<!--                    <table class="table-product">-->
+<!--                    <thead class="table-header">-->
+<!--                    <tr>-->
+<!--                        <th class="table-column column-name">Название</th>-->
+<!--                        <th class="table-column column-price">Цена</th>-->
+<!--                        <th class="table-column column-action">Действие</th>-->
+<!--                    </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody>-->
+<!--                    <tr th:each="item : ${productsList}">-->
+<!--                        <td class="table-column column-name" ><a th:href="@{/product/{id}(id=${item.id})}" th:text="${item.name}">Название товара</a></td>-->
+<!--                        <td class="table-column column-price" th:text="${item.price}">123.45</td>-->
+<!--                        <td class="table-column column-action">*reserved*</td>-->
+<!--                    </tr>-->
+<!--                    </tbody>-->
+<!--                </table>-->
+<!--                    &lt;!&ndash; Пагинация &ndash;&gt;-->
+<!--                    <div class="pagination">-->
+<!--                        <div>-->
+<!--                            <a th:href="@{/clothes/list(page=${0}, size=${pageSize})}"> <<| </a>-->
+<!--                            <a th:href="@{/clothes/list(page=${currentPage > 0 ? currentPage - 1:0}, size=${pageSize})}"> < </a>-->
+<!--                        </div>-->
+<!--                        <div>-->
+<!--                            <select name="pageSize"-->
+<!--                                    th:value="${pageSize}"-->
+<!--                                    onchange="window.location.href = window.location.pathname + '?page=0&size=' + this.value">-->
+<!--                                <option value="10" th:selected="${pageSize == 10}">10</option>-->
+<!--                                <option value="25" th:selected="${pageSize == 25}">25</option>-->
+<!--                                <option value="50" th:selected="${pageSize == 50}">50</option>-->
+<!--                                <option value="100" th:selected="${pageSize == 100}">100</option>-->
+<!--                            </select>-->
+<!--                        </div>-->
+<!--                        <div>-->
+<!--                            <a th:href="@{/clothes/list(page=${currentPage + 1}, size=${pageSize})}"> > </a>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
             </div>
         </main>
        <footer>

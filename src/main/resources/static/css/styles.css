@@ -511,3 +511,9 @@ main{
     border-radius: 8px;
     color: white;
 }
+.product-name-text{
+    color: black;
+}
+.product-name-text:hover{
+    color: dodgerblue;
+}
