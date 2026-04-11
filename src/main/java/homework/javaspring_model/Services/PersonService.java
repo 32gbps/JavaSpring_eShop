@@ -1,6 +1,5 @@
 package homework.javaspring_model.Services;
 
-import homework.javaspring_model.Models.User.Company.Company;
 import homework.javaspring_model.Models.User.Person.Person;
 import homework.javaspring_model.Repositories.PersonRepository;
 import lombok.AllArgsConstructor;

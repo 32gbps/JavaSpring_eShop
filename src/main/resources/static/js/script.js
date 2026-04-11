@@ -1,16 +1,4 @@
-// document.addEventListener('DOMContentLoaded', function() {
-//     // Инициализация обработчиков событий
-//     var form = document.getElementById('getById-form');
-//     if(form == null)
-//         return;
-//     form.addEventListener('submit', function(event) {
-//         event.preventDefault();
-//         getClothesById();
-//     });
-//     document.getElementById('deleteById-button').addEventListener('click', deleteClothesById);
-//     //document.getElementById('editById-button').addEventListener('click', editClothes);
-//     document.getElementById('addProduct-button').addEventListener('click', addProduct);
-// });
+
 function getProductById(idValue){
     if (idValue !== '') {
         let id = parseInt(idValue, 10);
@@ -22,13 +10,6 @@ function getProductById(idValue){
         let url = `/api/product/getProductById/${id}`;
 
         return fetch(url);
-            // .then(response => response.json())
-            // .then(json => {
-            //     if(json.status === 'success')
-            //         return json.data;
-            //     else
-            //         throw new Error(json.message);
-            // });
     }
 }
 function deleteClothesById() {
@@ -243,6 +224,11 @@ function getProductArray(arrayKey) {
     const array = localStorage.getItem(arrayKey);
     return array ? JSON.parse(array) : [];
 }
+function getProductsByCookie() {
+    const cookie = document.cookie;
+
+    return cookie.split('-').map(c => Number.parseInt(c));
+}
 function getCart() {return getProductArray(CART_KEY);}
 function getWishlist() {return getProductArray(WISHLIST_KEY);}
 // Сохранить корзину
@@ -281,7 +267,15 @@ function toggleProduct(arrayKey, productId) {
     saveProductArray(arrayKey, array);
 }
 function toggleCartProduct(productId){toggleProduct(CART_KEY, productId);}
-function toggleWishlistProduct(productId){toggleProduct(WISHLIST_KEY, productId);}
+function toggleWishlistProduct(productId){
+    toggleProduct(WISHLIST_KEY, productId);
+    const widget = document.querySelector(`[data-widget-id="${productId}"]`);
+    const button = widget.querySelector(`[data-widget-element="button-wishlist"]`);
+    if(isInWishlist(productId) || !button.classList.contains('active'))
+        button.classList.add('active');
+    else
+        button.classList.remove('active');
+}
 // Проверить, есть ли товар в корзине
 function isInCart(productId) {
     const cart = getCart();
@@ -304,18 +298,22 @@ function initCatalog(catalogId, ProductIdArray) {
             return;
 
         ProductIdArray.forEach(c => {
-            console.log(`c: ${c}`);
-            if(!Number.isInteger(c))
-            {
+            if(Number.isNaN(c))
                 return;
-            }
-
             let productData = getProductById(c);
             productData
                 .then(response => response.json())
                 .then(json => {
                     if(json.status === 'success'){
                         const widget = getProductWidget(json.data);
+                        let wishlistBtn = widget.getElementsByClassName('toggleWishlist-btn');
+                        console.log(wishlistBtn);
+                        if(isInWishlist(c) && wishlistBtn != null){
+                            for (let i = 0; i < wishlistBtn.length; i++) {
+                                if(!wishlistBtn.item(i).classList.contains('active'))
+                                    wishlistBtn[i].classList.toggle('active');
+                            }
+                        }
                         container.appendChild(widget);
                     }
                     else
@@ -372,10 +370,9 @@ function getProductWidget(productData) {
                     <button class="buy-btn" onclick="toggleCartProduct(${productData.id})">Купить</button>
                 </div>
                 <div class="block-micro wishlist">
-                    <button class="toggleWishlist-btn active" onclick="toggleWishlistProduct(${productData.id})">
+                    <button class="toggleWishlist-btn" data-widget-element="button-wishlist" onclick="toggleWishlistProduct(${productData.id})">
                         <svg class="wishlist_icon"
                              xmlns="http://www.w3.org/2000/svg"
-                             xmlns:xlink="http://www.w3.org/1999/xlink"
                              viewBox="0 0 176 157"
                              width="40"
                              height="40">
@@ -385,7 +382,7 @@ function getProductWidget(productData) {
                 </div>
                 <div class="block-micro buycheck">
                     <!-- TODO: Добавить обработчик -->
-                    <input type="checkbox" name="addToBuyCheckbox"/>
+                    <input type="checkbox" onchange="" name="addToBuyCheckbox"/>
                 </div>
             </div>
         </div>
@@ -407,7 +404,7 @@ function escapeHtml(str) {
 function initShoppingCart() {
     try {
         let cart = getCart();
-        let container = document.getElementById('wishlist-catalog');
+        let container = document.getElementById('shoppingCart-catalog');
         if(container == null)
             return;
 
@@ -418,6 +415,10 @@ function initShoppingCart() {
                 .then(json => {
                     if(json.status === 'success'){
                         const widget = getProductWidget(json.data);
+                        let wishlistBtn = widget.querySelector(`[data-widget-element="button-wishlist"]`);
+                        if(isInWishlist(c))
+                            if(!wishlistBtn.classList.contains('active'))
+                                wishlistBtn.classList.add('active');
                         container.appendChild(widget);
                     }
                     else
@@ -430,13 +431,22 @@ function initShoppingCart() {
     }
 }
 //=================================================================================
-function showComments(reviewId){
-    let revDiv = document.getElementById(`review-id-${reviewId}`);
-    //===
-    //сначала добавить форму для отправки комментария
-    //revDiv.append()
-    //===
-}
-function getReviewComments(reviewId){
+//=================================Order===========================================
+const ORDER_DATA = [];
+function doOrder() {
+    if(ORDER_DATA.length < 1)
+        return;
+    let url = `/api/orders`;
+    const request = new Request(url, {
+        method: "POST",
+        body: JSON.stringify(ORDER_DATA)
+    });
+
+    fetch(request)
+        .then(response => response.json())
+        .then(json => {
+            printMessage(json.message,json.status);
+        });
 
 }
+//=================================================================================

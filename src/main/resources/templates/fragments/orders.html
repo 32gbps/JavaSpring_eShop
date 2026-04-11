@@ -8,9 +8,13 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="item : ${OrdersList}">
-            <td class="table-column column-name" ><a th:href="@{/product/{id}(id=${item.id})}" th:text="${item.name}">Название товара</a></td>
-            <td class="table-column column-price" th:text="${item.price}">123.45</td>
+        <!--/*@thymesVar id="item" type="homework.javaspring_model.Models.Product.Order.OrderDto"*/-->
+        <tr th:each="order : ${OrdersList}">
+            <td class="table-column column-name" >
+            <td class="table-column" th:text="${item.id}">123.45</td>
+            <td class="table-column" th:text="${item.orderDate}">123.45</td>
+            <td class="table-column" th:text="${item.personName}">123.45</td>
+            <td class="table-column column-price" th:text="${item.totalAmount}">123.45</td>
             <td class="table-column column-action">*reserved*</td>
         </tr>
         </tbody>

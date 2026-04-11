@@ -1,11 +1,13 @@
 package homework.javaspring_model.Controllers;
 
 import homework.javaspring_model.Config.DatabaseInitializer;
+import homework.javaspring_model.Models.Product.Order.Order;
 import homework.javaspring_model.Models.Product.Product;
 import homework.javaspring_model.Models.Product.ProductDto;
 import homework.javaspring_model.Models.User.Role;
 import homework.javaspring_model.Models.User.User;
 import homework.javaspring_model.Models.User.UserDto;
+import homework.javaspring_model.Services.OrderService;
 import homework.javaspring_model.Services.PersonService;
 import homework.javaspring_model.Services.RoleService;
 import homework.javaspring_model.Services.UserService;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -32,6 +35,7 @@ public class ProfileController {
     private final RoleService roleService;
     private final UserService userService;
     private final PersonService personService;
+    private final OrderService orderService;
     private static final Logger log = LoggerFactory.getLogger(DatabaseInitializer.class);
 
     @GetMapping("/login")
@@ -52,7 +56,8 @@ public class ProfileController {
                 if(Objects.equals(p.getRole().getName(), "COMPANY"))
                     model.addAttribute("isAddProductFormActive", true);
                 else if(Objects.equals(p.getRole().getName(), "PERSON")){
-                    ArrayList<Product> orders = new ArrayList<>();
+                    List<Order> orders = orderService.getPersonOrders(p.getId());;
+
                     model.addAttribute("OrdersList", orders);
                 }
             }, ()->{
