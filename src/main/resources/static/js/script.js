@@ -1,5 +1,5 @@
 
-function getProductById(idValue){
+async function getProductById(idValue){
     if (idValue !== '') {
         let id = parseInt(idValue, 10);
 
@@ -12,56 +12,51 @@ function getProductById(idValue){
         return fetch(url);
     }
 }
-function deleteClothesById() {
-    let idInput = document.getElementById('table-form-input-id');
-    console.log(idInput);
-    let idValue = idInput.value.trim();
-
-    // Если поле не заполнено, не добавляем параметр
-    if (idValue !== '') {
-        let id = parseInt(idValue, 10);
-
-        if (isNaN(id) || id < 0) {
-            alert('ID должен быть положительным числом');
-            return;
-        }
-
-        let url = `/api/clothes/deleteClothesById?id=${id}`;
-        const request = new Request(url, {
-            method: "POST",
-        });
-
-        fetch(request)
-            .then(response => response.json())
-            .then(json => {
-                printMessage(json.message,json.status);
+async function getProductArrayById(IdArray){
+    if (!isArrayOfIntegers(IdArray))
+        return []
+    let productDataArray = [];
+    for (const id of IdArray) {
+        await getProductById(id)
+            .then(response =>response.json())
+            .then(js=>{
+                if(js.status ==='success')
+                    productDataArray.push(js.data);
             });
     }
+    return productDataArray;
 }
-function editClothes() {
-    // Собираем данные из формы
-    const clothesData = {
-        id: document.getElementById('input-id').value,
-        name: document.getElementById('input-name').value,
-        type: document.getElementById('input-type').value,
-        size: document.getElementById('input-size').value,
-        color: document.getElementById('input-color').value,
-        brand: document.getElementById('input-brand').value,
-        price: document.getElementById('input-price').value
-    };
+function isArrayOfIntegers(arr) {
+    // Проверка, что это массив
+    if (!Array.isArray(arr)) {
+        return false;
+    }
 
-    fetch('/api/clothes/editClothesById', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'  // Важно!
-        },
-        body: JSON.stringify(clothesData)  // Преобразуем в JSON
-    })
-        .then(response => response.json())
-        .then(json => {
-            printMessage(json.message,json.status);
-            if(json.status === 'success')
-                showClothesProperties(json.data);
+    // Проверка, что каждый элемент - целое число
+    return arr.every(item => Number.isInteger(item));
+}
+let current_page = 0;
+let current_size= 10;
+async function getProductList(page, size){
+    if(page == null || Number.isNaN(page))
+        page = current_page;
+    if(size == null || Number.isNaN(size))
+        size = current_size;
+
+    let url = `/api/product/list?page=${page}&size=${size}`;
+    const request = new Request(url, {
+        method: "GET"
+    });
+    return await fetch(request)
+        .then(response =>response.json())
+        .then(js=>{
+            if(js.status !== 'success')
+            {
+                console.error(js.message);
+                return  [];
+            }
+            else
+                return js.data;
         });
 }
 function addProduct() {
@@ -84,175 +79,56 @@ function addProduct() {
             printMessage(json.message, json.status);
         });
 }
-function showClothesProperties(clothesData){
-    // Проверяем, что данные существуют и являются объектом
-    if (!clothesData || typeof clothesData !== 'object') {
-        document.getElementById('input-id').value = '';
-        document.getElementById('input-name').value = '';
-        document.getElementById('input-type').value = '';
-        document.getElementById('input-size').value = '';
-        document.getElementById('input-color').value = '';
-        document.getElementById('input-brand').value = '';
-        document.getElementById('input-price').value = '';
-        return;
-    }
-
-    var form = document.getElementById('editForm');
-    if (form) {
-        form.hidden = false;
-    } else {
-        console.error('Форма editForm не найдена');
-        return;
-    }
-
-    console.log('Обрабатываем данные:', clothesData);
-
-    // Получаем все элементы формы
-    var input_id = document.getElementById('input-id');
-    var input_name = document.getElementById('input-name');
-    var input_type = document.getElementById('input-type');
-    var input_size = document.getElementById('input-size');
-    var input_color = document.getElementById('input-color');
-    var input_brand = document.getElementById('input-brand');
-    var input_price = document.getElementById('input-price');
-
-    // Заполняем поля с проверкой наличия свойств
-    if (input_id) input_id.value = clothesData.id || '';
-    if (input_name) input_name.value = clothesData.name || '';
-    if (input_type) input_type.value = clothesData.type || '';
-    if (input_size) input_size.value = clothesData.size || '';
-    if (input_color) input_color.value = clothesData.color || '';
-    if (input_brand) input_brand.value = clothesData.brand || '';
-    if (input_price) input_price.value = clothesData.price || '';
-}
-function printMessage(message, status){
+function printMessage(message){
     let container = document.getElementById('messageOut-span');
     container.innerText = message;
-}
-function setLike(commentId){
-    let url = `/api/comments/setLike?id=${commentId}`;
-    const request = new Request(url, {
-        method: "POST",
-    });
-
-    fetch(request)
-        .then(response => response.json())
-        .then(json => {
-            if(json.status === 'success'){
-                //красим цифру в зелёный
-            }
-        });
-}
-function setDislike(commentId){
-    let url = `/api/comments/setDislike?id=${commentId}`;
-    const request = new Request(url, {
-        method: "POST",
-    });
-
-    fetch(request)
-        .then(response => response.json())
-        .then(json => {
-            if(json.status === 'success'){
-                //красим цифру в красный
-            }
-        });
-}
-function loadReviews(productId){
-    let url = `/api/reviews?id=${productId}`;
-    const request = new Request(url, {
-        method: "GET",
-    });
-    let reviewContainer = document.getElementById("Product-Reviews-container");
-    fetch(request)
-        .then(response => response.json())
-        .then(json => {
-            if(json.status === 'success'){
-                json.data.forEach((review)=>{
-                    let rev = getReviewCard(review);
-                    reviewContainer.appendChild(rev);
-                });
-            }
-        });
-}
-function getReviewCard(reviewData){
-    let reviewCardhtml = `
-    <div class="Review-card">
-            <div class="comment-userinfo">
-                        <img src="userProfileAvatar.jpg" alt="User-avatar">
-                        <span>${reviewData.author.nickname}</span>
-                    </div>
-            <div class="Review-card-statline">
-                <div class="comment-date">
-                    <span>${reviewData.pubDate}</span>
-                </div>
-            </div>
-            <div class="Review-card-text">
-                <label for="Review-card-positiveSide">Достоинства</label>
-                <div id="Review-card-positiveSide">
-                    <span>
-                        ${reviewData.review.positive}
-                    </span>
-                </div>
-                <label for="Review-card-negativeSide">Недостатки</label>
-                <div id="Review-card-negativeSide">
-                    <span>
-                        ${reviewData.review.negative}
-                    </span>
-                </div>
-                <label for="Review-card-comment-author">Комментарий</label>
-                <div id="Review-card-comment-author">
-                    <span>
-                        ${reviewData.review.comment}
-                    </span>
-                </div>
-            </div>
-            <div class="comment-controls">
-                <button class="comment-controls-button-like">Like</button>
-                <span class="comment-controls-comment-score">${reviewData.review.likeScore}</span>
-                <button class="comment-controls-button-dislike">Dislike</button>
-            </div>
-            <div class="Review-card-comments">
-            </div>
-        </div>`;
 }
 //=============================Shopping cart and Wishlist============================================
 const CART_KEY = 'shopping_cart';
 const WISHLIST_KEY = 'wishlist';
 
-// Получить корзину (всегда возвращает массив)
-function getProductArray(arrayKey) {
-    const array = localStorage.getItem(arrayKey);
-    return array ? JSON.parse(array) : [];
-}
-function getProductsByCookie() {
-    const cookie = document.cookie;
+function getLSProductIdArray(key) {
+    try {
+        const LSString = localStorage.getItem(key);
 
-    return cookie.split('-').map(c => Number.parseInt(c));
+        if (!LSString) {
+            return [];
+        }
+
+        const parsed = JSON.parse(LSString);
+
+        // Проверяем, что результат - массив
+        if (Array.isArray(parsed)) {
+            return parsed;
+        }
+
+        return [];
+    } catch (error) {
+        console.error('Ошибка при чтении из localStorage:', error);
+        return [];
+    }
 }
-function getCart() {return getProductArray(CART_KEY);}
-function getWishlist() {return getProductArray(WISHLIST_KEY);}
 // Сохранить корзину
-function saveProductArray(key, array) {
+function saveIdArrayToLS(key, array) {
+    if(!Array.isArray(array))
+        console.error('Некорректные данные');
+
+
     localStorage.setItem(key, JSON.stringify(array));
-}
-function saveCart(cart) {
-    saveProductArray(CART_KEY, cart);
-}
-function saveWishlist(wishlist) {
-    saveProductArray(WISHLIST_KEY, wishlist);
 }
 // Добавить или удалить товар
 function toggleProduct(arrayKey, productId) {
     //arrayKey - CART_KEY || WISHLIST_KEY - ключ локального хранилища
     let array = [];
 
-    if (arrayKey === CART_KEY)
-        array = getCart();
-    else if (arrayKey === WISHLIST_KEY)
-        array = getWishlist();
+    if (arrayKey === CART_KEY || arrayKey === WISHLIST_KEY)
+        array = getLSProductIdArray(arrayKey);
     else
         return;
 
+    console.log(`productId: ${productId}`);
+    console.log(`array: `);
+    console.log(array);
     const index = array.indexOf(productId);
 
     if (index === -1) {
@@ -264,7 +140,7 @@ function toggleProduct(arrayKey, productId) {
         array.splice(index, 1);
         console.log(`Товар ${productId} удален из ${arrayKey}`);
     }
-    saveProductArray(arrayKey, array);
+    saveIdArrayToLS(arrayKey, array);
 }
 function toggleCartProduct(productId){toggleProduct(CART_KEY, productId);}
 function toggleWishlistProduct(productId){
@@ -276,61 +152,50 @@ function toggleWishlistProduct(productId){
     else
         button.classList.remove('active');
 }
-// Проверить, есть ли товар в корзине
-function isInCart(productId) {
-    const cart = getCart();
-    return cart.includes(productId);
-}
+
 function isInWishlist(productId) {
-    const wishlist = getWishlist();
-    return wishlist.includes(productId);
+    const arr = getLSProductIdArray(WISHLIST_KEY);
+    return arr.includes(productId);
 }
-//==================================================================================
 //=============================Wishlist============================================
-function initCatalog(catalogId, ProductIdArray) {
+async function initPage(methodNumber) {
+    let productData = [];
+    switch (methodNumber) {
+        case 0: productData = await getProductList(); break;
+        case 1: productData = await getProductArrayById(getLSProductIdArray(WISHLIST_KEY)); break;
+        case 2: productData = await getProductArrayById(getLSProductIdArray(CART_KEY)); break;
+        default: return;
+    }
+    console.log(productData);
+    initCatalog(productData);
+}
+function initCatalog(data) {
     try {
-        console.log(`initCatalog is activate! \n args: catalogId = ${catalogId}; ProductIdArray = ${ProductIdArray}`);
-        if(!Array.isArray(ProductIdArray))
-            return;
-        let container = document.getElementById(catalogId);
-        console.log(`container: ${container}`);
-        if(container == null)
+        console.log(data);
+        if(data == null)
             return;
 
-        ProductIdArray.forEach(c => {
-            if(Number.isNaN(c))
-                return;
-            let productData = getProductById(c);
-            productData
-                .then(response => response.json())
-                .then(json => {
-                    if(json.status === 'success'){
-                        const widget = getProductWidget(json.data);
-                        let wishlistBtn = widget.getElementsByClassName('toggleWishlist-btn');
-                        console.log(wishlistBtn);
-                        if(isInWishlist(c) && wishlistBtn != null){
-                            for (let i = 0; i < wishlistBtn.length; i++) {
-                                if(!wishlistBtn.item(i).classList.contains('active'))
-                                    wishlistBtn[i].classList.toggle('active');
-                            }
-                        }
-                        container.appendChild(widget);
-                    }
-                    else
-                        console.log(json.message);
-                });
+        const mainCatalog = document.createElement('div');
+        mainCatalog.setAttribute('id', 'main-catalog');
+        mainCatalog.classList.add('catalog');
+        const mainContainer = document.getElementById('main-container');
+        mainContainer.appendChild(mainCatalog);
+
+        const wishlistIdArray = getLSProductIdArray(WISHLIST_KEY);
+
+        data.forEach(product => {
+            const widget = getProductWidget(product);
+
+            let wishlistBtn = widget.querySelector(`[data-widget-element="button-wishlist"]`);
+            if(wishlistIdArray.includes(product.id))
+                if(!wishlistBtn.classList.contains('active'))
+                    wishlistBtn.classList.add('active');
+            mainCatalog.appendChild(widget);
         })
     }
     catch (e) {
-        console.log(e);
+        console.error(e);
     }
-}
-function wishlistSetOff(productId) {
-    toggleProduct(productId);
-    const elements = document.querySelectorAll(`[data-widget-id="${productId}"]`);
-    elements.forEach(el=>{
-        el.remove();
-    })
 }
 function getProductWidget(productData) {
     const div = document.createElement('div');
@@ -400,53 +265,5 @@ function escapeHtml(str) {
         .replace(/'/g, '&#39;');
 }
 //=================================================================================
-//=============================ShoppingCart============================================
-function initShoppingCart() {
-    try {
-        let cart = getCart();
-        let container = document.getElementById('shoppingCart-catalog');
-        if(container == null)
-            return;
 
-        cart.forEach(c => {
-            let productData = getProductById(c);
-            productData
-                .then(response => response.json())
-                .then(json => {
-                    if(json.status === 'success'){
-                        const widget = getProductWidget(json.data);
-                        let wishlistBtn = widget.querySelector(`[data-widget-element="button-wishlist"]`);
-                        if(isInWishlist(c))
-                            if(!wishlistBtn.classList.contains('active'))
-                                wishlistBtn.classList.add('active');
-                        container.appendChild(widget);
-                    }
-                    else
-                        console.log(json.message);
-                });
-        })
-    }
-    catch (e) {
-        console.log(e);
-    }
-}
-//=================================================================================
-//=================================Order===========================================
-const ORDER_DATA = [];
-function doOrder() {
-    if(ORDER_DATA.length < 1)
-        return;
-    let url = `/api/orders`;
-    const request = new Request(url, {
-        method: "POST",
-        body: JSON.stringify(ORDER_DATA)
-    });
-
-    fetch(request)
-        .then(response => response.json())
-        .then(json => {
-            printMessage(json.message,json.status);
-        });
-
-}
 //=================================================================================

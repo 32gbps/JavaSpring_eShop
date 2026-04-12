@@ -2,8 +2,6 @@ package homework.javaspring_model.Controllers;
 
 import homework.javaspring_model.Config.DatabaseInitializer;
 import homework.javaspring_model.Models.Product.Order.Order;
-import homework.javaspring_model.Models.Product.Product;
-import homework.javaspring_model.Models.Product.ProductDto;
 import homework.javaspring_model.Models.User.Role;
 import homework.javaspring_model.Models.User.User;
 import homework.javaspring_model.Models.User.UserDto;
@@ -15,6 +13,8 @@ import jakarta.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -24,8 +24,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 
@@ -36,6 +36,9 @@ public class ProfileController {
     private final UserService userService;
     private final PersonService personService;
     private final OrderService orderService;
+
+    @Autowired
+    private MessageSource messageSource;
     private static final Logger log = LoggerFactory.getLogger(DatabaseInitializer.class);
 
     @GetMapping("/login")
@@ -56,7 +59,7 @@ public class ProfileController {
                 if(Objects.equals(p.getRole().getName(), "COMPANY"))
                     model.addAttribute("isAddProductFormActive", true);
                 else if(Objects.equals(p.getRole().getName(), "PERSON")){
-                    List<Order> orders = orderService.getPersonOrders(p.getId());;
+                    List<Order> orders = orderService.getPersonOrders(p.getId());
 
                     model.addAttribute("OrdersList", orders);
                 }
@@ -125,20 +128,13 @@ public class ProfileController {
         }
     }
     @GetMapping("/profile/wishlist")
-    public String getProductInfo(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+    public String getWishlist(Model model, Locale locale) {
         try {
-            ArrayList<ProductDto> wishlist = new ArrayList<>();
-            personService.findByUsername(userDetails.getUsername()).ifPresentOrElse(person -> {
-                person.getProducts().forEach(product -> {
-                    wishlist.add(new ProductDto(product));
-                });
-            }, ()->{
-                model.addAttribute("message", "Внутренняя ошибка: Список желаемого не найден");
-            });
+            model.addAttribute("pageTitle", messageSource.getMessage("page.title.wishlist", null, locale));
+            model.addAttribute("initMethod", 1);
+            model.addAttribute("message", null);
 
-            model.addAttribute("wishlist", wishlist);
-
-            return "wishlist";
+            return "index";
         } catch (Exception e) {
             model.addAttribute("message", "Внутренняя ошибка при запросе товара");
             return "redirect:/";
