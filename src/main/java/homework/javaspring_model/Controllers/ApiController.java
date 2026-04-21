@@ -4,6 +4,7 @@ import homework.javaspring_model.Config.DatabaseInitializer;
 import homework.javaspring_model.Models.ApiResponse;
 import homework.javaspring_model.Models.Product.Product;
 import homework.javaspring_model.Models.Product.ProductDto;
+import homework.javaspring_model.Models.Product.ProductMapper;
 import homework.javaspring_model.Services.CompanyService;
 import homework.javaspring_model.Services.ProductService;
 import jakarta.servlet.http.Cookie;
@@ -37,21 +38,15 @@ public class ApiController {
     public ResponseEntity<?> getProducts(@RequestParam Integer page,
                               @RequestParam Integer size) {
         try {
-            String status = "success";
-            String message = "";
-            ApiResponse response;
-            //Пагинация, значения по-умолчанию
             int currentPage = (page != null) ? page : DEFAULT_PAGE;
             int pageSize = (size != null) ? size : DEFAULT_SIZE;
 
             var pArr = Service.getFirstNElements(currentPage, pageSize)
                         .toArray(new ProductDto[0]);
 
-            // Успешный ответ с сообщением
-            response = new ApiResponse(status, message, pArr);
+            var response = new ApiResponse("success", null, pArr);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            // Ответ с ошибкой
             ApiResponse errorResponse = new ApiResponse("error", "Ошибка: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
@@ -66,7 +61,7 @@ public class ApiController {
             ApiResponse response;
 
             Service.findById(id).ifPresentOrElse(p->{
-                        dto.set(new ProductDto(p));
+                        dto.set(p);
                         status.set("success");
                     },
                     () -> {
@@ -86,22 +81,12 @@ public class ApiController {
     @PostMapping("/deleteProductById/{id}")
     public ResponseEntity<?> deleteById(@PathVariable Long id) {
         try {
-            AtomicReference<String> status = new AtomicReference<>("");
-            AtomicReference<String> message = new AtomicReference<>("");
-            ApiResponse response;
+            Service.deleteProductById(id);
 
-            Service.findById(id).ifPresentOrElse(p->{
-                Service.deleteProduct(p);
-                        status.set("success");
-                        message.set("Предмет успешно удалён!");
-                },
-                    () -> {
-                        status.set("fail");
-                        message.set("Товар с данным ID не найден!");
-                    });
-            // Успешный ответ с сообщением
-            response = new ApiResponse(status.get(), message.get());
-            return ResponseEntity.ok(response);
+            String status = "success";
+            String message = "Запрос получен";
+
+            return ResponseEntity.ok(new ApiResponse(status, message));
 
         } catch (Exception e) {
             // Ответ с ошибкой
@@ -115,20 +100,15 @@ public class ApiController {
             AtomicReference<String> status = new AtomicReference<>("");
             AtomicReference<String> message = new AtomicReference<>("");
             ApiResponse response;
-            //TODO: Реализовать бэк для добавления товара с фронта: 1. Связывание товара с компанией, которая прислала товар.
-            Service.findByName(productDto.getName()).ifPresentOrElse(p->{
-                        status.set("fail");
-                        message.set("Товар с таким названием уже существует!");
-                    },
-                    () -> {
-                        var username = "company";
-                        var company = Companies.findByUsername(username);
-                        var product = new Product(productDto);
-                        product.setCompany(company.orElseThrow());
-                        Service.addProduct(product).orElseThrow();
+
+            Service.addProduct(ProductMapper.DtoToEntity(productDto)).ifPresentOrElse(p->{
                         status.set("success");
                         message.set("Предмет успешно добавлен!");
+                    },
+                    () -> {
+                        status.set("fail");
                     });
+            ;
             // Успешный ответ с сообщением
             response = new ApiResponse(status.get(), message.get());
             return ResponseEntity.ok(response);

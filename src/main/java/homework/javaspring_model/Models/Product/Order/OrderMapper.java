@@ -15,7 +15,7 @@ public class OrderMapper {
         dto.setPersonId(order.getPerson().getId());
         dto.setPersonName(order.getPerson().getName() + " " + order.getPerson().getSurname());
         dto.setOrderDate(order.getOrderDate());
-        dto.setStatus(order.getStatus());
+        dto.setStatus(order.getStatus().getDescription());
         dto.setTotalAmount(order.getTotalAmount());
 
         if (order.getItems() != null) {

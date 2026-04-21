@@ -38,8 +38,8 @@ public class User {
 
     @Override
     public String toString(){
-        return String.format("Type: User\n" +
-                            "Name: '%1$s'\n" +
-                            "Role: '%2$s'\n", this.getUsername(), this.getRole());
+        return String.format("Type: User \n" +
+                            "Name: %s\n" +
+                            "Role: %s\n", this.getUsername(), this.getRole());
     }
 }

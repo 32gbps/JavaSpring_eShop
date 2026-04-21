@@ -1,22 +1,23 @@
 package homework.javaspring_model.Models.Product;
 
+
 import homework.javaspring_model.Models.User.Company.Company;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.JdbcTypeCode;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.hibernate.type.SqlTypes;
 
 @Data
 @NoArgsConstructor
 @Entity
 @Table(name = "products")
 public class Product {
-    public Product(ProductDto dto){
-        this.name = dto.getName();
-        this.description = dto.getDescription();
-        this.price = dto.getPrice();
-        this.company = dto.getCompany();
-    }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -35,4 +36,28 @@ public class Product {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "companies_id")
     private Company company;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "json")
+    private Map<String, String> attributes = new HashMap<>();
+//
+//    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+//    private List<ProductAttributeValue> attributes = new ArrayList<>();
+//
+//    // Вспомогательные методы
+//    public void addAttribute(Attribute attr, String value) {
+//        ProductAttributeValue pav = new ProductAttributeValue();
+//        pav.setProduct(this);
+//        pav.setAttribute(attr);
+//        pav.setValue(value);
+//        attributes.add(pav);
+//    }
+//
+//    public Object getAttributeValue(String attrName) {
+//        return attributes.stream()
+//                .filter(attr -> attr.getAttribute().getName().equals(attrName))
+//                .findFirst()
+//                .map(ProductAttributeValue::getValue)
+//                .orElse(null);
+//    }
 }

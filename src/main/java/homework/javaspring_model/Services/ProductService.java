@@ -2,17 +2,18 @@ package homework.javaspring_model.Services;
 
 import homework.javaspring_model.Models.Product.Product;
 import homework.javaspring_model.Models.Product.ProductDto;
+import homework.javaspring_model.Models.Product.ProductMapper;
 import homework.javaspring_model.Repositories.ProductRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -20,16 +21,27 @@ import java.util.Optional;
 public class ProductService {
     private final ProductRepository productRepository;
 
-    public Optional<Product> findById(Long id){
-        return productRepository.findById(id);
+    //TODO: Entity не должны выходить за пределы сервисов. Вне сервисов только Dto.
+    public Optional<ProductDto> findById(Long id){
+        try{
+            return Optional.of(ProductMapper.EntityToDto(productRepository.findById(id).orElseThrow()));
+        }
+        catch (Exception e){
+            return Optional.empty();
+        }
     }
-    public Optional<Product> findByName(String name){
-        return productRepository.findByName(name);
+    public Optional<ProductDto> findByName(String name){
+        try{
+            return Optional.of(ProductMapper.EntityToDto(productRepository.findByName(name).orElseThrow()));
+        }
+        catch (Exception e){
+            return Optional.empty();
+        }
     }
     public boolean isExistById(Long id){ return productRepository.existsById(id);}
     public ProductDto getProductById(Long id){
         var entity = productRepository.getReferenceById(id);
-        return new ProductDto(entity);
+        return ProductMapper.EntityToDto(entity);
     }
     public Optional<Product> addProduct(Product product){
         try{
@@ -38,18 +50,17 @@ public class ProductService {
             return Optional.empty();
         }
     }
-    public List<ProductDto> getFirstNElements(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int n) {
+    public List<ProductDto> getFirstNElements(int page, int n) {
+        // Нормализация значений
+        int validPage = Math.max(0, page);
+        int validSize = n > 0 ? n : 10;
 
-        var pEntityList = productRepository.findAll(
-                PageRequest.of(page, n, Sort.by("name").ascending())
-        ).stream().toList();
-        List<ProductDto> pDtoList = new ArrayList<>();
-        pEntityList.forEach(p->{
-            pDtoList.add(new ProductDto(p));
-        });
-        return pDtoList;
+        PageRequest pageRequest = PageRequest.of(validPage, validSize, Sort.by("name").ascending());
+        Page<Product> productPage = productRepository.findAll(pageRequest);
+
+        return productPage.stream()
+                .map(ProductMapper::EntityToDto)  // Используем stream API
+                .collect(Collectors.toList());
     }
     public Long getCount(){
         return productRepository.count();
@@ -57,10 +68,7 @@ public class ProductService {
     public void ClearTable(){
         productRepository.deleteAll();
     }
-    public void deleteById(Long id){
+    public void deleteProductById(Long id){
         productRepository.deleteById(id);
-    }
-    public void deleteProduct(Product product){
-        productRepository.delete(product);
     }
 }

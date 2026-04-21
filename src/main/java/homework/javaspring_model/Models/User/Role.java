@@ -27,6 +27,6 @@ public class Role {
 
     @Override
     public String toString(){
-        return String.format("Rolename: '%1%s'", this.getName());
+        return String.format("Rolename: %s", this.getName());
     }
 }

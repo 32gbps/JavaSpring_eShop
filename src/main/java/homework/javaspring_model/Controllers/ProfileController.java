@@ -2,6 +2,7 @@ package homework.javaspring_model.Controllers;
 
 import homework.javaspring_model.Config.DatabaseInitializer;
 import homework.javaspring_model.Models.Product.Order.Order;
+import homework.javaspring_model.Models.Product.Order.OrderDto;
 import homework.javaspring_model.Models.User.Role;
 import homework.javaspring_model.Models.User.User;
 import homework.javaspring_model.Models.User.UserDto;
@@ -59,7 +60,7 @@ public class ProfileController {
                 if(Objects.equals(p.getRole().getName(), "COMPANY"))
                     model.addAttribute("isAddProductFormActive", true);
                 else if(Objects.equals(p.getRole().getName(), "PERSON")){
-                    List<Order> orders = orderService.getPersonOrders(p.getId());
+                    List<OrderDto> orders = orderService.getPersonOrders(p.getId());
 
                     model.addAttribute("OrdersList", orders);
                 }

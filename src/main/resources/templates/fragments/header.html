@@ -1,20 +1,25 @@
 <!--header block-->
 <nav th:fragment="header" id="nav-header" class="header-navigation">
     <div id="block-logo">
-        <a class="navbar-brand">
+        <a class="navbar-brand" th:href="@{/}">
             <img th:src="@{/logo.png}" id="header-logo" alt="logo">
         </a>
     </div>
     <div id="block-products">
         <ul class="h-list">
-            <li><a th:href="@{/}" th:text="#{menu.home}">Главная</a></li>
             <li><a th:href="@{/}" th:text="#{menu.product}">Товары</a></li>
         </ul>
     </div>
     <div id="header-buttons" class="header-buttons">
         <div id="header-buttons-wishlist" class="header-button">
             <a th:href="@{/profile/wishlist}">
-                <span></span>
+                <svg class="wishlist_icon gray"
+                     xmlns="http://www.w3.org/2000/svg"
+                     viewBox="0 0 176 157"
+                     width="40"
+                     height="40">
+                    <path d="M148.136,84.904 L94.518,138.471 C92.748,140.239 90.562,141.338 88.275,141.771 C84.480,142.518 80.394,141.425 77.453,138.487 L23.835,84.920 C6.685,67.786 6.685,40.006 23.835,22.872 C40.986,5.738 68.792,5.738 85.942,22.872 L85.977,22.907 L86.029,22.855 C103.179,5.721 130.985,5.721 148.136,22.855 C165.286,39.989 165.286,67.769 148.136,84.904 Z"/>
+                </svg>
                 <span>Избранное</span>
             </a>
         </div>

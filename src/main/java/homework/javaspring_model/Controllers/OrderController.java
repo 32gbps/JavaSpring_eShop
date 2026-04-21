@@ -1,5 +1,6 @@
 package homework.javaspring_model.Controllers;
 
+import homework.javaspring_model.Models.ApiResponse;
 import homework.javaspring_model.Models.Product.Order.*;
 import homework.javaspring_model.Services.OrderService;
 import jakarta.validation.Valid;
@@ -10,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -23,20 +23,30 @@ public class OrderController {
     private OrderMapper orderMapper;
 
     // Создание заказа
-    @PostMapping
-    public ResponseEntity<OrderDto> createOrder(@Valid @RequestBody CreateOrderRequest request) {
-        Order order = orderService.createOrder(request);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(orderMapper.toDto(order));
+    @PostMapping("/createOrder")
+    public ResponseEntity<ApiResponse> createOrder(@Valid @RequestBody CreateOrderRequest request) {
+        try {
+            Order order = orderService.createOrder(request);
+
+            return ResponseEntity.ok(new ApiResponse("success", null, orderMapper.toDto(order)));
+        } catch (Exception e) {
+
+            ApiResponse errorResponse = new ApiResponse("error", "Ошибка: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
     }
 
     // Получение заказов покупателя
     @GetMapping("/person/{personId}")
-    public ResponseEntity<List<OrderDto>> getPersonOrders(@PathVariable Long personId) {
-        List<Order> orders = orderService.getPersonOrders(personId);
-        return ResponseEntity.ok(orders.stream()
-                .map(orderMapper::toDto)
-                .collect(Collectors.toList()));
+    public ResponseEntity<ApiResponse> getPersonOrders(@PathVariable Long personId) {
+        try {
+            List<OrderDto> orders = orderService.getPersonOrders(personId);
+
+            return ResponseEntity.ok(new ApiResponse("success", null, orders));
+        } catch (Exception e) {
+            ApiResponse errorResponse = new ApiResponse("error", "Ошибка: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
     }
 
     // Получение заказа с деталями

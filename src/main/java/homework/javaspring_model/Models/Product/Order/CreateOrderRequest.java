@@ -7,5 +7,5 @@ import java.util.List;
 @Data
 public class CreateOrderRequest {
     private Long personId;
-    private List<OrderItemRequest> items;
+    private OrderItemRequest[] items;
 }

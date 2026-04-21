@@ -33,7 +33,7 @@ public class Person {
     @JoinColumn(name = "users_id")
     private User user;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "person_products",
             joinColumns = @JoinColumn(name = "person_id"),

@@ -1,9 +1,6 @@
 package homework.javaspring_model.Services;
 
-import homework.javaspring_model.Models.Product.Order.CreateOrderRequest;
-import homework.javaspring_model.Models.Product.Order.Order;
-import homework.javaspring_model.Models.Product.Order.OrderItemRequest;
-import homework.javaspring_model.Models.Product.Order.OrderStatus;
+import homework.javaspring_model.Models.Product.Order.*;
 import homework.javaspring_model.Models.Product.Product;
 import homework.javaspring_model.Models.User.Person.Person;
 import homework.javaspring_model.Repositories.OrderRepository;
@@ -14,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -28,6 +26,8 @@ public class OrderService {
 
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private OrderMapper orderMapper;
 
     // Создание заказа
     public Order createOrder(CreateOrderRequest request) {
@@ -52,8 +52,11 @@ public class OrderService {
     }
 
     // Получение всех заказов покупателя
-    public List<Order> getPersonOrders(Long personId) {
-        return orderRepository.findByPersonId(personId);
+    public List<OrderDto> getPersonOrders(Long personId) {
+        var orders = orderRepository.findByPersonId(personId);
+        List<OrderDto> ordersDto = new ArrayList<>();
+        orders.forEach(order -> ordersDto.add(orderMapper.toDto(order)));
+        return ordersDto;
     }
 
     // Получение заказа с деталями

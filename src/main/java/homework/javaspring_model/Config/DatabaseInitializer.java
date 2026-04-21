@@ -1,6 +1,8 @@
 package homework.javaspring_model.Config;
 
 import homework.javaspring_model.Models.Product.Product;
+import homework.javaspring_model.Models.Product.ProductDto;
+import homework.javaspring_model.Models.Product.ProductMapper;
 import homework.javaspring_model.Models.User.Company.Company;
 import homework.javaspring_model.Models.User.Person.Person;
 import homework.javaspring_model.Models.User.Role;
@@ -14,6 +16,9 @@ import org.slf4j.LoggerFactory;                           // LoggerFactory
 import org.springframework.security.crypto.password.PasswordEncoder; // PasswordEncoder
 
 import java.time.LocalDate;
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Map;
 
 // User
 
@@ -50,9 +55,9 @@ public class DatabaseInitializer {
         var person = addPersonWitchUserAndRoleInfo("John", "Dow", LocalDate.of(1970,1,1), userPerson);
         // Компания
         log.info("Добавление компании");
-        var roleCompany = addRole("COMPANY");
-        var userCompany = addUserWithRole("company", "company123", "company@example.com", roleCompany);
-        var company = addCompanyWitchUserAndRoleInfo("ООО \"Рога и копыта\"", "1234-5678-9abc-defg", userCompany);
+        var roleVendor = addRole("VENDOR");
+        var userVendor = addUserWithRole("vendor", "vendor123", "vendor@example.com", roleVendor);
+        var vendor = addCompanyWitchUserAndRoleInfo("ООО \"Рога и копыта\"", "1234-5678-9abc-defg", userVendor);
 
 
         log.info("Добавление товаров");
@@ -63,36 +68,83 @@ public class DatabaseInitializer {
         String s3 = "Morbi iaculis, ligula in accumsan ultrices, augue diam blandit augue, vitae aliquam justo sem in est. Mauris porta, mi eu porttitor aliquet, nisi velit feugiat diam, ut aliquam dui ante at mauris. Nullam id tortor metus. Suspendisse nec nisl et elit interdum iaculis non a nunc. Donec imperdiet dolor augue, ac sollicitudin risus fermentum id. Ut in purus convallis, luctus eros imperdiet, cursus tellus. Praesent eget gravida magna. In dui elit, sagittis at mollis eu, interdum eget purus. Fusce nunc risus, gravida nec massa quis, fermentum porttitor felis. Sed eleifend pretium cursus. Nullam vulputate tortor in lectus dapibus, eget feugiat felis volutpat. Phasellus dignissim feugiat porta. Nunc sed quam non turpis condimentum aliquam. Duis quam lacus, laoreet eu eros et, tristique tempor sem.";
         String s4 = "Sed commodo mattis est, et semper libero dapibus id. Mauris vulputate augue lobortis lectus malesuada finibus. Nullam tempor tempor risus, et venenatis elit aliquet eget. Maecenas a scelerisque velit. Nulla rhoncus nunc sed sem feugiat faucibus. Maecenas non augue lorem. Nulla in magna vitae turpis porttitor laoreet. Ut ullamcorper in velit in laoreet. Fusce eleifend accumsan maximus. Integer vel est eros. Pellentesque mattis libero nunc, non posuere libero rhoncus a. Etiam malesuada enim et diam mattis malesuada vel quis quam. Vivamus feugiat maximus posuere. Vivamus molestie mauris mauris, a sodales nisi imperdiet nec.";
 
-        addProduct("Наволочка",s0, 400, company);
-        addProduct("Ботинок (левый)",s1, 700, company);
-        addProduct("Мокрый биткоин",s2, 275490, company);
-        addProduct("Ведро компрессии",s3, 27800, company);
-        addProduct("Бублик (без дырки)",s4, 40, company);
-        addProduct("Дырка (от бублика)", "o", 8, company);
+        Map<String, String> attributes = new HashMap<>();
+        attributes.put("Цвет", "Белый");
+        attributes.put("Вес", "200гр.");
+        attributes.put("Производитель", "ООО \"Подушечки\"");
+        addProduct("Наволочка",s0, 400, vendor, attributes);
+
+        attributes = new HashMap<>();
+        attributes.put("Цвет", "Черный");
+        attributes.put("Вес", "900гр.");
+        attributes.put("Материал", "Кожа");
+        attributes.put("Страна", "Китай");
+        addProduct("Ботинок (левый)",s1, 700, vendor, attributes);
+
+        attributes = new HashMap<>();
+        attributes.put("Цвет", "Золотой");
+        attributes.put("Вес", "0гр.");
+        attributes.put("Материал", "Чистая математика");
+        attributes.put("Страна", "Китай");
+        attributes.put("Волатильность", "Ещё какая!");
+        attributes.put("Целесообразность", "Сомнительно");
+        addProduct("Мокрый биткоин",s2, 275490, vendor, attributes);
+
+        attributes = new HashMap<>();
+        attributes.put("Цвет", "Ржавый металл");
+        attributes.put("Вес", "1кг.");
+        attributes.put("Материал", "Оцинкованная жесть");
+        attributes.put("Страна", "Молдавия");
+        attributes.put("Объём", "12л");
+        attributes.put("Серьёзно?", "Да!");
+        addProduct("Ведро компрессии",s3, 27800, vendor, attributes);
+
+        attributes = new HashMap<>();
+        attributes.put("Состав", "Мука, вода, сахар, дрожжи, что-то ещё...");
+        attributes.put("Вес", "1кг.");
+        attributes.put("Срок годности", "2 дня");
+        attributes.put("Страна", "Россия");
+        attributes.put("Комплектация", "Дырка поставляется отдельно");
+        addProduct("Бублик (без дырки)",s4, 40, vendor, attributes);
+
+        attributes = new HashMap<>();
+        attributes.put("Состав", "Пустота");
+        attributes.put("Вес", "0кг.");
+        attributes.put("Срок годности", "Неограниченно");
+        attributes.put("Страна", "Россия");
+        attributes.put("Комплектация", "Бублик поставляется отдельно");
+        addProduct("Дырка (от бублика)", "o", 8, vendor, attributes);
 
         printCountAll();
     }
 
-    private Product addProduct(String name, String description, Integer price, Company company) {
-
-        var addedProduct = productService.findByName(name).orElseGet(()->{
-            var nProduct = new Product();
-            nProduct.setName(name);
-            nProduct.setDescription(description);
-            nProduct.setPrice(price);
-            nProduct.setCompany(company);
-            return productService.addProduct(nProduct).orElseThrow();
-        });
-        log.info("Добавлен Product {}", addedProduct.getName());
-        return addedProduct;
+    private void addProduct(String name, String description, Integer price, Company company, Map<String, String> attributes) {
+        try {
+            if(productService.findByName(name).isPresent()){
+                log.info("Товар уже есть в базе");
+            }
+            else{
+                var nProduct = new ProductDto();
+                nProduct.setName(name);
+                nProduct.setDescription(description);
+                nProduct.setPrice(price);
+                nProduct.setCompany(company);
+                //nProduct.setAttributes(attributes);
+                var entity = ProductMapper.DtoToEntity(nProduct);
+                var addedProduct = productService.addProduct(entity).orElseThrow();
+                log.info("Добавлен Product {}", addedProduct.getName());
+            }
+        } catch (Exception e) {
+            log.info("Исключение {0}", e);
+        }
     }
-    private Company addCompanyWitchUserAndRoleInfo(String companyName, String identifier, User user) {
+    private Company addCompanyWitchUserAndRoleInfo(String vendorName, String identifier, User user) {
 
-        var company = companyService.findByName(companyName).orElseGet(()->{
+        var company = companyService.findByName(vendorName).orElseGet(()->{
             Company nCompany = new Company();
             nCompany.setUser(user);
             nCompany.setIdentifier(identifier);
-            nCompany.setName(companyName);
+            nCompany.setName(vendorName);
             return companyService.addCompany(nCompany).orElseThrow();
         });
         log.info("Добавлен Company {}", company);

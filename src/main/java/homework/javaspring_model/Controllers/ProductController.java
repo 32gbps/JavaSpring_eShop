@@ -51,7 +51,7 @@ public class ProductController {
 
             var product = productService.findById(id).orElseThrow();
 
-            model.addAttribute("productData", new ProductDto(product));
+            model.addAttribute("productData", product);
 
             return "productDetail";
         } catch (Exception e) {
