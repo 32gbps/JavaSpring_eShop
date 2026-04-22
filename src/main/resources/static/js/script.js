@@ -68,11 +68,9 @@ function addProduct() {
     const description = document.getElementById('product-input-description').value;
     const price = document.getElementById('product-input-price').value;
 
-    const attributesCatalog = document.querySelector(`[data-product-constructor="attributes-catalog"]`);
     const attributesArray = document.querySelectorAll(`[data-product-attributes="attribute-container"]`);
 
-    //TODO: Добавить получение ID продавца для привязки товара к продавцу на стороне сервера
-    const venId = -1;
+    const venId = getVendorId();
 
     const productData = {
         name: name,
@@ -81,12 +79,11 @@ function addProduct() {
         vendorId: venId,
         attributes: []
     };
-    //TODO: Добавить проверки: инициализация, корректность и т.д.
+
     for(let div of attributesArray)
     {
         let key = div.querySelector(`[data-product-attribute="key"]`).value;
-        let value = div.querySelector(`[data-product-attribute="value"]`).value;
-        productData.attributes[key]=value;
+        productData.attributes[key]=div.querySelector(`[data-product-attribute="value"]`).value;
     }
 
     console.log(productData);
@@ -345,26 +342,38 @@ function getUserId() {
         console.error('Данные не найдены');
         return -1;
     }
-
-    // Разбиваем строку на отдельные куки
     const cookieArrayString = cookieString.split(';');
-
-    // Ищем куку, которая содержит 'personId'
     const cookieItem = cookieArrayString.find(s => s.trim().startsWith('personId='));
-
     if (!cookieItem) {
         console.error('personId не найден в куках');
         return -1;
     }
-
-    // Извлекаем значение после знака '='
     const value = cookieItem.split('=')[1];
-
     if (!value) {
         console.error('Значение personId пустое');
         return -1;
     }
+    const id = parseInt(value, 10);
+    return id > 0 ? id : -1;
+}
+function getVendorId() {
+    const cookieString = document.cookie;
 
+    if (!cookieString || cookieString.length === 0) {
+        console.error('Данные не найдены');
+        return -1;
+    }
+    const cookieArrayString = cookieString.split(';');
+    const cookieItem = cookieArrayString.find(s => s.trim().startsWith('vendorId='));
+    if (!cookieItem) {
+        console.error('vendorId не найден в куках');
+        return -1;
+    }
+    const value = cookieItem.split('=')[1];
+    if (!value) {
+        console.error('Значение vendorId пустое');
+        return -1;
+    }
     const id = parseInt(value, 10);
     return id > 0 ? id : -1;
 }
@@ -551,13 +560,13 @@ function getConstructorDiv(){
                         </div>
                         <hr>
                         <div class="attributeContainer alignCenter" data-product-constructor="action-container">
-                            <button onclick="addAtribute()">Добавить атрибут</button>
+                            <button onclick="addAttribute()">Добавить атрибут</button>
                         </div>
                     </div>
                 </div>`;
     return div;
 }
-function addAtribute(){
+function addAttribute(){
     const catalog = document.querySelector(`[data-product-constructor="attributes-catalog"]`);
     catalog.appendChild(getAttributeDiv());
 }

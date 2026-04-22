@@ -3,7 +3,6 @@ package homework.javaspring_model.Models;
 import lombok.Getter;
 import lombok.Setter;
 
-// Общий класс для ответов API
 @Setter
 @Getter
 public class ApiResponse {

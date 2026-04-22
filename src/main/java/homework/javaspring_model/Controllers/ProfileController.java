@@ -35,12 +35,11 @@ import java.util.Objects;
 public class ProfileController {
     private final RoleService roleService;
     private final UserService userService;
-    private final PersonService personService;
     private final OrderService orderService;
 
     @Autowired
     private MessageSource messageSource;
-    private static final Logger log = LoggerFactory.getLogger(DatabaseInitializer.class);
+    private static final Logger log = LoggerFactory.getLogger(ProfileController.class);
 
     @GetMapping("/login")
     public String getLoginScreen() {

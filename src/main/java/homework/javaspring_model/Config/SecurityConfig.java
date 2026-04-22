@@ -1,5 +1,6 @@
 package homework.javaspring_model.Config;
 
+import homework.javaspring_model.Services.CompanyService;
 import homework.javaspring_model.Services.PersonService;
 import jakarta.servlet.http.Cookie;
 import lombok.AllArgsConstructor;
@@ -23,6 +24,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 public class SecurityConfig {
 
     private final PersonService personService;
+    private final CompanyService companyService;
     private static final Logger log = LoggerFactory.getLogger(SecurityConfig.class);
 
     @Bean
@@ -65,7 +67,15 @@ public class SecurityConfig {
                 //cookie.setSecure(true);
                 response.addCookie(cookie);
             });
-
+            companyService.findByUsername(username).ifPresent(x->{
+                var id = x.getId();
+                Cookie cookie = new Cookie("vendorId", id.toString());
+                cookie.setPath("/");
+                cookie.setMaxAge(30 * 24 * 60 * 60); // 30 дней
+                cookie.setHttpOnly(false);
+                //cookie.setSecure(true);
+                response.addCookie(cookie);
+            });
             response.sendRedirect("/");
         };
     }

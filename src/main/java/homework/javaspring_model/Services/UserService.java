@@ -1,6 +1,5 @@
 package homework.javaspring_model.Services;
 
-import homework.javaspring_model.Models.User.Role;
 import homework.javaspring_model.Models.User.User;
 import homework.javaspring_model.Repositories.UserRepository;
 import lombok.AllArgsConstructor;

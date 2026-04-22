@@ -1,81 +1,58 @@
 package homework.javaspring_model.Controllers;
 
-import homework.javaspring_model.Config.DatabaseInitializer;
 import homework.javaspring_model.Models.ApiResponse;
-import homework.javaspring_model.Models.Product.Product;
 import homework.javaspring_model.Models.Product.ProductDto;
 import homework.javaspring_model.Models.Product.ProductMapper;
-import homework.javaspring_model.Services.CompanyService;
 import homework.javaspring_model.Services.ProductService;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
+import java.util.NoSuchElementException;
 
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/product")
 public class ApiController {
     private final ProductService Service;
-    private final CompanyService Companies;
-    private static final Logger log = LoggerFactory.getLogger(DatabaseInitializer.class);
-    private static final int DEFAULT_PAGE = 0;  // Страницы с 0
-    private static final int DEFAULT_SIZE = 10; // 10 элементов на странице
+    private static final Logger log = LoggerFactory.getLogger(ApiController.class);
+    private static final int DEFAULT_PAGE = 0;
+    private static final int DEFAULT_SIZE = 10;
 
     @GetMapping(value = "/list", params = {"page", "size"})
-    public ResponseEntity<?> getProducts(@RequestParam Integer page,
-                              @RequestParam Integer size) {
+    public ResponseEntity<?> getProducts(@RequestParam Integer page, @RequestParam Integer size) {
         try {
             int currentPage = (page != null) ? page : DEFAULT_PAGE;
             int pageSize = (size != null) ? size : DEFAULT_SIZE;
 
-            var pArr = Service.getFirstNElements(currentPage, pageSize)
-                        .toArray(new ProductDto[0]);
+            var listOfProducts = Service.getFirstNElements(currentPage, pageSize);
 
-            var response = new ApiResponse("success", null, pArr);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            ApiResponse errorResponse = new ApiResponse("error", "Ошибка: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+            return ResponseEntity.ok(new ApiResponse("success", "", listOfProducts));
+        }
+        catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("error", "Ошибка на сервере"));
         }
     }
-
     @GetMapping("/getProductById/{id}")
     public ResponseEntity<?> getById(@PathVariable Long id) {
         try {
-            AtomicReference<String> status = new AtomicReference<>("");
-            AtomicReference<String> message = new AtomicReference<>("");
-            AtomicReference<ProductDto> dto = new AtomicReference<>();
-            ApiResponse response;
+            String status = "success";
+            ProductDto dto = Service.findById(id).orElseThrow();
 
-            Service.findById(id).ifPresentOrElse(p->{
-                        dto.set(p);
-                        status.set("success");
-                    },
-                    () -> {
-                        status.set("fail");
-                        message.set("Товар с данным ID не найден!");
-                    });
-            // Успешный ответ с сообщением
-            response = new ApiResponse(status.get(), message.get(),dto.get());
-            return ResponseEntity.ok(response);
-
-        } catch (Exception e) {
-            // Ответ с ошибкой
-            ApiResponse errorResponse = new ApiResponse("error", "Ошибка: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+            return ResponseEntity.ok(new ApiResponse(status, "",dto));
+        }
+        catch (NoSuchElementException e) {
+        return ResponseEntity.ok(
+                new ApiResponse("fail", "Товар с данным ID не найден!"));
+        }
+        catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("error", "Ошибка на сервере"));
         }
     }
     @PostMapping("/deleteProductById/{id}")
@@ -89,7 +66,6 @@ public class ApiController {
             return ResponseEntity.ok(new ApiResponse(status, message));
 
         } catch (Exception e) {
-            // Ответ с ошибкой
             ApiResponse errorResponse = new ApiResponse("error", "Ошибка при удалении: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
@@ -97,21 +73,18 @@ public class ApiController {
     @PostMapping("/addProduct")
     public ResponseEntity<?> addProduct(@RequestBody ProductDto productDto) {
         try {
-            AtomicReference<String> status = new AtomicReference<>("");
-            AtomicReference<String> message = new AtomicReference<>("");
-            ApiResponse response;
+            String status = "fail";
+            String message = "";
 
-            Service.addProduct(ProductMapper.DtoToEntity(productDto)).ifPresentOrElse(p->{
-                        status.set("success");
-                        message.set("Предмет успешно добавлен!");
-                    },
-                    () -> {
-                        status.set("fail");
-                    });
-            ;
-            // Успешный ответ с сообщением
-            response = new ApiResponse(status.get(), message.get());
-            return ResponseEntity.ok(response);
+            var res = Service.addProduct(ProductMapper.DtoToEntity(productDto));
+
+            if(res.isPresent())
+            {
+                status = "success";
+                message = "Предмет успешно добавлен!";
+            }
+
+            return ResponseEntity.ok(new ApiResponse(status, message));
 
         } catch (Exception e) {
             ApiResponse errorResponse = new ApiResponse("error", e.getMessage());

@@ -40,24 +40,4 @@ public class Product {
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "json")
     private Map<String, String> attributes = new HashMap<>();
-//
-//    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-//    private List<ProductAttributeValue> attributes = new ArrayList<>();
-//
-//    // Вспомогательные методы
-//    public void addAttribute(Attribute attr, String value) {
-//        ProductAttributeValue pav = new ProductAttributeValue();
-//        pav.setProduct(this);
-//        pav.setAttribute(attr);
-//        pav.setValue(value);
-//        attributes.add(pav);
-//    }
-//
-//    public Object getAttributeValue(String attrName) {
-//        return attributes.stream()
-//                .filter(attr -> attr.getAttribute().getName().equals(attrName))
-//                .findFirst()
-//                .map(ProductAttributeValue::getValue)
-//                .orElse(null);
-//    }
 }

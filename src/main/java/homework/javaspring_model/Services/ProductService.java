@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 public class ProductService {
     private final ProductRepository productRepository;
 
-    //TODO: Entity не должны выходить за пределы сервисов. Вне сервисов только Dto.
     public Optional<ProductDto> findById(Long id){
         try{
             return Optional.of(ProductMapper.EntityToDto(productRepository.findById(id).orElseThrow()));
