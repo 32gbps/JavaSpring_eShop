@@ -16,5 +16,5 @@ public class ProductDto {
     private String description;
     private Integer price;
     private Company company;
-    //private Map<String, String> attributes;
+    private Map<String, String> attributes;
 }

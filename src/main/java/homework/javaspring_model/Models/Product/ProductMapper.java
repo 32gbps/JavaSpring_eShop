@@ -11,7 +11,7 @@ public class ProductMapper{
         p.setDescription(dto.getDescription());
         p.setCompany(dto.getCompany());
         p.setPrice(dto.getPrice());
-        //p.setAttributes(dto.getAttributes());
+        p.setAttributes(dto.getAttributes());
 
         return p;
     }
@@ -22,7 +22,7 @@ public class ProductMapper{
         //Dto.setCompany(entity.getCompany());
         Dto.setDescription(entity.getDescription());
         Dto.setPrice(entity.getPrice());
-        //Dto.setAttributes(entity.getAttributes());
+        Dto.setAttributes(entity.getAttributes());
 
         return Dto;
     }

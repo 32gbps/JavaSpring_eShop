@@ -167,8 +167,13 @@ function toggleProduct(arrayKey, productId) {
 function toggleCartProduct(productId){toggleProduct(CART_KEY, productId);}
 function toggleWishlistProduct(productId){
     toggleProduct(WISHLIST_KEY, productId);
-    const widget = document.querySelector(`[data-widget-id="${productId}"]`);
+    let widget = document.querySelector(`[data-widget-id="${productId}"]`);
+    if(widget == null)
+        widget = document.getElementById('Product-ShortParameters-container');
+
     const button = widget.querySelector(`[data-widget-element="button-wishlist"]`);
+
+
     if(isInWishlist(productId) || !button.classList.contains('active'))
         button.classList.add('active');
     else
