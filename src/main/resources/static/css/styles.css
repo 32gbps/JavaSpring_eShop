@@ -348,6 +348,7 @@ main, .content, .col, .row{
     border-radius: 20px;
 }
 .Review-card{
+    margin: 10px 0;
     padding: 10px;
     border-radius: 10px;
     background-color: rgba(0, 0, 0, 0.10);
@@ -370,7 +371,15 @@ main, .content, .col, .row{
     flex-direction: column;
     padding: 5px;
 }
-
+#review-form{
+    width: 100%;
+    display: grid;
+    max-width: inherit;
+}
+.review-form-inputDiv{
+    display: flex;
+    flex-direction: column;
+}
 .Review-card-new-comment-form textarea{
     max-width: 100%;
     width: 100%;

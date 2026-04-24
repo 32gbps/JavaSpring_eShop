@@ -586,3 +586,313 @@ function getAttributeDiv(){
                     </div>`;
     return div;
 }
+// ======================================== Reviews ==================================================
+function showProductDetail(productId){
+    const mainContainer = document.getElementById('main-container');
+    let productData = getProductById(productId);
+
+    const detailWidget = getProductDetailWidget(productData);
+    mainContainer.innerHTML = ``;
+    mainContainer.appendChild(detailWidget);
+}
+function getProductDetailWidget(productData) {
+    const div = document.createElement('div');
+    div.setAttribute('data-product-id', productData.id);
+    div.setAttribute('id', 'ProductDetailInfo-Container');
+    div.innerHTML = `
+    <!--Краткое инфо о товаре-->
+    <div id="Product-ShortInfo-container">
+        <!-- Фото товара -->
+        <div id="Product-Photo-container">
+            <img src="PhotoIconTemplate.png" alt="PhotoTemplate">
+        </div>
+        <!--Характеристики-->
+        <div id="Product-ShortParameters-container">
+            <h3>О товаре</h3>
+            <div class="Product-About-ShortInfo-List"></div>
+            <div class="actionBar product-buy-action">
+                <div class="flex-container">
+                    <label class="p3" for="Product-Price">Цена</label>
+                    <span class="p3" id="Product-Price">${productData.price}</span>
+                    <span class="p3" id="Product-Price-Valute-Sign">Р</span>
+                </div>
+                <div class="flex-container">
+                    <div class="flex-container">
+                        <button class="toggleWishlist-btn" data-widget-element="button-wishlist" onclick="toggleWishlistProduct(${productData.id})">
+                            <svg class="wishlist_icon"
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 176 157"
+                                width="40"
+                                height="40">
+                                <path d="M148.136,84.904 L94.518,138.471 C92.748,140.239 90.562,141.338 88.275,141.771 C84.480,142.518 80.394,141.425 77.453,138.487 L23.835,84.920 C6.685,67.786 6.685,40.006 23.835,22.872 C40.986,5.738 68.792,5.738 85.942,22.872 L85.977,22.907 L86.029,22.855 C103.179,5.721 130.985,5.721 148.136,22.855 C165.286,39.989 165.286,67.769 148.136,84.904 Z"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="flex-container">
+                        <button id="btn-buyProduct" onclick="toggleProduct(${productData.id})">Купить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Полная информация о товаре-->
+    `;
+
+    const fullInfoContainer = document.createElement('div');
+    fullInfoContainer.setAttribute('id', 'Product-FullInfo-container');
+    fullInfoContainer.innerHTML =
+    `<h2>Описание</h2>
+    <div id="Product-Description-container">
+        <span id="Product-Description-Text">${productData.description}</span>
+    </div>
+    <h3>Характеристики</h3>`;
+
+    const PAc = document.createElement('div');
+    fullInfoContainer.appendChild(PAc);
+
+    PAc.setAttribute('id', 'Product-Attributes-container');
+
+    const PAS = document.createElement('div');
+    const hr = document.createElement('hr');
+    PAS.classList.add('Product-Attributes-Subcontainer');
+    for(let attribute in productData.attributes){
+        let attributeDiv = document.createElement('div');
+        attributeDiv.setAttribute('data-pdi', 'attribute');
+        attributeDiv.classList.add('Product-Attribute-Container');
+        attributeDiv.classList.add('p6');
+        attributeDiv.innerHTML = `
+        <span data-pdi-attribute="key" class="Product-About-FullInfo-Key">${attribute.key}:</span>
+        <span data-pdi-attribute="value" class="Product-About-FullInfo-Value">${attribute.key}</span>
+        `;
+        PAS.appendChild(attributeDiv);
+    }
+    PAc.appendChild(PAS);
+    PAc.appendChild(hr);
+
+    const h2Review = document.createElement('h2');
+    h2Review.innerText = 'Отзывы';
+    div.appendChild(h2Review);
+
+    const reviewContainer = document.createElement('div');
+    reviewContainer.setAttribute('id', 'Product-Reviews-container');
+    div.appendChild(reviewContainer);
+
+    return div;
+}
+//Инициализация странницы с деталями товара
+async function initProductDetail(productId) {
+    //Получаем div для виджетов с отзывами
+    const reviewContainer = document.getElementById('Product-Reviews-container');
+    //Запрашиваем список с данными отзывов на товар
+    const revData = await getProductReviewsData(productId);
+
+    reviewContainer.appendChild(getReviewForm(productId));
+    //Если отзывов нет, то добавляем форму отправки отзыва и выходим
+    if (revData.length === 0) return;
+    //Пробегаем по всему списку и на его основе формируем виджеты отзывов, которые добавляем на страницу
+    console.log(revData);
+    for(let data of revData.data)
+    {
+        console.log(data);
+        reviewContainer.appendChild(getReviewWidget(data));
+    }
+}
+async function getProductReviewsData(productId) {
+    const reviewsData = [];
+    if (productId !== '') {
+        let id = parseInt(productId, 10);
+
+        if (isNaN(id) || id < 0) {
+            return;
+        }
+
+        let url = `/api/product/getProductReviews/${productId}`;
+        return await fetch(url)
+            .then(response => response.json()).catch(e=>{
+                console.error(e);
+                return [];
+            });
+    }
+    return reviewsData;
+}
+
+function getReviewForm(productId) {
+    const div = document.createElement('div');
+    div.classList.add('Review-card');
+    div.setAttribute('id', 'review-form');
+
+    const inputP = document.createElement('div');
+    inputP.classList.add('review-form-inputDiv');
+    inputP.classList.add('p3');
+    inputP.innerHTML = `<label for="review-form-input-positives">Достоинства</label>
+                        <input id="review-form-input-positives" type="text" maxlength="128">`;
+    div.appendChild(inputP);
+
+    const inputN = document.createElement('div');
+    inputN.classList.add('review-form-inputDiv');
+    inputN.classList.add('p3');
+    inputN.innerHTML = `<label for="review-form-input-negatives">Недостатки</label>
+                        <input id="review-form-input-negatives" type="text" maxlength="128">`;
+    div.appendChild(inputN);
+
+    const inputD = document.createElement('div');
+    inputD.classList.add('review-form-inputDiv');
+    inputD.classList.add('p3');
+    inputD.innerHTML = `<label for="review-form-input-description">Описание</label>
+                        <textarea id="review-form-input-description" maxlength="512" rows="4" cols="4"></textarea>`;
+    div.appendChild(inputD);
+
+    const controlD = document.createElement('div');
+    controlD.classList.add('review-form-controlDiv');
+    controlD.classList.add('alignEnd');
+    controlD.classList.add('p3');
+    controlD.innerHTML = `<button onclick="addReview(productId)">Отправить</button>`;
+    div.appendChild(controlD);
+
+    return div;
+}
+function getReviewWidget(reviewData) {
+    const div = document.createElement('div');
+    div.setAttribute('data-review-widget-id', reviewData.id);
+    div.classList.add('Review-card');
+    div.innerHTML = `
+    <div class="comment-userinfo">
+        <img src="userProfileAvatar.jpg" alt="User-avatar">
+        <span>${reviewData.username}</span>
+    </div>
+    <div class="Review-card-statline">
+        <div class="comment-date">
+            <span>NO DATA</span>
+        </div>
+    </div>
+    <div class="Review-card-text">
+        <label for="Review-card-positiveSide">Достоинства</label>
+        <div id="Review-card-positiveSide">
+            <span>${reviewData.positive}</span>
+        </div>
+        <label for="Review-card-negativeSide">Недостатки</label>
+        <div id="Review-card-negativeSide">
+            <span>${reviewData.negative}</span>
+        </div>
+        <label for="Review-card-comment-author">Комментарий</label>
+        <div id="Review-card-comment-author">
+            <span>${reviewData.description}</span>
+        </div>
+    </div>
+    <div class="comment-controls">
+        <div class="comment-controls-comments">
+            <button onclick="initReviewComments(${reviewData.reviewId})">Комментарии(${reviewData.commentCount})</button>
+        </div>
+        <div class="comment-controls-votes">
+            <button class="comment-controls-button-like" onclick="setLike(${reviewData.reviewId})">Like</button>
+                <span class="comment-controls-comment-score">${reviewData.votes}</span>
+            <button class="comment-controls-button-dislike" onclick="setDislike(${reviewData.reviewId})">Dislike</button>
+        </div>
+    </div>
+    <div class="commentList" data-review-comments-list="${reviewData.id}"></div>`;
+    return div;
+}
+
+function initReviewComments(reviewId, isNeedForm) {
+    const commentContainer = document.querySelector(`[data-review-comments-list="${reviewId}"]`);
+
+    if(!commentContainer)
+        console.error(`commentContainer with id: ${reviewId} is null`);
+    if(isNeedForm === true)
+        commentContainer.appendChild(getCommentForm(reviewId));
+
+    commentContainer.appendChild(getCommentForm(reviewId));
+
+    const commentsData = getReviewCommentsData(reviewId);
+    commentsData.data.forEach(data =>{
+        let commentWidget = getCommentWidget(data);
+        commentContainer.appendChild(commentWidget);
+    })
+}
+//=================================================== Comments =================================
+function getCommentWidget(commentData) {
+    const div = document.createElement('div');
+    div.setAttribute('data-comment-widget-id', commentData.id);
+    div.classList.add('Review-card-comment');
+    div.innerHTML = `
+            <div class="comment-userinfo">
+                <img th:src="@{/userProfileAvatar.jpg}" alt="User-avatar">
+                <span>${commentData.userId}</span>
+            </div>
+            <div class="comment-date">
+                <span>1.02.2026</span>
+            </div>
+            <div class="comment-text">
+                <span>${commentData.text}</span>
+            </div>
+            <div class="comment-controls">
+                <div class="comment-controls-comments">
+                    <button>Комментарии</button>
+                </div>
+                <div class="comment-controls-votes">
+                    <button class="comment-controls-button-like" onclick="setLike(reviewId)">Like</button>
+                    <span class="comment-controls-comment-score">42</span>
+                    <button class="comment-controls-button-dislike" onclick="setDislike(reviewId)">Dislike</button>
+                </div>
+            </div>
+            <div class="commentList">
+            </div>`;
+    return div;
+}
+async function getReviewCommentsData(reviewId) {
+    const commentsData = [];
+    if (reviewId !== '') {
+        let id = parseInt(reviewId, 10);
+
+        if (isNaN(id) || id < 0) {
+            return;
+        }
+
+        let url = `/api/product/getReviewComments/${reviewId}`;
+        return await fetch(url)
+            .then(response => response.json()).catch(e=>{
+                console.error(e);
+                return [];
+            });
+    }
+    return commentsData;
+}
+function addReview(productId) {
+    const posText = document.getElementById('review-form-input-positives').value;
+    const negText = document.getElementById('review-form-input-negatives').value;
+    const descText = document.getElementById('review-form-input-description').value;
+    const userId = getUserId();
+    if(!posText || !negText || !descText || !userId)
+        return;
+    const reviewDto = {
+        userId: userId,
+        productId: productId,
+        positive: posText,
+        negative: negText,
+        description: descText
+    };
+    fetch('/api/product/addReview', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(reviewDto)
+    })
+        .then(response => response.json())
+        .then(json => {
+            let text = `Status code: ${json.status}\n
+                                Message: ${json.message}`
+            printMessage(text);
+        }).catch(e=>console.error(e));
+}
+function addComment(reviewId) {
+}
+function getCommentForm(reviewId) {
+    const div = document.createElement('div');
+    div.classList.add('Review-card-new-comment-form');
+    div.innerHTML = `
+            <textarea placeholder="Текст комментария..."></textarea>
+            <button onclick="addComment(reviewId)">Отправить</button>
+        `;
+    return div;
+}

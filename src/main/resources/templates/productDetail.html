@@ -1,16 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ru">
 <head th:replace="fragments/head :: head(${productData.name})"></head>
-<body>
+<body  th:onload="|initProductDetail(${productData.getId()})|">
 <header th:insert="~{fragments/header::header}"></header>
+<div id="div-infoBlock" th:insert="~{fragments/infoBlock::infoBlock(${message})}"></div>
 <main>
     <div class="side-container">
     </div>
     <div class="main-container">
-        <!-- Messages -->
-        <div class="messageOut">
-            <span id="messageOut-span"></span>
-        </div>
+        <h2 th:text="${productData.name}"></h2>
         <!--Краткое инфо о товаре-->
         <div id="Product-ShortInfo-container">
             <!-- Фото товара -->
@@ -21,19 +19,11 @@
             <div id="Product-ShortParameters-container">
                 <h3>О товаре</h3>
                 <div class="Product-About-ShortInfo-List">
-<!--                    <div class="Product-About-ShortInfo-block">-->
-<!--                        <div class="Product-About-ShortInfo-KeyValuePair">-->
-<!--                            <span class="Product-About-ShortInfo-Key">Key:</span>-->
-<!--                            <span class="Product-About-ShortInfo-Value">value</span>-->
-<!--                        </div>-->
-<!--                        <hr>-->
-<!--                    </div>-->
                 </div>
                 <div class="actionBar product-buy-action">
                     <div class="flex-container">
                         <label class="p3" for="Product-Price">Цена</label>
-                        <span class="p3" id="Product-Price" th:text="${productData.price}">12345</span>
-                        <span class="p3" id="Product-Price-Valute-Sign">Р</span>
+                        <span class="p3" id="Product-Price" th:text="${productData.price}"> ₽</span>
                     </div>
                     <div class="flex-container">
                         <div class="flex-container">
@@ -66,93 +56,19 @@
             <div id="Product-FullParameters-container">
                 <div class="Product-About-FullInfo-List">
                     <div class="Product-About-FullInfo-block" th:if="${productData.attributes != null}">
-                        <div class="Product-About-FullInfo-KeyValuePair" th:each="attribute : ${productData.attributes}">
-                            <span class="Product-About-FullInfo-Key" th:text="${attribute.getKey()}">Key:</span>
-                            <span class="Product-About-FullInfo-Value" th:text="${attribute.getValue()}">value</span>
-                            <hr>
+                        <div data-pdi="attribute" class="Product-Attribute-Container p6" th:each="attribute : ${productData.attributes}">
+                            <span data-pdi-attribute="key" class="Product-About-FullInfo-Key" th:text="${attribute.getKey()}">Key:</span>
+                            <span data-pdi-attribute="value" class="Product-About-FullInfo-Value" th:text="${attribute.getValue()}">value</span>
                         </div>
+                        <hr>
                     </div>
                 </div>
             </div>
         </div>
         <!--Отзывы-->
         <h2>Отзывы</h2>
-        <!-- TODO: Добавить обработчик-->
-        <div id="Product-Reviews-container" th:onload="|loadReviews(${productData.getId()})|">
-<!--        <div id="review-id-${reviewId}" class="Review-card">-->
-<!--            <div class="comment-userinfo">-->
-<!--                <img src="userProfileAvatar.jpg" alt="User-avatar">-->
-<!--                <span>Nickname</span>-->
-<!--            </div>-->
-<!--            <div class="Review-card-statline">-->
-<!--                <div class="comment-date">-->
-<!--                    <span>1.02.2026</span>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div class="Review-card-text">-->
-<!--                <label for="Review-card-positiveSide">Достоинства</label>-->
-<!--                <div id="Review-card-positiveSide">-->
-<!--                    <span>-->
-<!--                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus rutrum tempus turpis et dapibus. Ut ut.-->
-<!--                    </span>-->
-<!--                </div>-->
-<!--                <label for="Review-card-negativeSide">Недостатки</label>-->
-<!--                <div id="Review-card-negativeSide">-->
-<!--                    <span>-->
-<!--                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas id mauris tellus. Aliquam vulputate pulvinar nisl.-->
-<!--                    </span>-->
-<!--                </div>-->
-<!--                <label for="Review-card-comment-author">Комментарий</label>-->
-<!--                <div id="Review-card-comment-author">-->
-<!--                    <span>-->
-<!--                        Nullam congue leo eu pharetra ullamcorper. Vestibulum vitae est risus. Suspendisse venenatis tortor quis odio aliquet, sed mattis libero lacinia. Pellentesque tempus tellus leo. Praesent eu eros sapien. Vestibulum eu arcu nunc. Integer neque odio, suscipit vel elementum vitae, cursus sed massa. Proin convallis tortor quis augue congue vestibulum.-->
-<!--                    </span>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div class="comment-controls">-->
-<!--                <div class="comment-controls-comments">-->
-<!--                    <button onclick="showComments(reviewId)">Комментарии</button>-->
-<!--                </div>-->
-<!--                <div class="comment-controls-votes">-->
-<!--                    <button class="comment-controls-button-like" onclick="setLike(reviewId)">Like</button>-->
-<!--                    <span class="comment-controls-comment-score">42</span>-->
-<!--                    <button class="comment-controls-button-dislike" onclick="setDislike(reviewId)">Dislike</button>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div class="commentList">-->
-<!--                <form  class="Review-card-new-comment-form" method="POST">-->
-<!--                    <textarea placeholder="Текст комментария..."></textarea>-->
-<!--                    <button>Отправить</button>-->
-<!--                </form>-->
-<!--                <div class="Review-card-comment">-->
-<!--                    <div class="comment-userinfo">-->
-<!--                        <img th:src="@{/userProfileAvatar.jpg}" alt="User-avatar">-->
-<!--                        <span>Nickname</span>-->
-<!--                    </div>-->
-<!--                    <div class="comment-date">-->
-<!--                        <span>1.02.2026</span>-->
-<!--                    </div>-->
-<!--                    <div class="comment-text">-->
-<!--                        <span>-->
-<!--                            Sed consectetur urna arcu, non condimentum metus accumsan sit amet. Donec convallis nisi ante, non imperdiet sapien efficitur non. Pellentesque lacinia dignissim urna eu aliquam. Nam tempus felis dui, eu ultrices leo sodales dapibus. Fusce in elementum est. Nam molestie metus tellus, vitae maximus quam vulputate nec. Etiam dapibus mollis felis in lobortis. Vivamus faucibus orci a convallis pharetra. Pellentesque et sapien id elit eleifend varius. Nunc cursus laoreet fringilla. Integer justo ligula, commodo ac metus id, porta sagittis magna. Pellentesque tempus malesuada mi, eu pretium lorem scelerisque eget.-->
-<!--                        </span>-->
-<!--                    </div>-->
-<!--                    <div class="comment-controls">-->
-<!--                        <div class="comment-controls-comments">-->
-<!--                            <button onclick="showComments(reviewId)">Комментарии</button>-->
-<!--                        </div>-->
-<!--                        <div class="comment-controls-votes">-->
-<!--                            <button class="comment-controls-button-like" onclick="setLike(reviewId)">Like</button>-->
-<!--                            <span class="comment-controls-comment-score">42</span>-->
-<!--                            <button class="comment-controls-button-dislike" onclick="setDislike(reviewId)">Dislike</button>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    <div class="commentList">-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-    </div>
+        <div id="Product-Reviews-container">
+        </div>
     </div>
 </main>
 <footer>
