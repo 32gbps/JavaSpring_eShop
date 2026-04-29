@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ru">
-<head th:replace="fragments/head::head(${pageTitle})"></head>
+<head th:replace="~{fragments/head::head(${pageTitle})}"></head>
 <body th:onload="|initPage(${initMethod})|">
     <header th:insert="~{fragments/header::header}"></header>
     <div id="div-infoBlock" th:insert="~{fragments/infoBlock::infoBlock(${message})}"></div>

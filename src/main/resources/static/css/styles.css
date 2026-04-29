@@ -184,10 +184,33 @@ main, .content, .col, .row{
 .column-brand{width: 80px;}
 .column-price{width: 70px;}
 .column-action{width: 80px;}
-#loginForm{
+.registerForm-div{
+    display: grid;
+    align-items: center;
+    align-content: center;
+    text-align: center;
+}
+.registerForm{
+    background-color: whitesmoke;
+    border-radius: 10px;
+    display: grid;
+    grid-template-rows: auto;
+    grid-template-columns: auto;
+    width: 30%;
+    margin: 10% 35%;
+}
+.registerForm a{
+    color: #0056b3;
+}
+.input-container{
     display: flex;
     flex-direction: column;
+    padding: 6px;
 }
+/*#loginForm{*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*}*/
 .table-product a{
     color: black;
 }

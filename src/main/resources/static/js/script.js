@@ -83,7 +83,9 @@ function addProduct() {
     for(let div of attributesArray)
     {
         let key = div.querySelector(`[data-product-attribute="key"]`).value;
-        productData.attributes[key]=div.querySelector(`[data-product-attribute="value"]`).value;
+        let value =div.querySelector(`[data-product-attribute="value"]`).value;
+        productData.attributes.push({key: key,
+        value:value});
     }
 
     console.log(productData);
@@ -397,13 +399,7 @@ function doOrder() {
         body:JSON.stringify(requestBody)
     });
     return fetch(request)
-        .then(response =>{
-            if(response.ok)
-                return response.json();
-            else
-                alert(`Error code: ${response.status}`);
-            return null;
-        })
+        .then(response => response.json())
         .then(js=>{
             if(js.status === 'success')
             {
@@ -413,7 +409,11 @@ function doOrder() {
                 document.getElementById('main-container').innerHTML = ``;
             }
             else
-                console.error(js.message);
+            {
+                console.error(js);
+                alert(js.message);
+            }
+
         });
 }
 function clearProductCart() {
@@ -423,7 +423,7 @@ function clearProductCart() {
         console.log('Корзина очищена!');
 }
 //=================================================================================
-function showPersonInfo() {
+function showAccountInfo() {
 
 }
 function showOrders() {
@@ -683,10 +683,12 @@ function getProductDetailWidget(productData) {
 async function initProductDetail(productId) {
     //Получаем div для виджетов с отзывами
     const reviewContainer = document.getElementById('Product-Reviews-container');
+
     //Запрашиваем список с данными отзывов на товар
     const revData = await getProductReviewsData(productId);
-
-    reviewContainer.appendChild(getReviewForm(productId));
+    let form = getReviewForm(productId);
+    console.log(form);
+    reviewContainer.appendChild(form);
     //Если отзывов нет, то добавляем форму отправки отзыва и выходим
     if (revData.length === 0) return;
     //Пробегаем по всему списку и на его основе формируем виджеты отзывов, которые добавляем на страницу
@@ -717,6 +719,7 @@ async function getProductReviewsData(productId) {
 }
 
 function getReviewForm(productId) {
+
     const div = document.createElement('div');
     div.classList.add('Review-card');
     div.setAttribute('id', 'review-form');
@@ -746,7 +749,7 @@ function getReviewForm(productId) {
     controlD.classList.add('review-form-controlDiv');
     controlD.classList.add('alignEnd');
     controlD.classList.add('p3');
-    controlD.innerHTML = `<button onclick="addReview(productId)">Отправить</button>`;
+    controlD.innerHTML = `<button onclick="addReview(${productId})">Отправить</button>`;
     div.appendChild(controlD);
 
     return div;
