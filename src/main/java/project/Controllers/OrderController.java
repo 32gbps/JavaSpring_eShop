@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -38,7 +39,7 @@ public class OrderController {
 
     // Получение заказов покупателя
     @GetMapping("/person/{customerId}")
-    public ResponseEntity<ApiResponse> getCustomerOrders(@PathVariable Long customerId) {
+    public ResponseEntity<ApiResponse> getCustomerOrders(@PathVariable UUID customerId) {
         try {
             List<OrderDto> orders = orderService.getCustomerOrders(customerId);
 

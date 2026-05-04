@@ -2,17 +2,22 @@ package project.Models.Product;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+import java.util.UUID;
+
+
 @NoArgsConstructor
+@Setter
+@Getter
 @Entity
 @Table(name = "reviews")
 public class Review {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
     @Column(name = "authorId", nullable = false)
     private Long userId;
     @Column(name = "productId", nullable = false)

@@ -17,6 +17,7 @@ import project.Repositories.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -60,7 +61,7 @@ public class OrderService {
     }
 
     // Получение всех заказов покупателя
-    public List<OrderDto> getCustomerOrders(Long userId) {
+    public List<OrderDto> getCustomerOrders(UUID userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         Customer customer = customerRepository.findByUsername(user.getUsername())

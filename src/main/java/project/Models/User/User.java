@@ -2,10 +2,14 @@ package project.Models.User;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+import java.util.UUID;
+
+@Setter
+@Getter
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
@@ -16,8 +20,8 @@ public class User {
         this.password = userDto.getPassword();
     }
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(name = "email")
     private String email;
@@ -30,9 +34,10 @@ public class User {
     @NotBlank(message = "Поле не может быть пустым")
     private String password;
 
-    private boolean enabled = true;
+    @Column(name = "isEnabled",nullable = false)
+    private boolean isEnabled = true;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "roles_id")
     private Role role;
 

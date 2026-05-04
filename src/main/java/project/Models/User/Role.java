@@ -1,12 +1,14 @@
 package project.Models.User;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
-@Data
+@Setter
+@Getter
 @NoArgsConstructor
 @Entity
 @Table(name = "roles")
@@ -20,9 +22,6 @@ public class Role {
 
     @Column(unique = true, nullable = false)
     private String name; // ROLE_USER, ROLE_ADMIN
-
-    @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
-    private List<User> users;
 
     @Override
     public String toString(){

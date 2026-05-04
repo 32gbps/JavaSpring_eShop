@@ -1,5 +1,7 @@
 package project.Models.User.Vendor;
 
+import lombok.Getter;
+import lombok.Setter;
 import project.Models.Product.Product;
 import project.Models.User.User;
 import jakarta.persistence.*;
@@ -8,7 +10,8 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@Data
+@Setter
+@Getter
 @NoArgsConstructor
 @Entity
 @Table(name = "vendors")

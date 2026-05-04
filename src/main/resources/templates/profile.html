@@ -7,12 +7,12 @@
 <main>
     <div id="side-container" class="side-container">
         <div id="profile-action-menu">
-            <button id="btn-show-profileInfo" onclick="showAccountInfo()">Инфо</button>
             <div th:if="${buttonSet == 'VENDOR'}">
                 <button id="btn-show-productConstructor" onclick="showProductConstructor()">Добавить товар</button>
             </div>
             <div th:if="${buttonSet == 'CUSTOMER'}">
                 <button id="btn-show-orders" onclick="showOrders()">Заказы</button>
+                <button id="btn-show-profileInfo" onclick="showAccountInfo()">Данные профиля</button>
             </div>
         </div>
     </div>

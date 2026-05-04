@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class ProductService {
     private final ProductRepository productRepository;
 
-    public Optional<ProductDto> findById(Long id){
+    public Optional<ProductDto> findById(UUID id){
         try{
             return Optional.of(ProductMapper.EntityToDto(productRepository.findById(id).orElseThrow()));
         }
@@ -36,8 +36,8 @@ public class ProductService {
             return Optional.empty();
         }
     }
-    public boolean isExistById(Long id){ return productRepository.existsById(id);}
-    public ProductDto getProductById(Long id){
+    public boolean isExistById(UUID id){ return productRepository.existsById(id);}
+    public ProductDto getProductById(UUID id){
         var entity = productRepository.getReferenceById(id);
         return ProductMapper.EntityToDto(entity);
     }
@@ -66,7 +66,7 @@ public class ProductService {
     public void ClearTable(){
         productRepository.deleteAll();
     }
-    public void deleteProductById(Long id){
+    public void deleteProductById(UUID id){
         productRepository.deleteById(id);
     }
 }

@@ -1,8 +1,9 @@
 package project.Models.Product.Order;
 
+import lombok.Getter;
+import lombok.Setter;
 import project.Models.Product.Product;
 import project.Models.User.Person.Customer;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
 
@@ -11,7 +12,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
+@Setter
+@Getter
 @NoArgsConstructor
 @Entity
 @Table(name = "orders")

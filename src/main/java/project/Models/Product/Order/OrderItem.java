@@ -1,12 +1,14 @@
 package project.Models.Product.Order;
 
+import lombok.Getter;
+import lombok.Setter;
 import project.Models.Product.Product;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 
-@Data
+@Setter
+@Getter
 @NoArgsConstructor
 @Entity
 @Table(name = "order_items")

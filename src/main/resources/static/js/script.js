@@ -58,6 +58,8 @@ async function getProductList(page, size) {
 
     return js.data;
 }
+
+
 function addProduct() {
     //Проверяем активность "формы"
     const body = document.getElementById('product-constructor');
@@ -67,11 +69,12 @@ function addProduct() {
     const name = document.getElementById('product-input-name').value;
     const description = document.getElementById('product-input-description').value;
     const price = document.getElementById('product-input-price').value;
-
+    // список атрибутов
     const attributesArray = document.querySelectorAll(`[data-product-attributes="attribute-container"]`);
-
+    // ID продавца
     const venId = getVendorId();
 
+    //Формируем объект для отправки
     const productData = {
         name: name,
         description: description,
@@ -80,6 +83,7 @@ function addProduct() {
         attributes: []
     };
 
+    //Перебираем атрибуты в коллекцию
     for(let div of attributesArray)
     {
         let key = div.querySelector(`[data-product-attribute="key"]`).value;
@@ -87,9 +91,7 @@ function addProduct() {
         productData.attributes.push({key: key,
         value:value});
     }
-
-    console.log(productData);
-
+    //Отправляем
     fetch('/api/product/addProduct', {
         method: 'POST',
         headers: {
@@ -185,6 +187,9 @@ function isInWishlist(productId) {
 }
 //=============================Wishlist============================================
 async function initPage(methodNumber) {
+    if(localStorage.getItem('theme'))
+        document.documentElement.setAttribute('data-theme', 'dark');
+
     let productData = [];
     switch (methodNumber) {
         case 0: productData = await getProductList(); break;
@@ -275,12 +280,12 @@ function getProductWidget(productData) {
     div.setAttribute('data-widget-id', productData.id)
     div.innerHTML = `
         <div class="block-major media">
-            <div class="block-minor">
+            <div class="block-minor media">
                 <img src="/PhotoIconTemplate.png" alt="productPhoto">
             </div>
         </div>
         <div class="block-major info">
-            <div class="block-minor info">
+            <div class="block-minor info p6">
                 <a href="/product/${productData.id}">
                     <span class="product-name-text">
                         ${escapeHtml(productData.name)}
@@ -422,9 +427,55 @@ function clearProductCart() {
     if(cartString == null || cartString.length === 0)
         console.log('Корзина очищена!');
 }
+
+function getCustomerInfoForm(data) {
+    const div = document.createElement('div');
+    div.classList.add('AccountInfoForm');
+    div.innerHTML = `
+                <form method="post" action="api/customer-info">
+                    <div class="h-list p6">
+                        <div class="v-list">
+                            <label for="input-name">Имя</label>
+                            <input id="input-name" type="text" maxlength="32" name="name" value="${data.name}">
+                        </div>
+                        <div class="v-list">
+                            <label for="input-surname">Фамилия</label>
+                            <input id="input-surname" type="text" maxlength="32" name="surname" value="${data.surname}">
+                        </div>
+                    </div>
+                    <div class="h-list p6">
+                        <div class="v-list">
+                            <label for="input-email">Почта</label>
+                            <input id="input-email" type="email" maxlength="32" placeholder="xxx@mail.com" name="email" value="${data.user.email}">
+                        </div>
+                        <div class="v-list">
+                            <label for="input-password">Пароль</label>
+                            <input id="input-password" type="password" name="password" maxlength="64">
+                        </div>
+                    </div>
+                    <div class="h-list">
+                        <button type="submit">Отправить</button>
+                    </div>
+                </form>`;
+
+    return div;
+}
 //=================================================================================
 function showAccountInfo() {
-
+    const url = 'api/customer-info';
+    const request = new Request(url, {method: "GET"});
+    fetch(request)
+        .then(response => response.json())
+        .then(json=>{
+            if(json.status === 'success')
+            {
+                const mainContainer = document.getElementById('main-container');
+                const form = getCustomerInfoForm(json.data);
+                mainContainer.innerHTML = ``;
+                mainContainer.appendChild(form);
+            }
+        })
+        .catch(e=> console.error(e));
 }
 function showOrders() {
     let url = `/api/orders/person/${getUserId()}`;
@@ -833,9 +884,9 @@ function getCommentWidget(commentData) {
                     <button>Комментарии</button>
                 </div>
                 <div class="comment-controls-votes">
-                    <button class="comment-controls-button-like" onclick="setLike(reviewId)">Like</button>
+                    <button class="comment-controls-button-like" onclick="setLike(${commentData.reviewId})">Like</button>
                     <span class="comment-controls-comment-score">42</span>
-                    <button class="comment-controls-button-dislike" onclick="setDislike(reviewId)">Dislike</button>
+                    <button class="comment-controls-button-dislike" onclick="setDislike(${commentData.reviewId})">Dislike</button>
                 </div>
             </div>
             <div class="commentList">
@@ -895,7 +946,21 @@ function getCommentForm(reviewId) {
     div.classList.add('Review-card-new-comment-form');
     div.innerHTML = `
             <textarea placeholder="Текст комментария..."></textarea>
-            <button onclick="addComment(reviewId)">Отправить</button>
+            <button onclick="addComment(${reviewId})">Отправить</button>
         `;
     return div;
+}
+
+function setTheme(){
+    if(document.documentElement.getAttribute('data-theme') == null)
+    {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
+    }
+    else
+    {
+        document.documentElement.removeAttribute('data-theme');
+        localStorage.removeItem('theme');
+    }
+
 }

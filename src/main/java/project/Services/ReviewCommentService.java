@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -34,7 +35,7 @@ public class ReviewCommentService {
             return null;
         }
     };
-    public Optional<ReviewDto> findReviewsById(Long id){
+    public Optional<ReviewDto> findReviewsById(UUID id){
         try{
             var dto = ReviewDto.getDtoFromEntity(reviewRepository.findById(id).orElseThrow());
             dto.setCommentCount(countAllCommentsByProductId(dto.getProductId()));
@@ -44,7 +45,7 @@ public class ReviewCommentService {
             return Optional.empty();
         }
     }
-    public Optional<ReviewDto> findReviewsByUserId(Long id){
+    public Optional<ReviewDto> findReviewsByUserId(UUID id){
         try{
             var dto = ReviewDto.getDtoFromEntity(reviewRepository.findByUserId(id).orElseThrow());
             dto.setCommentCount(countAllCommentsByProductId(dto.getProductId()));

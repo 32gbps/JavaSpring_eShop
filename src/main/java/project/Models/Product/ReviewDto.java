@@ -1,9 +1,11 @@
 package project.Models.Product;
 import lombok.Data;
 
+import java.util.UUID;
+
 @Data
 public class ReviewDto {
-    private Long id;
+    private UUID id;
     private Long userId;
     private Long productId;
     private String positive;

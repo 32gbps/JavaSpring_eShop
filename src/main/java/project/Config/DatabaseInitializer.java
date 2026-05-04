@@ -9,10 +9,10 @@ import project.Models.User.Person.Customer;
 import project.Models.User.Role;
 import project.Models.User.User;
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Component;           // @Component
-import org.slf4j.Logger;                                  // Logger
-import org.slf4j.LoggerFactory;                           // LoggerFactory
-import org.springframework.security.crypto.password.PasswordEncoder; // PasswordEncoder
+import org.springframework.stereotype.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import project.Services.*;
 
 import java.time.LocalDate;
@@ -37,8 +37,8 @@ public class DatabaseInitializer {
 
     @PostConstruct
     public void initTestData() {
-        if(productService.getCount() > 0)
-            return;
+        // if(productService.getCount() > 0)
+        //     return;
         //ClearAllTables();
         printCountAll();
         // Администратор

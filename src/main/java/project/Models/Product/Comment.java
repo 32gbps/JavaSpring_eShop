@@ -1,10 +1,12 @@
 package project.Models.Product;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
-@Data
+@Setter
+@Getter
 @Table(name = "comments")
 public class Comment {
     @Id

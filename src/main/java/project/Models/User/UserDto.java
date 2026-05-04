@@ -10,11 +10,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(description = "Пользователь")
 public class UserDto {
+    private UUID userId;
     @Size(min = 8, max = 32)
     @NotBlank
     private String username;
@@ -31,5 +34,4 @@ public class UserDto {
     @Pattern(regexp = "&quot;^(?=.*[A-Za-z])(?=.*\\\\d)(?=.*[@$!%*#?^&amp;])[A-Za-z\\\\d@$!%*#?^&amp;]{3,}$&quot;")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
-
 }

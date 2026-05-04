@@ -13,10 +13,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Locale;
+import java.util.UUID;
 
 @Controller
 @AllArgsConstructor
-@RequestMapping("/product")
+@RequestMapping({"/",""})
 public class ProductController {
     private final ProductService productService;
 
@@ -26,12 +27,16 @@ public class ProductController {
     private static final int DEFAULT_PAGE = 0;  // Страницы с 0
     private static final int DEFAULT_SIZE = 10; // 10 элементов на странице
 
-    @GetMapping({"", "/"})
-    public String GetRedirect() {
-        return "redirect:/";
+    @GetMapping()
+    public String index(Model model, Locale locale) {
+        model.addAttribute("pageTitle", messageSource.getMessage("page.title.index", null, locale));
+        model.addAttribute("initMethod", 0);
+        model.addAttribute("message", null);
+
+        return "index";
     }
-    @GetMapping("/{id}")
-    public String getProductInfo(@PathVariable Long id, Model model) {
+    @GetMapping("/product/{id}")
+    public String getProductInfo(@PathVariable UUID id, Model model) {
         try {
             if(!productService.isExistById(id)){
                 model.addAttribute("message", "Товар не найден!");
@@ -48,7 +53,7 @@ public class ProductController {
             return "redirect:/";
         }
     }
-    @GetMapping("/cart")
+    @GetMapping("/product/cart")
     public String getShoppingCart(Model model, Locale locale) {
         try {
             model.addAttribute("pageTitle", messageSource.getMessage("page.title.productCart", null, locale));

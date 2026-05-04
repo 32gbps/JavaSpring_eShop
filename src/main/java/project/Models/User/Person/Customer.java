@@ -1,5 +1,7 @@
 package project.Models.User.Person;
 
+import lombok.Getter;
+import lombok.Setter;
 import project.Models.Product.Product;
 import project.Models.User.User;
 import jakarta.persistence.*;
@@ -9,9 +11,11 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
-@Data
+@Setter
+@Getter
 @NoArgsConstructor
 @Entity
 @Table(name = "customers")
@@ -42,7 +46,7 @@ public class Customer {
     private List<Product> products = new ArrayList<>(); //wishlist
 
     // Метод для получения ID товаров
-    public List<Long> getProductIds() {
+    public List<UUID> getProductIds() {
         return products.stream()
                 .map(Product::getId)
                 .collect(Collectors.toList());

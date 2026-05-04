@@ -7,11 +7,12 @@ import project.Models.Product.Review;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface ReviewRepository extends JpaRepository<@NonNull Review, @NonNull Long> {
+public interface ReviewRepository extends JpaRepository<@NonNull Review, @NonNull UUID> {
 
-    Optional<Review> findByUserId(Long id);
+    Optional<Review> findByUserId(UUID id);
     List<Review> findByProductId(Long Id);
 
     Long countAllByProductId(Long productId);
