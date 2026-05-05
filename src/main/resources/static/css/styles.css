@@ -498,12 +498,14 @@ main, .content, .col, .row{
 main{
     width: 76% !important;
     margin: 0 12%;
-    display: grid;
+    display: flex;
+    flex-direction: row;
     justify-content: start;
     align-items: start;
-    grid-template-columns: 20% 80%;
+    /*grid-template-columns: 20% 80%;*/
 }
 .side-container{
+    max-width: 20%;
     display: flex;
     padding: 10px;
     margin: 10px;
@@ -511,14 +513,15 @@ main{
 .main-container{
     margin: 10px;
     height: 100%;
+    min-width: 80%;
     max-width: 100%;
 }
 .catalog{
     width: 100%;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(200px, 25%));
     grid-template-rows: auto;
-    overflow: hidden;
+    /*overflow: hidden;*/
     gap: 10px;
     padding: 20px;
 }
@@ -547,6 +550,10 @@ main{
     display: grid;
     grid-template-columns: auto auto;
 }
+.block-major.buyActions{
+    display: flex;
+    flex-direction: column;
+}
 .block-minor{
     width: 100%;
     display: grid;
@@ -564,12 +571,12 @@ main{
     max-height: 60px;
     overflow: hidden;
 }
-.block-minor .buyActions{
-    display: grid;
-    grid-auto-flow: column;
-    justify-items: end;
-    justify-content: end;
-}
+/*.block-minor .buyActions{*/
+/*    display: grid;*/
+/*    grid-auto-flow: column;*/
+/*    justify-items: end;*/
+/*    justify-content: end;*/
+/*}*/
 .block-micro{
     padding: 5px;
     align-items: center;
@@ -618,6 +625,9 @@ main{
     width: 100%;
     display: grid;
     gap: 10px;
+    background: var(--widget-bg-primary);
+    border-radius: 10px;
+    padding: 10px;
 }
 #order-info-block{
     display: grid;
@@ -630,6 +640,7 @@ main{
     grid-template-columns: auto auto;
     justify-content: space-between;
     font-size: 18px;
+    gap: 10px;
 }
 #order-info-label{
     color: var(--disable);

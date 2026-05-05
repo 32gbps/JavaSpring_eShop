@@ -5,7 +5,6 @@ import lombok.Setter;
 import project.Models.Product.Product;
 import project.Models.User.User;
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
@@ -44,11 +43,4 @@ public class Customer {
             inverseJoinColumns = @JoinColumn(name = "product_id")
     )
     private List<Product> products = new ArrayList<>(); //wishlist
-
-    // Метод для получения ID товаров
-    public List<UUID> getProductIds() {
-        return products.stream()
-                .map(Product::getId)
-                .collect(Collectors.toList());
-    }
 }

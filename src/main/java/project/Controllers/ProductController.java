@@ -23,9 +23,6 @@ public class ProductController {
 
     @Autowired
     private MessageSource messageSource;
-    private static final Logger log = LoggerFactory.getLogger(ProductController.class);
-    private static final int DEFAULT_PAGE = 0;  // Страницы с 0
-    private static final int DEFAULT_SIZE = 10; // 10 элементов на странице
 
     @GetMapping()
     public String index(Model model, Locale locale) {
@@ -38,11 +35,6 @@ public class ProductController {
     @GetMapping("/product/{id}")
     public String getProductInfo(@PathVariable UUID id, Model model) {
         try {
-            if(!productService.isExistById(id)){
-                model.addAttribute("message", "Товар не найден!");
-                return "redirect:/";
-            }
-
             var product = productService.findById(id).orElseThrow();
 
             model.addAttribute("productData", product);

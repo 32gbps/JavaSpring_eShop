@@ -13,7 +13,7 @@ import java.util.UUID;
 public interface ReviewRepository extends JpaRepository<@NonNull Review, @NonNull UUID> {
 
     Optional<Review> findByUserId(UUID id);
-    List<Review> findByProductId(Long Id);
+    List<Review> findByProductId(UUID Id);
 
     Long countAllByProductId(Long productId);
 }

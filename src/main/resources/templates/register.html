@@ -11,31 +11,29 @@
 </div>
 <div id="div-infoBlock" th:insert="~{fragments/infoBlock::infoBlock(${message})}"></div>
 <main>
-    <div id="side-container" class="side-container">
-    </div>
     <div id="main-container" class="main-container">
         <div class="registerForm-div">
-            <h2>Регистрация</h2>
             <form class="registerForm" th:action="@{/register}" method="post">
+                <h2>Регистрация</h2>
                 <div class="input-container">
-                    <label>Имя:</label>
-                    <input type="text" name="name">
+                    <label for="input-name">Имя:</label>
+                    <input id="input-name" type="text" name="name">
                 </div>
                 <div class="input-container">
-                    <label>Фамилия:</label>
-                    <input type="text" name="surname">
+                    <label for="input-surname">Фамилия:</label>
+                    <input id="input-surname" type="text" name="surname">
                 </div>
                 <div class="input-container">
-                    <label>Email:</label>
-                    <input type="email" name="email" required>
+                    <label for="input-email">Email:</label>
+                    <input id="input-email" type="email" name="email" required>
                 </div>
                 <div class="input-container">
-                    <label>Логин:</label>
-                    <input type="text" name="username" required>
+                    <label for="input-username">Логин:</label>
+                    <input id="input-username" type="text" name="username" required>
                 </div>
                 <div class="input-container">
-                    <label>Пароль:</label>
-                    <input type="password" name="password" required>
+                    <label for="input-password">Пароль:</label>
+                    <input id="input-password" type="password" name="password" required>
                 </div>
                 <div class="input-container">
                     <button type="submit">Зарегистрироваться</button>

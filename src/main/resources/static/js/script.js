@@ -1,28 +1,26 @@
 
-async function getProductById(idValue){
-    if (idValue !== '') {
-        let id = parseInt(idValue, 10);
+async function getProductById(id){
+    let url = `/api/product/getProductById/${id}`;
 
-        if (isNaN(id) || id < 0) {
-            return;
-        }
-
-        let url = `/api/product/getProductById/${id}`;
-
-        return fetch(url);
-    }
+    return fetch(url)
+        .then(response =>response.json())
+        .catch(e=> console.error(e));
 }
 async function getProductArrayById(IdArray){
-    if (!isArrayOfIntegers(IdArray))
-        return []
     let productDataArray = [];
-    for (const id of IdArray) {
-        await getProductById(id)
-            .then(response =>response.json())
-            .then(js=>{
-                if(js.status ==='success')
-                    productDataArray.push(js.data);
-            });
+    for (let id in IdArray) {
+        let productData = await getProductById(IdArray[id]);
+        if(productData == null)
+            console.error('Data is null');
+        else{
+            if(productData.status === 'success')
+                productDataArray.push(productData.data);
+            else
+            {
+                console.error(`status: ${productData.status}`);
+                console.error(`message: ${productData?.message}`);
+            }
+        }
     }
     return productDataArray;
 }
@@ -116,12 +114,12 @@ const WISHLIST_KEY = 'wishlist';
 
 function getLSProductIdArray(key) {
     try {
+
         const LSString = localStorage.getItem(key);
 
         if (!LSString) {
             return [];
         }
-
         const parsed = JSON.parse(LSString);
 
         // Проверяем, что результат - массив
@@ -145,6 +143,9 @@ function saveIdArrayToLS(key, array) {
 // Добавить или удалить товар
 function toggleProduct(arrayKey, productId) {
     //arrayKey - CART_KEY || WISHLIST_KEY - ключ локального хранилища
+
+    console.log(arrayKey);
+    console.log(productId);
     let array = [];
 
     if (arrayKey === CART_KEY || arrayKey === WISHLIST_KEY)
@@ -165,7 +166,11 @@ function toggleProduct(arrayKey, productId) {
     }
     saveIdArrayToLS(arrayKey, array);
 }
-function toggleCartProduct(productId){toggleProduct(CART_KEY, productId);}
+function toggleCartProduct(productId) {
+    console.log('toggleCartProduct');
+    console.log(productId);
+    toggleProduct(CART_KEY, productId);
+}
 function toggleWishlistProduct(productId){
     toggleProduct(WISHLIST_KEY, productId);
     let widget = document.querySelector(`[data-widget-id="${productId}"]`);
@@ -193,7 +198,10 @@ async function initPage(methodNumber) {
     let productData = [];
     switch (methodNumber) {
         case 0: productData = await getProductList(); break;
-        case 1: productData = await getProductArrayById(getLSProductIdArray(WISHLIST_KEY)); break;
+        case 1: {
+            const array = getLSProductIdArray(WISHLIST_KEY);
+            productData = await getProductArrayById(array);
+        } break;
         case 2:
         {
             productData = await getProductArrayById(getLSProductIdArray(CART_KEY));
@@ -203,9 +211,6 @@ async function initPage(methodNumber) {
         }
         default: return;
     }
-    console.log('initPage')
-    console.log('productData')
-    console.log(productData);
     initCatalog(productData);
 }
 function initSideContainer(data) {
@@ -225,8 +230,11 @@ function initSideContainer(data) {
 }
 function initCatalog(data) {
     try {
-        if(data == null)
+        if(data == null || data.length === 0)
+        {
+            console.error(`Method "initCatalog", error: data is null or empty; data = ${data}`);
             return;
+        }
 
         const mainCatalog = document.createElement('div');
         mainCatalog.setAttribute('id', 'main-catalog');
@@ -235,8 +243,6 @@ function initCatalog(data) {
         mainContainer.appendChild(mainCatalog);
 
         const wishlistIdArray = getLSProductIdArray(WISHLIST_KEY);
-        console.log('initCatalog');
-        console.log(data);
         data.forEach(product => {
 
             const widget = getProductWidget(product);
@@ -254,6 +260,7 @@ function initCatalog(data) {
 }
 function getCartForm(productCount, totalAmount) {
     const div = document.createElement('div');
+    div.classList.add('widget');
     div.id = "order-form";
     div.innerHTML =
         `<div id="order-info-block">
@@ -360,8 +367,9 @@ function getUserId() {
         console.error('Значение personId пустое');
         return -1;
     }
-    const id = parseInt(value, 10);
-    return id > 0 ? id : -1;
+    // const id = parseInt(value, 10);
+    // return id > 0 ? id : -1;
+    return value;
 }
 function getVendorId() {
     const cookieString = document.cookie;
@@ -381,8 +389,9 @@ function getVendorId() {
         console.error('Значение vendorId пустое');
         return -1;
     }
-    const id = parseInt(value, 10);
-    return id > 0 ? id : -1;
+    // const id = parseInt(value, 10);
+    // return id > 0 ? id : -1;
+    return value;
 }
 function doOrder() {
     const cart = getLSProductIdArray(CART_KEY);
@@ -731,6 +740,7 @@ function getProductDetailWidget(productData) {
     return div;
 }
 //Инициализация странницы с деталями товара
+//TODO: Удалить. Переработать.
 async function initProductDetail(productId) {
     //Получаем div для виджетов с отзывами
     const reviewContainer = document.getElementById('Product-Reviews-container');

@@ -31,7 +31,7 @@ public class UserDto {
             "&quot;как минимум одну букву, одну цифру и один специальный символ&quot;")
     @Size(min = 8, max = 32)
     @NotBlank
-    @Pattern(regexp = "&quot;^(?=.*[A-Za-z])(?=.*\\\\d)(?=.*[@$!%*#?^&amp;])[A-Za-z\\\\d@$!%*#?^&amp;]{3,}$&quot;")
+    //@Pattern(regexp = "&quot;^(?=.*[A-Za-z])(?=.*\\\\d)(?=.*[@$!%*#?^&amp;])[A-Za-z\\\\d@$!%*#?^&amp;]{3,}$&quot;")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 }

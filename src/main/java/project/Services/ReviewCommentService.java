@@ -55,7 +55,7 @@ public class ReviewCommentService {
             return Optional.empty();
         }
     }
-    public List<ReviewDto> findAllReviewsByProductId(Long id){
+    public List<ReviewDto> findAllReviewsByProductId(UUID id){
         try{
             var nList = new ArrayList<ReviewDto>();
             reviewRepository.findByProductId(id).forEach(r->{

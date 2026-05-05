@@ -119,7 +119,7 @@ public class ApiController {
         }
     }
     @GetMapping("/product/getProductReviews/{id}")
-    public ResponseEntity<?> getProductReviews(@PathVariable Long id) {
+    public ResponseEntity<?> getProductReviews(@PathVariable UUID id) {
         try {
             var result = revComService.findAllReviewsByProductId(id);
             return ResponseEntity.ok(new ApiResponse("success", "", result));

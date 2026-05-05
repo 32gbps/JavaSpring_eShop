@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ru">
 <head th:replace="~{fragments/head :: head(${productData.name})}"></head>
-<body  th:onload="|initProductDetail(${productData.getId()})|">
+<body>
 <header th:insert="~{fragments/header::header}"></header>
 <div id="div-infoBlock" th:insert="~{fragments/infoBlock::infoBlock(${message})}"></div>
 <main>
     <div class="side-container">
     </div>
     <div class="main-container">
-        <div class="product-widget">
+        <div class="product-widget" th:data-product-id="${productData.id}">
             <h2 th:text="${productData.name}"></h2>
             <!--Краткое инфо о товаре-->
             <div id="Product-ShortInfo-container">
@@ -28,7 +28,7 @@
                         </div>
                         <div class="flex-container">
                             <div class="flex-container">
-                                <button class="toggleWishlist-btn" data-widget-element="button-wishlist" th:onclick="|toggleWishlistProduct(${productData.id})|">
+                                <button class="toggleWishlist-btn" data-widget-element="button-wishlist">
                                     <svg class="wishlist_icon"
                                          xmlns="http://www.w3.org/2000/svg"
                                          viewBox="0 0 176 157"
@@ -39,7 +39,7 @@
                                 </button>
                             </div>
                             <div class="flex-container">
-                                <button id="btn-buyProduct" th:onclick="|toggleProduct(${productData.id})|">Купить</button>
+                                <button id="btn-buyProduct" data-widget-element="button-buy">Купить</button>
                             </div>
                         </div>
                     </div>
@@ -75,4 +75,19 @@
 </main>
 <footer th:insert="~{fragments/footer::footer}"></footer>
 </body>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const id = document.querySelector('[data-product-id]').dataset.productId;
+
+
+        const btnWishList = document.querySelector('[data-widget-element="button-wishlist"]');
+        btnWishList.addEventListener('click', (e) => {
+            toggleWishlistProduct(id);
+        });
+        const btnBuy = document.querySelector('[data-widget-element="button-buy"]');
+        btnBuy.addEventListener('click', (e) => {
+            toggleCartProduct(id);
+        });
+    });
+</script>
 </html>

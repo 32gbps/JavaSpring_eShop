@@ -5,7 +5,6 @@ import lombok.Setter;
 import project.Models.Product.Product;
 import project.Models.User.User;
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
