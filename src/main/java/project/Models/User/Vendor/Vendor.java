@@ -2,12 +2,11 @@ package project.Models.User.Vendor;
 
 import lombok.Getter;
 import lombok.Setter;
-import project.Models.Product.Product;
 import project.Models.User.User;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.util.UUID;
 
 @Setter
 @Getter
@@ -16,11 +15,11 @@ import java.util.List;
 @Table(name = "vendors")
 public class Vendor {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(name = "name", unique = true)
-    private String name;
+    private String vendorName;
 
     @Column(name = "identifier")
     private String identifier;  //"xxxx-xxxx-xxxx-xxxx"
@@ -29,6 +28,7 @@ public class Vendor {
     @JoinColumn(name = "users_id")
     private User user;
 
-    @OneToMany(mappedBy = "vendor", fetch = FetchType.LAZY)
-    private List<Product> products;
+    public VendorDto ToDTO(){
+        return new VendorDto(id, vendorName, identifier, user.getUsername(), user.getEmail(), user.getPassword());
+    }
 }

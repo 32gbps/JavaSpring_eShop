@@ -8,22 +8,38 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Transactional
 @AllArgsConstructor
 public class VendorService {
     VendorRepository vendorRepository;
-    public Optional<Vendor> findById(Long id){
-        return vendorRepository.findById(id);
+    public Optional<VendorDto> findById(UUID id){
+        try{
+            return Optional.of(vendorRepository.findById(id).orElseThrow().ToDTO());
+        }
+        catch (Exception e){
+            return Optional.empty();
+        }
     }
-    public Optional<Vendor> findByName(String name){
-        return vendorRepository.findByName(name);
+    public Optional<VendorDto> findByName(String name){
+        try{
+            return Optional.of(vendorRepository.findByVendorName(name).orElseThrow().ToDTO());
+        }
+        catch (Exception e){
+            return Optional.empty();
+        }
     }
-    public Optional<Vendor> findByUsername(String name){
-        return vendorRepository.findByUsername(name);
+    public Optional<VendorDto> findByUsername(String name){
+        try{
+            return Optional.of(vendorRepository.findByUsername(name).orElseThrow().ToDTO());
+        }
+        catch (Exception e){
+            return Optional.empty();
+        }
     }
-    public Optional<Vendor> addCompany(Vendor vendor){
+    public Optional<Vendor> addVendor(Vendor vendor){
         try{
             return Optional.of(vendorRepository.save(vendor));
         } catch (Exception e) {

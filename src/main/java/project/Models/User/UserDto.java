@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -34,4 +33,11 @@ public class UserDto {
     //@Pattern(regexp = "&quot;^(?=.*[A-Za-z])(?=.*\\\\d)(?=.*[@$!%*#?^&amp;])[A-Za-z\\\\d@$!%*#?^&amp;]{3,}$&quot;")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
+
+    public UserDto(User user) {
+        this.userId = user.getId();
+        this.username = user.getUsername();
+        this.email = user.getEmail();
+        this.password = user.getPassword();
+    }
 }

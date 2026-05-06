@@ -6,11 +6,12 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 public class OrderDto {
-    private Long id;
-    private Long customerId;
+    private UUID id;
+    private UUID customerId;
     private String customerName;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime orderDate;

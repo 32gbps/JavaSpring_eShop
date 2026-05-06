@@ -519,7 +519,7 @@ main{
 .catalog{
     width: 100%;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 25%));
+    grid-template-columns: repeat(auto-fit, minmax(180px, 215px));
     grid-template-rows: auto;
     /*overflow: hidden;*/
     gap: 10px;

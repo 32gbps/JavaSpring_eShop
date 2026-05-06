@@ -1,50 +1,52 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/head :: head('Регистрация')"></head>
-<body>
-<!-- Сообщения об ошибках/успехе -->
-<div th:if="${error}" style="color: red;">
-    [[${error}]]
-</div>
-<div th:if="${success}" style="color: green;">
-    [[${success}]]
-</div>
-<div id="div-infoBlock" th:insert="~{fragments/infoBlock::infoBlock(${message})}"></div>
-<main>
-    <div id="main-container" class="main-container">
-        <div class="registerForm-div">
-            <form class="registerForm" th:action="@{/register}" method="post">
-                <h2>Регистрация</h2>
-                <div class="input-container">
-                    <label for="input-name">Имя:</label>
-                    <input id="input-name" type="text" name="name">
-                </div>
-                <div class="input-container">
-                    <label for="input-surname">Фамилия:</label>
-                    <input id="input-surname" type="text" name="surname">
-                </div>
-                <div class="input-container">
-                    <label for="input-email">Email:</label>
-                    <input id="input-email" type="email" name="email" required>
-                </div>
-                <div class="input-container">
-                    <label for="input-username">Логин:</label>
-                    <input id="input-username" type="text" name="username" required>
-                </div>
-                <div class="input-container">
-                    <label for="input-password">Пароль:</label>
-                    <input id="input-password" type="password" name="password" required>
-                </div>
-                <div class="input-container">
-                    <button type="submit">Зарегистрироваться</button>
-                </div>
-                <div class="input-container">
-                    <span> Уже есть аккаунт? <a th:href="@{/login}">Войти</a></span>
-                </div>
-            </form>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head th:replace="fragments/head :: head('Регистрация')">
+    <title>Регистрация</title>
+</head>
+    <body>
+        <!-- Сообщения об ошибках/успехе -->
+        <div th:if="${error}" style="color: red;">
+            [[${error}]]
         </div>
-    </div>
-</main>
-<footer th:insert="~{fragments/footer::footer}"></footer>
-</body>
+        <div th:if="${success}" style="color: green;">
+            [[${success}]]
+        </div>
+        <div id="div-infoBlock" th:insert="~{fragments/infoBlock::infoBlock(${message})}"></div>
+        <main>
+            <div id="main-container" class="main-container">
+                <div class="registerForm-div">
+                    <form class="registerForm" th:action="@{/register}" method="post">
+                        <h2>Регистрация</h2>
+                        <div class="input-container">
+                            <label for="input-name">Имя:</label>
+                            <input id="input-name" type="text" name="name">
+                        </div>
+                        <div class="input-container">
+                            <label for="input-surname">Фамилия:</label>
+                            <input id="input-surname" type="text" name="surname">
+                        </div>
+                        <div class="input-container">
+                            <label for="input-email">Email:</label>
+                            <input id="input-email" type="email" name="email" required>
+                        </div>
+                        <div class="input-container">
+                            <label for="input-username">Логин:</label>
+                            <input id="input-username" type="text" name="username" required>
+                        </div>
+                        <div class="input-container">
+                            <label for="input-password">Пароль:</label>
+                            <input id="input-password" type="password" name="password" required>
+                        </div>
+                        <div class="input-container">
+                            <button type="submit">Зарегистрироваться</button>
+                        </div>
+                        <div class="input-container">
+                            <span> Уже есть аккаунт? <a th:href="@{/login}">Войти</a></span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+        <footer th:insert="~{fragments/footer::footer}"></footer>
+    </body>
 </html>

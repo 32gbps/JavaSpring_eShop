@@ -1,12 +1,15 @@
 package project.Services;
 
-import project.Models.User.Person.Customer;
+import project.Models.Product.ProductDto;
+import project.Models.User.Customer.Customer;
+import project.Models.User.Customer.CustomerDto;
 import project.Repositories.CustomerRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -14,19 +17,41 @@ import java.util.Optional;
 public class CustomerService {
     CustomerRepository customerRepository;
 
-    public Optional<Customer> findById(Long id){
-        return customerRepository.findById(id);
+    public Optional<CustomerDto> findById(UUID id){
+        try{
+            return Optional.of(customerRepository
+                    .findById(id)
+                    .orElseThrow().ToDTO());
+        } catch (Exception e) {
+            IO.println(e.getMessage());
+            return Optional.empty();
+        }
     }
-    public Optional<Customer> findByName(String name){
-        return customerRepository.findByName(name);
+    public Optional<CustomerDto> findByName(String name){
+        try{
+            return Optional.of(customerRepository
+                    .findByName(name)
+                    .orElseThrow().ToDTO());
+        } catch (Exception e) {
+            IO.println(e.getMessage());
+            return Optional.empty();
+        }
     }
-    public Optional<Customer> findByUsername(String username){
-        return customerRepository.findByUsername(username);
+    public Optional<CustomerDto> findByUsername(String username){
+        try{
+            return Optional.of(customerRepository
+                    .findByUsername(username)
+                    .orElseThrow().ToDTO());
+        } catch (Exception e) {
+            IO.println(e.getMessage());
+            return Optional.empty();
+        }
     }
-    public Optional<Customer> addPerson(Customer customer){
+    public Optional<Customer> addCustomer(Customer customer){
         try{
             return Optional.of(customerRepository.save(customer));
         } catch (Exception e) {
+            IO.println(e.getMessage());
             return Optional.empty();
         }
     }

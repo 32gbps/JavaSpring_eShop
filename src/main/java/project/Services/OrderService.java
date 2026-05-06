@@ -3,7 +3,7 @@ package project.Services;
 import project.Models.Product.Order.Order;
 import project.Models.Product.Order.OrderMapper;
 import project.Models.Product.Product;
-import project.Models.User.Person.Customer;
+import project.Models.User.Customer.Customer;
 import project.Models.Product.Order.*;
 import project.Models.User.User;
 import project.Repositories.OrderRepository;
@@ -75,7 +75,7 @@ public class OrderService {
     }
 
     // Получение заказа с деталями
-    public Order getOrderWithDetails(Long orderId) {
+    public Order getOrderWithDetails(UUID orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 
@@ -86,7 +86,7 @@ public class OrderService {
     }
 
     // Обновление статуса заказа
-    public Order updateOrderStatus(Long orderId, OrderStatus newStatus) {
+    public Order updateOrderStatus(UUID orderId, OrderStatus newStatus) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 
@@ -95,7 +95,7 @@ public class OrderService {
     }
 
     // Отмена заказа
-    public void cancelOrder(Long orderId) {
+    public void cancelOrder(UUID orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 

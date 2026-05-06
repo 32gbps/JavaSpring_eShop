@@ -231,10 +231,7 @@ function initSideContainer(data) {
 function initCatalog(data) {
     try {
         if(data == null || data.length === 0)
-        {
-            console.error(`Method "initCatalog", error: data is null or empty; data = ${data}`);
             return;
-        }
 
         const mainCatalog = document.createElement('div');
         mainCatalog.setAttribute('id', 'main-catalog');
@@ -247,7 +244,11 @@ function initCatalog(data) {
 
             const widget = getProductWidget(product);
 
+            let buyBtn = widget.querySelector(`[data-widget-element="button-buy"]`);
+            buyBtn.addEventListener('click', ()=> toggleCartProduct(product.id));
+
             let wishlistBtn = widget.querySelector(`[data-widget-element="button-wishlist"]`);
+            wishlistBtn.addEventListener('click', ()=> toggleWishlistProduct(product.id));
             if(wishlistIdArray.includes(product.id))
                 if(!wishlistBtn.classList.contains('active'))
                     wishlistBtn.classList.add('active');
@@ -316,10 +317,10 @@ function getProductWidget(productData) {
             </div>
             <div class="block-minor">
                 <div class="block-micro buy">
-                    <button class="buy-btn" onclick="toggleCartProduct(${productData.id})">Купить</button>
+                    <button class="buy-btn" data-widget-element="button-buy">Купить</button>
                 </div>
                 <div class="block-micro wishlist">
-                    <button class="toggleWishlist-btn" data-widget-element="button-wishlist" onclick="toggleWishlistProduct(${productData.id})">
+                    <button class="toggleWishlist-btn" data-widget-element="button-wishlist">
                         <svg class="wishlist_icon"
                              xmlns="http://www.w3.org/2000/svg"
                              viewBox="0 0 176 157"
@@ -738,27 +739,6 @@ function getProductDetailWidget(productData) {
     div.appendChild(reviewContainer);
 
     return div;
-}
-//Инициализация странницы с деталями товара
-//TODO: Удалить. Переработать.
-async function initProductDetail(productId) {
-    //Получаем div для виджетов с отзывами
-    const reviewContainer = document.getElementById('Product-Reviews-container');
-
-    //Запрашиваем список с данными отзывов на товар
-    const revData = await getProductReviewsData(productId);
-    let form = getReviewForm(productId);
-    console.log(form);
-    reviewContainer.appendChild(form);
-    //Если отзывов нет, то добавляем форму отправки отзыва и выходим
-    if (revData.length === 0) return;
-    //Пробегаем по всему списку и на его основе формируем виджеты отзывов, которые добавляем на страницу
-    console.log(revData);
-    for(let data of revData.data)
-    {
-        console.log(data);
-        reviewContainer.appendChild(getReviewWidget(data));
-    }
 }
 async function getProductReviewsData(productId) {
     const reviewsData = [];

@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ru">
-<head th:replace="~{fragments/head :: head(${productData.name})}"></head>
+<head th:replace="~{fragments/head :: head(${productData.name})}">
+    <title th:text="${productData.name}"></title>
+</head>
 <body>
 <header th:insert="~{fragments/header::header}"></header>
 <div id="div-infoBlock" th:insert="~{fragments/infoBlock::infoBlock(${message})}"></div>
@@ -81,11 +83,11 @@
 
 
         const btnWishList = document.querySelector('[data-widget-element="button-wishlist"]');
-        btnWishList.addEventListener('click', (e) => {
+        btnWishList.addEventListener('click', () => {
             toggleWishlistProduct(id);
         });
         const btnBuy = document.querySelector('[data-widget-element="button-buy"]');
-        btnBuy.addEventListener('click', (e) => {
+        btnBuy.addEventListener('click', () => {
             toggleCartProduct(id);
         });
     });

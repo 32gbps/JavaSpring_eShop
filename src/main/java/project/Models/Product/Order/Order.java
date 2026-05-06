@@ -3,7 +3,7 @@ package project.Models.Product.Order;
 import lombok.Getter;
 import lombok.Setter;
 import project.Models.Product.Product;
-import project.Models.User.Person.Customer;
+import project.Models.User.Customer.Customer;
 import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
 
@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Setter
 @Getter
@@ -20,8 +21,8 @@ import java.util.List;
 public class Order {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", nullable = false)

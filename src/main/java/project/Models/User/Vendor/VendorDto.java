@@ -1,18 +1,19 @@
 package project.Models.User.Vendor;
 
-import lombok.AllArgsConstructor;
-import lombok.Value;
-import project.Models.Product.ProductDto;
-import project.Models.User.UserDto;
+import java.util.UUID;
 
-import java.util.List;
-
-@Value
-@AllArgsConstructor
-public class VendorDto {
-    Long id;
-    String name;
-    String identifier;  //"xxxx-xxxx-xxxx-xxxx"
-    UserDto user;
-    List<ProductDto> products;
+/**
+ * @param identifier "xxxx-xxxx-xxxx-xxxx"
+ */
+public record VendorDto(UUID id, String vendorName, String identifier, String username, String email, String password) {
+    @Override
+    public String toString() {
+        return String.format("""
+                id: %s
+                vendorName: %s
+                identifier: %s
+                username: %s
+                email: %s
+                """, this.id, this.vendorName, this.identifier, this.username, this.email);
+    }
 }

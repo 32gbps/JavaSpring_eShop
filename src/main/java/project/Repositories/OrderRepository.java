@@ -12,16 +12,17 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Repository
-public interface OrderRepository extends JpaRepository<@NonNull Order, @NonNull Long> {
+public interface OrderRepository extends JpaRepository<@NonNull Order, @NonNull UUID> {
 
     @Query("SELECT o FROM Order o WHERE o.customer.id = :customerId")
-    List<Order> findByCustomerId(@Param("customerId") Long customerId);
+    List<Order> findByCustomerId(@Param("customerId") UUID customerId);
 
     List<Order> findByStatus(OrderStatus status);
 
-    Page<Order> findByCustomerId(@Param("customerId") Long customerId, Pageable pageable);
+    Page<Order> findByCustomerId(@Param("customerId") UUID customerId, Pageable pageable);
 
     @Query("SELECT o FROM Order o WHERE o.orderDate BETWEEN :startDate AND :endDate")
     List<Order> findOrdersBetween(@Param("startDate") LocalDateTime startDate,

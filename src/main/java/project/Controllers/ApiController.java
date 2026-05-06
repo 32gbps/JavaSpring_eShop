@@ -1,7 +1,5 @@
 package project.Controllers;
 
-import jakarta.annotation.security.RolesAllowed;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import project.Models.ApiResponse;
@@ -16,7 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import project.Services.UserService;
 
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -28,7 +25,6 @@ public class ApiController {
     private final CustomerService customerService;
     private final ProductService Service;
     private final ReviewCommentService revComService;
-    private final AuthenticationManager authenticationManager;
 
     private static final Logger log = LoggerFactory.getLogger(ApiController.class);
     private static final int DEFAULT_PAGE = 0;
@@ -99,7 +95,7 @@ public class ApiController {
     @PostMapping("/product/addReview")
     public ResponseEntity<?> addReview(@RequestBody ReviewDto reviewDto) {
         try {
-            var res = revComService.addReview(reviewDto);
+            revComService.addReview(reviewDto);
             return ResponseEntity.ok(new ApiResponse("success", ""));
 
         } catch (Exception e) {
@@ -110,7 +106,7 @@ public class ApiController {
     @PostMapping("/product/addReviewComment")
     public ResponseEntity<?> addReviewComment(@RequestBody CommentDto commentDto) {
         try {
-            var res = revComService.addComment(commentDto);
+            revComService.addComment(commentDto);
             return ResponseEntity.ok(new ApiResponse("success", ""));
 
         } catch (Exception e) {

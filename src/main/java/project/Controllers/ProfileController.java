@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import project.Models.User.Role;
 import project.Models.User.User;
 import project.Models.User.UserDto;
+import project.Models.User.Vendor.VendorDto;
 import project.Services.OrderService;
 import project.Services.RoleService;
 import project.Services.UserService;
@@ -81,7 +82,6 @@ public class ProfileController {
         model.addAttribute("user", new User()); // Используем DTO
         return "register";
     }
-
     @PostMapping("/register")
     public String registerUser(@ModelAttribute UserDto userDto,
                                RedirectAttributes redirectAttributes) {
@@ -118,6 +118,21 @@ public class ProfileController {
             return "redirect:/register";
         }
     }
+    @GetMapping("registerVendor")
+    public String getRegisterVendorPage() {return "registerVendor";}
+    @PostMapping("registerVendor")
+    public String postRegisterVendorPage(@ModelAttribute VendorDto dto, RedirectAttributes redirectAttributes)
+    {
+        try{
+            IO.println(dto.toString());
+            return "redirect:/";
+        }
+        catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error",
+                    "Ошибка при регистрации: " + e.getMessage());
+            return "redirect:/register";
+        }
+    }
     @GetMapping("/profile/wishlist")
     public String getWishlist(Model model, Locale locale) {
         try {
@@ -131,7 +146,6 @@ public class ProfileController {
             return "redirect:/";
         }
     }
-
     @PostMapping(value = "/profile/changePassword")
     public String changePassword(@RequestParam String oldPass, @RequestParam String newPass, Model model, @AuthenticationPrincipal UserDetails userDetails){
         try {

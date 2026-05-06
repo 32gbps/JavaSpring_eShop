@@ -1,6 +1,7 @@
 package project.Models.Product;
 
 import org.springframework.stereotype.Component;
+import project.Models.User.Vendor.VendorDto;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,18 +26,25 @@ public class ProductMapper{
         return p;
     }
     public static ProductDto EntityToDto(Product entity){
-        var Dto = new ProductDto();
-        Dto.setId(entity.getId());
-        Dto.setName(entity.getName());
-        //Dto.setCompany(entity.getCompany());
-        Dto.setDescription(entity.getDescription());
-        Dto.setPrice(entity.getPrice());
         List<Attribute> attributes = new ArrayList<>();
         entity.getAttributes().forEach((key, value)->{
             attributes.add(new Attribute(key,value));
         });
-        Dto.setAttributes(attributes);
+        var vendor = entity.getVendor();
+        var vUser = vendor.getUser();
 
-        return Dto;
+        var vendorDto = new VendorDto(vendor.getId(),
+                vendor.getVendorName(),
+                vendor.getIdentifier(),
+                vUser.getUsername(),
+                vUser.getEmail(),
+                vUser.getPassword());
+
+        return new ProductDto(entity.getId(),
+                entity.getName(),
+                entity.getDescription(),
+                entity.getPrice(),
+                vendorDto,
+                attributes);
     }
 }

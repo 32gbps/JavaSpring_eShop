@@ -1,11 +1,10 @@
 package project.Config;
 
 import jakarta.annotation.PostConstruct;
-import project.Models.Product.Attribute;
-import project.Models.Product.ProductDto;
-import project.Models.Product.ProductMapper;
+import project.Models.Product.Product;
+import project.Models.User.Customer.CustomerDto;
 import project.Models.User.Vendor.Vendor;
-import project.Models.User.Person.Customer;
+import project.Models.User.Customer.Customer;
 import project.Models.User.Role;
 import project.Models.User.User;
 import lombok.AllArgsConstructor;
@@ -16,9 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import project.Services.*;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Component
@@ -131,18 +128,13 @@ public class DatabaseInitializer {
                 log.info("Товар уже есть в базе");
             }
             else{
-                var nProduct = new ProductDto();
-                nProduct.setName(name);
-                nProduct.setDescription(description);
-                nProduct.setPrice(price);
-                //nProduct.setVendor(vendor);
-                List<Attribute> attr = new ArrayList<>();
-                attributes.forEach((key, value)->{
-                    attr.add(new Attribute(key,value));
-                });
-                nProduct.setAttributes(attr);
-                var entity = ProductMapper.DtoToEntity(nProduct);
-                var addedProduct = productService.addProduct(entity).orElseThrow();
+                Product p = new Product();
+                p.setName(name);
+                p.setDescription(description);
+                p.setPrice(price);
+                p.setVendor(vendor);
+                p.setAttributes(attributes);
+                var addedProduct = productService.addProduct(p).orElseThrow();
                 log.info("Добавлен Product {}", addedProduct.getName());
             }
         } catch (Exception e) {
@@ -151,28 +143,25 @@ public class DatabaseInitializer {
     }
     private Vendor addVendorWitchUserAndRoleInfo(String vendorName, String identifier, User user) {
 
-        var vendor = vendorService.findByName(vendorName).orElseGet(()->{
-            Vendor nVendor = new Vendor();
-            nVendor.setUser(user);
-            nVendor.setIdentifier(identifier);
-            nVendor.setName(vendorName);
-            return vendorService.addCompany(nVendor).orElseThrow();
-        });
-        log.info("Добавлен Company {}", vendor);
-        return vendor;
+        Vendor nVendor = new Vendor();
+        nVendor.setUser(user);
+        nVendor.setIdentifier(identifier);
+        nVendor.setVendorName(vendorName);
+        var addedVendor =  vendorService.addVendor(nVendor).orElseThrow();
+        log.info("Добавлен Company {}", addedVendor);
+        return addedVendor;
     }
     private Customer addCustomerWitchUserAndRoleInfo(String name, String surname, LocalDate birthdate, User user) {
 
-        var customer = customerService.findByName(name).orElseGet(()->{
-            Customer nCustomer = new Customer();
-            nCustomer.setUser(user);
-            nCustomer.setName(name);
-            nCustomer.setSurname(surname);
-            nCustomer.setBirthDate(birthdate);
-            return customerService.addPerson(nCustomer).orElseThrow();
-        });
-        log.info("Добавлен Person {}", customer);
-        return customer;
+        customerService.findByName(name).orElseThrow();
+        Customer nCustomer = new Customer();
+        nCustomer.setUser(user);
+        nCustomer.setName(name);
+        nCustomer.setSurname(surname);
+        nCustomer.setBirthDate(birthdate);
+        var addedCustomer = customerService.addCustomer(nCustomer).orElseThrow();
+        log.info("Добавлен Person {}", addedCustomer);
+        return addedCustomer;
     }
     private User addUserWithRole(String username, String rawPassword, String email, Role role) {
         User user = userService.findByUsername(username)

@@ -52,7 +52,7 @@ public class OrderController {
 
     // Получение заказа с деталями
     @GetMapping("/{orderId}")
-    public ResponseEntity<OrderDto> getOrder(@PathVariable Long orderId) {
+    public ResponseEntity<OrderDto> getOrder(@PathVariable UUID orderId) {
         Order order = orderService.getOrderWithDetails(orderId);
         return ResponseEntity.ok(orderMapper.toDto(order));
     }
@@ -60,7 +60,7 @@ public class OrderController {
     // Обновление статуса
     @PatchMapping("/{orderId}/status")
     public ResponseEntity<OrderDto> updateStatus(
-            @PathVariable Long orderId,
+            @PathVariable UUID orderId,
             @RequestParam OrderStatus status) {
         Order order = orderService.updateOrderStatus(orderId, status);
         return ResponseEntity.ok(orderMapper.toDto(order));
@@ -68,7 +68,7 @@ public class OrderController {
 
     // Отмена заказа
     @PostMapping("/{orderId}/cancel")
-    public ResponseEntity<Void> cancelOrder(@PathVariable Long orderId) {
+    public ResponseEntity<Void> cancelOrder(@PathVariable UUID orderId) {
         orderService.cancelOrder(orderId);
         return ResponseEntity.noContent().build();
     }

@@ -1,9 +1,5 @@
 package project.Config;
 
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
-import org.springframework.security.provisioning.JdbcUserDetailsManager;
-import org.springframework.security.provisioning.UserDetailsManager;
 import project.Services.VendorService;
 import jakarta.servlet.http.Cookie;
 import lombok.AllArgsConstructor;
@@ -19,8 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import project.Services.UserService;
-
-import javax.sql.DataSource;
 
 @AllArgsConstructor
 @Configuration
@@ -72,7 +66,7 @@ public class SecurityConfig {
                 response.addCookie(cookie);
             });
             vendorService.findByUsername(username).ifPresent(x->{
-                var id = x.getId();
+                var id = x.id();
                 Cookie cookie = new Cookie("vendorId", id.toString());
                 cookie.setPath("/");
                 cookie.setMaxAge(30 * 24 * 60 * 60); // 30 дней

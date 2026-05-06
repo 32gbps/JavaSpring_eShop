@@ -29,12 +29,10 @@ public class ReviewCommentService {
         try{
             return reviewRepository.save(Review.getEntityFromDto(reviewDto));
         } catch (Exception e) {
-            log.info("======================== EXCEPTION! ==============================");
             log.info(e.toString());
-            log.info("======================== END! ==============================");
             return null;
         }
-    };
+    }
     public Optional<ReviewDto> findReviewsById(UUID id){
         try{
             var dto = ReviewDto.getDtoFromEntity(reviewRepository.findById(id).orElseThrow());
@@ -77,9 +75,7 @@ public class ReviewCommentService {
         try{
             return commentRepository.save(Comment.getEntityFromDto(commentDto));
         } catch (Exception e) {
-            log.info("======================== EXCEPTION! ==============================");
             log.info(e.toString());
-            log.info("======================== END! ==============================");
             return null;
         }
     }

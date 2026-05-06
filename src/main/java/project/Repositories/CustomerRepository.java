@@ -5,12 +5,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import project.Models.User.Person.Customer;
+import project.Models.User.Customer.Customer;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface CustomerRepository extends JpaRepository<@NonNull Customer, @NonNull Long> {
+public interface CustomerRepository extends JpaRepository<@NonNull Customer, @NonNull UUID> {
     Optional<Customer> findByName(String name);
 
     @Query("SELECT P FROM Customer AS P WHERE P.user.username = :username")
