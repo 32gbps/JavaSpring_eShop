@@ -3,7 +3,7 @@
 <head th:replace="~{fragments/head::head(${pageTitle})}"></head>
 <body th:onload="|initPage(${initMethod})|">
 <header th:insert="~{fragments/header::header}"></header>
-<div id="div-infoBlock" th:insert="~{fragments/infoBlock::infoBlock(${message})}"></div>
+<div id="div-infoBlock" class="p6" th:insert="~{fragments/infoBlock::infoBlock(${message})}"></div>
 <main>
     <div id="side-container" class="side-container">
         <div id="profile-action-menu">

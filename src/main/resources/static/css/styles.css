@@ -2,13 +2,13 @@
     --header-bg-primary: #41769E;
     --header-bg-secondary: #345e7e;
     --main-bg-primary: linear-gradient(180deg, rgb(191, 231, 255) 0%, rgb(255, 224, 166) 100%);
-    --main-bg-secondaty: #557a95;
+    --main-bg-secondary: #557a95;
     --widget-bg-primary: linear-gradient(180deg, rgb(138, 138, 138) 0%, rgb(255, 234, 196) 100%);;
     --widget-bg-secondary: #e9e9ed;
     --action-primary: rgb(255, 167, 72);
     --action-secondary: #d6d27d;
     --footer-bg-primary: var(--header-bg-primary);
-    --footer-bg-secondaty: var(--header-bg-secondary);
+    --footer-bg-secondary: var(--header-bg-secondary);
 
     --hover-light: rgba(255, 255, 255, 0.1);
     --hover-dark: rgba(0, 0, 0, 0.1);
@@ -16,7 +16,7 @@
     --color-primary: #000;
     --font-family: 'Onest', arial, sans-serif;
     --font-primary: 1rem var(--font-family);
-    --color-secondaty: #6a6a6a;
+    --color-secondary: #6a6a6a;
     --font-secondary: var(--font-primary);
     --color-header: #f1f1f1;
     --font-header: var(--font-primary);
@@ -31,13 +31,13 @@
     --header-bg-primary: rgb(0, 81, 130);
     --header-bg-secondary: #345e7e;
     --main-bg-primary: linear-gradient(179deg,rgb(0, 0, 0) 0%, rgb(0, 30, 48) 100%);
-    --main-bg-secondaty: #557a95;
+    --main-bg-secondary: #557a95;
     --widget-bg-primary: rgb(192, 192, 192);
-    --widget-bg-secondaty: #e9e9ed;
+    --widget-bg-secondary: #e9e9ed;
     --action-primary: rgb(179, 131, 80);
     --action-secondary: #d6d27d;
     --footer-bg-primary: var(--header-bg-primary);
-    --footer-bg-secondaty: var(--header-bg-secondary);
+    --footer-bg-secondary: var(--header-bg-secondary);
 
     --color-primary: #000;
     --color-secondaty: #6a6a6a;
@@ -199,6 +199,15 @@ a{
 .header-button svg{
     fill:var(--color-header);
 }
+#div-infoBlock{
+    background: var(--widget-bg-secondary);
+    display: grid;
+    grid-auto-columns: auto;
+    align-content: center;
+    align-items: center;
+    align-self: center;
+    border-radius: 10px;
+}
 /* -----------------------Footer------------------------ */
 #nav-footer{
     width: 100%;
@@ -279,7 +288,7 @@ main, .content, .col, .row{
     text-align: center;
 }
 .registerForm{
-    background: var(--widget-bg-secondaty);
+    background: var(--widget-bg-secondary);
     border-radius: 10px;
     display: grid;
     grid-template-rows: auto;
@@ -543,7 +552,7 @@ main{
 .widget-inner{
     border: black 2px inset;
     border-radius: 10px;
-    background: var(--widget-bg-secondaty);
+    background: var(--widget-bg-secondary);
 }
 .block-major{
     width: 100%;

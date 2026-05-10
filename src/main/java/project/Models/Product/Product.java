@@ -1,6 +1,5 @@
 package project.Models.Product;
 
-
 import lombok.Getter;
 import lombok.Setter;
 import project.Models.User.Vendor.Vendor;
@@ -15,8 +14,6 @@ import java.util.UUID;
 
 import org.hibernate.type.SqlTypes;
 
-
-//TODO: @Data и @ToString (Lombok) ухудшает производительность и порождает рекурсию при серилизации в json (https://habr.com/ru/articles/679216/)
 @Setter
 @Getter
 @NoArgsConstructor

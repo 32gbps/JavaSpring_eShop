@@ -505,8 +505,6 @@ function showOrders() {
             {
                 const main = document.getElementById('main-container');
                 main.innerHTML = ``;
-                console.log("raw data");
-                console.log(js.data);
 
                 js.data.forEach(order=>{
                     const widget = getOrderWidget(order.id, order.status, order.orderDate, order.totalAmount);

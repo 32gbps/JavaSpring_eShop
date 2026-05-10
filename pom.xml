@@ -10,7 +10,7 @@
     </parent>
     <groupId>MyProject</groupId>
     <artifactId>Final_Project</artifactId>
-    <version>0.9.2</version>
+    <version>0.9.3</version>
     <packaging>jar</packaging>
     <name>Final_Project</name>
     <description>Дипломный проект на тему "Интернет-магазин"</description>
