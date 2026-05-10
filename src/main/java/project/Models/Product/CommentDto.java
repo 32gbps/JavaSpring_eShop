@@ -1,21 +1,8 @@
 package project.Models.Product;
 
 import jakarta.validation.constraints.NotBlank;
-import lombok.Data;
 
-@Data
-public class CommentDto {
-    private Long id;
-    private Long reviewId;
-    private Long userId;
-    @NotBlank
-    private String text;
+import java.util.UUID;
 
-    public static CommentDto getDtoFromEntity(Comment entity){
-        var dto = new CommentDto();
-        dto.reviewId = entity.getReviewId();
-        dto.userId = entity.getUserId();
-        dto.text = entity.getText();
-        return dto;
-    }
+public record CommentDto(UUID commentId, UUID reviewId, UUID customerId, @NotBlank String text) {
 }

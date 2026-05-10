@@ -1,19 +1,19 @@
 package project.Controllers;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
+import project.Models.User.Customer.Customer;
+import project.Models.User.Customer.CustomerDto;
 import project.Models.User.Role;
 import project.Models.User.User;
-import project.Models.User.UserDto;
+import project.Models.User.Vendor.Vendor;
 import project.Models.User.Vendor.VendorDto;
-import project.Services.OrderService;
+import project.Services.CustomerService;
 import project.Services.RoleService;
 import project.Services.UserService;
 import jakarta.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import project.Services.VendorService;
 
 import java.util.Locale;
 import java.util.Objects;
@@ -33,21 +34,15 @@ import java.util.Objects;
 public class ProfileController {
     private final RoleService roleService;
     private final UserService userService;
-    private final OrderService orderService;
+    private final CustomerService customerService;
+    private final VendorService vendorService;
 
     private final PasswordEncoder passwordEncoder;
-    @Autowired
     private MessageSource messageSource;
-    private static final Logger log = LoggerFactory.getLogger(ProfileController.class);
 
     @GetMapping("/login")
     public String getLoginScreen() {
         return "loginPage";
-    }
-    //Не нужен, разлогинивание происходит через Spring Security
-    @GetMapping("/logout")
-    public String Logout() {
-        return "redirect:/";
     }
     @GetMapping("/profile")
     public String getProfile(@AuthenticationPrincipal UserDetails userDetails, Model model) {
@@ -56,9 +51,7 @@ public class ProfileController {
             currentUser.ifPresentOrElse(p->{
                 model.addAttribute("user", p);
                 model.addAttribute("buttonSet", p.getRole().getName());
-            }, ()->{
-                model.addAttribute("message", "Данные пользователя не найдены");
-                    });
+            }, ()-> model.addAttribute("message", "Данные пользователя не найдены"));
             return "profile";
         } catch (Exception e) {
             model.addAttribute("message", "Непредвиденная ошибка!");
@@ -82,31 +75,41 @@ public class ProfileController {
         model.addAttribute("user", new User()); // Используем DTO
         return "register";
     }
+    @Transactional
     @PostMapping("/register")
-    public String registerUser(@ModelAttribute UserDto userDto,
-                               RedirectAttributes redirectAttributes) {
+    public String registerUser(@ModelAttribute CustomerDto customerDto, RedirectAttributes redirectAttributes) {
         try {
             // Проверяем существование пользователя
-            if (userService.findByUsername(userDto.getUsername()).isPresent()) {
+            if (userService.findByUsername(customerDto.username()).isPresent()) {
                 redirectAttributes.addFlashAttribute("error",
                         "Пользователь с таким логином уже существует");
                 return "redirect:/register";
             }
 
             // Создаем пользователя
-            User user = new User(userDto);
-            user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+            User user = new User();
+            user.setEmail(customerDto.email());
+            user.setUsername(customerDto.username());
+            user.setPassword(passwordEncoder.encode(customerDto.password()));
             // Получаем или создаем роль USER
-            Role userRole = roleService.findByName("USER")
+            Role userRole = roleService.findByName("CUSTOMER")
                     .orElseGet(() -> {
                         Role role = new Role();
-                        role.setName("USER");
+                        role.setName("CUSTOMER");
                         return roleService.addRole(role).orElseThrow();
                     });
 
             user.setRole(userRole);
 
-            userService.addUser(user);
+            userService.addUser(user).orElseThrow();
+
+            Customer customer = new Customer();
+            customer.setUser(user);
+            customer.setName(customerDto.name());
+            customer.setSurname(customerDto.surname());
+            customer.setBirthDate(customerDto.birthDate());
+
+            customerService.addCustomer(customer).orElseThrow();
 
             redirectAttributes.addFlashAttribute("success",
                     "Регистрация успешна! Теперь вы можете войти.");
@@ -119,18 +122,36 @@ public class ProfileController {
         }
     }
     @GetMapping("registerVendor")
-    public String getRegisterVendorPage() {return "registerVendor";}
+    public String getRegisterVendorPage() {return "registerPageVendor";}
     @PostMapping("registerVendor")
-    public String postRegisterVendorPage(@ModelAttribute VendorDto dto, RedirectAttributes redirectAttributes)
-    {
+    public String postRegisterVendorPage(@ModelAttribute VendorDto dto, RedirectAttributes redirectAttributes) {
         try{
-            IO.println(dto.toString());
+            userService.findByUsername(dto.username()).ifPresent( user-> {
+                throw new RuntimeException("User already exist");
+            });
+            vendorService.findByName(dto.vendorName()).ifPresent( user-> {
+                throw new RuntimeException("Vendor already exist");
+            });
+
+            User user = new User();
+            user.setUsername(dto.username());
+            user.setEmail(dto.email());
+            user.setPassword(passwordEncoder.encode(dto.password()));
+            user.setRole(roleService.findByName("VENDOR").orElseThrow());
+            var addedUser = userService.addUser(user).orElseThrow();
+
+            Vendor vendor = new Vendor();
+            vendor.setVendorName(dto.vendorName());
+            vendor.setIdentifier(dto.identifier());
+            vendor.setUser(addedUser);
+
+            vendorService.addVendor(vendor).orElseThrow();
+
             return "redirect:/";
         }
         catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error",
-                    "Ошибка при регистрации: " + e.getMessage());
-            return "redirect:/register";
+            redirectAttributes.addFlashAttribute("error", "Ошибка при регистрации: " + e.getMessage());
+            return "redirect:/registerVendor";
         }
     }
     @GetMapping("/profile/wishlist")
@@ -149,7 +170,7 @@ public class ProfileController {
     @PostMapping(value = "/profile/changePassword")
     public String changePassword(@RequestParam String oldPass, @RequestParam String newPass, Model model, @AuthenticationPrincipal UserDetails userDetails){
         try {
-            String message = "";
+            String message;
             var user = userService.findByUsername(userDetails.getUsername());
             if(user.isEmpty())
                 message = "Пользователь не найден";

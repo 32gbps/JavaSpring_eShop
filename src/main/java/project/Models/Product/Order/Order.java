@@ -25,7 +25,7 @@ public class Order {
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id", nullable = false)
+    @JoinColumn(name = "customer_customerId", nullable = false)
     private Customer customer;
 
     @Column(name = "order_date", nullable = false)

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ru">
-<head th:replace="fragments/head :: head('Регистрация')">
+<head th:replace="~{fragments/head :: head('Регистрация')}">
     <title>Регистрация</title>
 </head>
     <body>
@@ -42,6 +42,7 @@
                         </div>
                         <div class="input-container">
                             <span> Уже есть аккаунт? <a th:href="@{/login}">Войти</a></span>
+                            <span> Зарегистрироваться как продавец: <a th:href="@{/registerVendor}">Перейти</a></span>
                         </div>
                     </form>
                 </div>

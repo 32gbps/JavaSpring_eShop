@@ -1,0 +1,23 @@
+<!--/*@thymesVar id="ReviewDto" type="project.Models.Product.ReviewDto"*/-->
+<form id="review-form" class="p6" th:fragment="reviewForm(product)" method="post" th:action="@{/product/addReview}" th:object="${ReviewDto}">
+    <!--/*@thymesVar id="product" type="project.Models.Product.ProductDto"*/-->
+    <h3>
+        Отзыв на: <a th:text="${product.name}" th:href="@{'/product/'+${product.id}}"></a>
+    </h3>
+    <input type="text" th:value="${product.id}" name=productId maxlength="128" hidden>
+    <div class="input-container">
+        <label for="input-positive">Достоинства</label>
+        <input id="input-positive" type="text" name="positive" maxlength="128">
+    </div>
+    <div class="input-container">
+        <label for="input-negative">Недостатки</label>
+        <input id="input-negative" type="text" name="negative" maxlength="128">
+    </div>
+    <div class="input-container">
+        <label for="input-description">Текст отзыва</label>
+        <textarea id="input-description" name="description" maxlength="512" rows="4" cols="4" required></textarea>
+    </div>
+    <div class="input-container">
+        <button type="submit">Отправить</button>
+    </div>
+</form>

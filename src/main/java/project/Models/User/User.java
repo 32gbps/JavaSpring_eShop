@@ -14,11 +14,6 @@ import java.util.UUID;
 @Entity
 @Table(name = "users")
 public class User {
-    public User(UserDto userDto){
-        this.username = userDto.getUsername();
-        this.email = userDto.getEmail();
-        this.password = userDto.getPassword();
-    }
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -43,10 +38,17 @@ public class User {
 
     @Override
     public String toString(){
+//        String roleName = "*None*";
+//        if(role != null)
+//            roleName = role.getName();
         return String.format("""
                 Type: User\s
                 Name: %s
                 Role: %s
-                """, this.getUsername(), this.getRole());
+                """, this.getUsername(), "none");
+    }
+
+    public UserDto ToDTO(){
+        return new UserDto(id, username,email,password);
     }
 }

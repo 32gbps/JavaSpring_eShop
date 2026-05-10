@@ -14,7 +14,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import project.Services.VendorService;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
@@ -23,6 +26,7 @@ import java.util.UUID;
 @RequestMapping("/api")
 public class ApiController {
     private final CustomerService customerService;
+    private final VendorService vendorService;
     private final ProductService Service;
     private final ReviewCommentService revComService;
 
@@ -78,12 +82,24 @@ public class ApiController {
         }
     }
     @PostMapping("/product/addProduct")
-    public ResponseEntity<?> addProduct(@RequestBody ProductDto dto) {
+    public ResponseEntity<?> addProduct(@RequestBody ProductDto dto, @AuthenticationPrincipal UserDetails userDetails) {
         try {
+            var vendor = vendorService.findEntityByUsername(userDetails.getUsername()).orElseThrow();
 
-            Service.addProduct(ProductMapper.DtoToEntity(dto));
+            Product p = new Product();
+            p.setName(dto.name());
+            p.setVendor(vendor);
+            p.setDescription(dto.description());
+            p.setPrice(dto.price());
+            Map<String, String> map = new HashMap<>();
+            dto.attributes().forEach(a->{
+                map.put(a.getKey().toString(),a.getValue().toString());
+            });
+            p.setAttributes(map);
+
+            var id = Service.addProduct(p).orElseThrow().getId();
             String status = "success";
-            String message = "Предмет успешно добавлен!";
+            String message = "Предмет успешно добавлен! ID: "+id;
 
             return ResponseEntity.ok(new ApiResponse(status, message));
 
@@ -126,7 +142,7 @@ public class ApiController {
         }
     }
     @GetMapping("/product/getReviewComments/{id}")
-    public ResponseEntity<?> getReviewComments(@PathVariable Long id) {
+    public ResponseEntity<?> getReviewComments(@PathVariable UUID id) {
         try {
             var result = revComService.findAllCommentsByProductId(id);
             return ResponseEntity.ok(new ApiResponse("success", "", result));

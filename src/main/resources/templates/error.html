@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+    <head>
+        <title>Ошибка</title>
+    </head>
+    <body style="display: grid; grid-auto-columns: auto">
+        <h1>Произошла ошибка</h1>
+        <span>Статус:
+            <span th:text="${status}"></span>
+        </span>
+        <span>Ошибка:
+            <span th:text="${error}"></span>
+        </span>
+        <span>Сообщение:
+            <span th:text="${message}"></span>
+        </span>
+        <span>Путь:
+            <span th:text="${path}"></span>
+        </span>
+        <span>Время:
+            <span th:text="${timestamp}"></span>
+        </span>
+        <a th:href="@{/}">На главную</a>
+    </body>
+</html>

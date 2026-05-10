@@ -4,26 +4,27 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Entity
 @Setter
 @Getter
 @Table(name = "comments")
 public class Comment {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID commentId;
     @Column(name = "reviewId", nullable = false)
-    private Long reviewId;
+    private UUID reviewId;
     @Column(name = "userId", nullable = false)
-    private Long userId;
+    private UUID customerId;
     @Column(name = "text", nullable = false, length = 512)
     private String text;
 
-    public static Comment getEntityFromDto(CommentDto dto){
-        var entity = new Comment();
-        entity.reviewId = dto.getReviewId();
-        entity.userId = dto.getUserId();
-        entity.text = dto.getText();
-        return entity;
+    public CommentDto ToDTO(){
+        return new CommentDto(this.getCommentId(),
+                                this.getReviewId(),
+                                this.getCommentId(),
+                                this.getText());
     }
 }

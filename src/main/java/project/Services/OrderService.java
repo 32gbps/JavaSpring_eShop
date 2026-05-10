@@ -1,5 +1,6 @@
 package project.Services;
 
+import lombok.AllArgsConstructor;
 import project.Models.Product.Order.Order;
 import project.Models.Product.Order.OrderMapper;
 import project.Models.Product.Product;
@@ -10,7 +11,6 @@ import project.Repositories.OrderRepository;
 import project.Repositories.CustomerRepository;
 import project.Repositories.ProductRepository;
 import org.hibernate.Hibernate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.Repositories.UserRepository;
@@ -21,27 +21,17 @@ import java.util.UUID;
 
 @Service
 @Transactional
+@AllArgsConstructor
 public class OrderService {
-
-    @Autowired
     private OrderRepository orderRepository;
-
-    @Autowired
     private CustomerRepository customerRepository;
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private ProductRepository productRepository;
-    @Autowired
     private OrderMapper orderMapper;
 
     // Создание заказа
     public Order createOrder(CreateOrderRequest request) {
         // Находим покупателя
-        User user = userRepository.findById(request.getPersonId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        Customer customer = customerRepository.findByUsername(user.getUsername())
+        Customer customer = customerRepository.findById(request.getCustomerId())
                 .orElseThrow(() -> new RuntimeException("Person not found"));
 
         // Создаем заказ
@@ -61,14 +51,8 @@ public class OrderService {
     }
 
     // Получение всех заказов покупателя
-    public List<OrderDto> getCustomerOrders(UUID userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        Customer customer = customerRepository.findByUsername(user.getUsername())
-                .orElseThrow(() -> new RuntimeException("Person not found"));
-
-
-        var orders = orderRepository.findByCustomerId(customer.getId());
+    public List<OrderDto> getCustomerOrders(UUID customerId) {
+        var orders = orderRepository.findByCustomerId(customerId);
         List<OrderDto> ordersDto = new ArrayList<>();
         orders.forEach(order -> ordersDto.add(orderMapper.toDto(order)));
         return ordersDto;

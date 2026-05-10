@@ -7,6 +7,14 @@
 <main>
     <div id="side-container" class="side-container">
         <div id="profile-action-menu">
+            <div th:if="${buttonSet == 'ADMIN' || buttonSet == 'MODERATOR'}">
+                <button>
+                    <a id="a-h2-console" th:href="@{/h2-console}">H2 консоль</a>
+                </button>
+                <button>
+                    <a id="a-actuator" th:href="@{/actuator}">Метрики</a>
+                </button>
+            </div>
             <div th:if="${buttonSet == 'VENDOR'}">
                 <button id="btn-show-productConstructor" onclick="showProductConstructor()">Добавить товар</button>
             </div>
@@ -17,6 +25,12 @@
         </div>
     </div>
     <div id="main-container" class="main-container">
+        <div class="insertedFragment" th:if="${insertFragment != null && insertFragment == 'reviewForm'}">
+            <div th:insert="~{fragments/reviewForm::reviewForm(${product})}"></div>
+        </div>
+        <div class="insertedFragment" th:if="${insertFragment != null && insertFragment == 'addProductForm'}">
+            <div th:insert="~{fragments/addProductForm}"></div>
+        </div>
     </div>
 </main>
 <footer th:insert="~{fragments/footer::footer}"></footer>

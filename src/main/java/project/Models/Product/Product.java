@@ -16,7 +16,7 @@ import java.util.UUID;
 import org.hibernate.type.SqlTypes;
 
 
-//TODO: @Data и @ToString (Lombok) ухудшает производительность (https://habr.com/ru/articles/679216/)
+//TODO: @Data и @ToString (Lombok) ухудшает производительность и порождает рекурсию при серилизации в json (https://habr.com/ru/articles/679216/)
 @Setter
 @Getter
 @NoArgsConstructor
@@ -29,7 +29,7 @@ public class Product {
 
     @Column(name = "name", nullable = false, unique = true)
     @NotBlank(message = "Поле не может быть пустым")
-    public String name;
+    private String name;
 
     @Lob
     @Column(name = "description")
@@ -39,7 +39,7 @@ public class Product {
     private Integer price;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "vendors_id")
+    @JoinColumn(name = "vendors_vendorId")
     private Vendor vendor;
 
     @JdbcTypeCode(SqlTypes.JSON)

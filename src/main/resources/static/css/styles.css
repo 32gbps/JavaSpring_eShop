@@ -1,14 +1,14 @@
 :root{
     --header-bg-primary: #41769E;
-    --header-bg-secondaty: #345e7e;
+    --header-bg-secondary: #345e7e;
     --main-bg-primary: linear-gradient(180deg, rgb(191, 231, 255) 0%, rgb(255, 224, 166) 100%);
     --main-bg-secondaty: #557a95;
     --widget-bg-primary: linear-gradient(180deg, rgb(138, 138, 138) 0%, rgb(255, 234, 196) 100%);;
-    --widget-bg-secondaty: var(--widget-bg-primary);
+    --widget-bg-secondary: #e9e9ed;
     --action-primary: rgb(255, 167, 72);
     --action-secondary: #d6d27d;
     --footer-bg-primary: var(--header-bg-primary);
-    --footer-bg-secondaty: var(--header-bg-secondaty);
+    --footer-bg-secondaty: var(--header-bg-secondary);
 
     --hover-light: rgba(255, 255, 255, 0.1);
     --hover-dark: rgba(0, 0, 0, 0.1);
@@ -29,15 +29,15 @@
 }
 [data-theme="dark"] {
     --header-bg-primary: rgb(0, 81, 130);
-    --header-bg-secondaty: #345e7e;
+    --header-bg-secondary: #345e7e;
     --main-bg-primary: linear-gradient(179deg,rgb(0, 0, 0) 0%, rgb(0, 30, 48) 100%);
     --main-bg-secondaty: #557a95;
     --widget-bg-primary: rgb(192, 192, 192);
-    --widget-bg-secondaty: var(--widget-bg-primary);
+    --widget-bg-secondaty: #e9e9ed;
     --action-primary: rgb(179, 131, 80);
     --action-secondary: #d6d27d;
     --footer-bg-primary: var(--header-bg-primary);
-    --footer-bg-secondaty: var(--header-bg-secondaty);
+    --footer-bg-secondaty: var(--header-bg-secondary);
 
     --color-primary: #000;
     --color-secondaty: #6a6a6a;
@@ -75,6 +75,8 @@ header{
 header a{
     color: var(--color-header);
     font: var(--font-header);
+    display: grid;
+    grid-template-columns: auto;
 }
 a{
     text-decoration: none;
@@ -137,7 +139,7 @@ a{
     visibility: visible;
     height: auto;
     margin: 0;
-    background: var(--header-bg-secondaty);
+    background: var(--header-bg-secondary);
     transition:
             opacity 0.3s ease,
             visibility 0s linear 0s,
@@ -185,11 +187,7 @@ a{
     justify-content: center;
 }
 .header-button:hover{
-    background: var(--header-bg-secondaty);
-}
-#header-buttons-wishlist a{
-    display: grid;
-    grid-template-columns: auto;
+    background: var(--header-bg-secondary);
 }
 .wishlist_icon{
     width: 100%;
@@ -464,9 +462,11 @@ main, .content, .col, .row{
     padding: 5px;
 }
 #review-form{
+    background: var(--widget-bg-primary);
     width: 100%;
     display: grid;
     max-width: inherit;
+    border-radius: 10px;
 }
 .review-form-inputDiv{
     display: flex;
@@ -609,7 +609,7 @@ main{
 .block-micro button{
     padding: 6px;
     height: 40px;
-    background-color: var(--action-primary);
+    background: var(--action-primary);
     border-radius: 20px;
     color: var(--color-buttons);
     font: var(--font-buttons);
@@ -648,7 +648,7 @@ main{
 #order-action-block button{
     width: 100%;
     height: 40px;
-    background-color: var(--widget-bg-primary);
+    background: var(--widget-bg-primary);
     color: var(--color-primary);
     border-radius: 6px;
 }
@@ -669,7 +669,7 @@ main{
     display: grid;
     padding: 6px;
     grid-template-columns: auto;
-    background-color: var(--widget-bg-primary);
+    background: var(--widget-bg-primary);
     border-radius: 10px;
     border-width: 1px;
     border-color: black;
@@ -681,14 +681,14 @@ main{
 .order-item{
     margin: 6px;
     display: grid;
-    background-color: var(--widget-bg-primary);;
+    background: var(--widget-bg-primary);;
     border-radius: 6px;
 }
 .order-widget-catalog{
     display: grid;
     grid-template-columns: auto;
     padding: 10px 0;
-    background-color: rgba(255, 0, 0, 0.41);
+    background: rgba(255, 0, 0, 0.41);
     border-width: 1px;
     border-color: black;
     border-style: solid;
@@ -707,7 +707,7 @@ main{
 }
 .itemsList{
     display: grid;
-    background: var(--widget-bg-primary);
+    background: var(--widget-bg-secondary);
     border-radius: 6px;
 }
 /* ========================productConstructor===================== */
@@ -736,4 +736,14 @@ main{
 }
 #preview-body{
     display: none;
+}
+/* ========================== Theme ===================================== */
+.switch-theme-button{
+    border-radius: 6px;
+}
+.switch-theme-button:hover{
+    background: var(--hover-dark);
+}
+.switchTheme_icon, .switchTheme_icon svg{
+    fill: var(--color-header);
 }

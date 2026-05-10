@@ -31,6 +31,14 @@ public class VendorService {
             return Optional.empty();
         }
     }
+    public Optional<Vendor> findEntityByUsername(String name){
+        try{
+            return vendorRepository.findByUsername(name);
+        }
+        catch (Exception e){
+            return Optional.empty();
+        }
+    }
     public Optional<VendorDto> findByUsername(String name){
         try{
             return Optional.of(vendorRepository.findByUsername(name).orElseThrow().ToDTO());

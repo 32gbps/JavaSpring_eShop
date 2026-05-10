@@ -1,10 +1,10 @@
 package project.Controllers;
 
+import lombok.AllArgsConstructor;
 import project.Models.ApiResponse;
 import project.Models.Product.Order.*;
 import project.Services.OrderService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
@@ -13,14 +13,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+@AllArgsConstructor
 @RestController
 @RequestMapping("/api/orders")
 public class OrderController {
-
-    @Autowired
     private OrderService orderService;
-
-    @Autowired
     private OrderMapper orderMapper;
 
     // Создание заказа
@@ -38,7 +35,7 @@ public class OrderController {
     }
 
     // Получение заказов покупателя
-    @GetMapping("/person/{customerId}")
+    @GetMapping("/customer/{customerId}")
     public ResponseEntity<ApiResponse> getCustomerOrders(@PathVariable UUID customerId) {
         try {
             List<OrderDto> orders = orderService.getCustomerOrders(customerId);
@@ -68,8 +65,13 @@ public class OrderController {
 
     // Отмена заказа
     @PostMapping("/{orderId}/cancel")
-    public ResponseEntity<Void> cancelOrder(@PathVariable UUID orderId) {
-        orderService.cancelOrder(orderId);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<ApiResponse> cancelOrder(@PathVariable UUID orderId) {
+        try {
+            orderService.cancelOrder(orderId);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            ApiResponse errorResponse = new ApiResponse("error", "Ошибка: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
     }
 }

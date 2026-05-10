@@ -1,0 +1,46 @@
+<div id="product-constructor" class="productConstructor">
+    <div class="alignCenter p6">
+        <button onclick="addProduct()">Добавить товар</button>
+    </div>
+    <div id="constructor-body" class="">
+        <div class="alignCenter">
+            <h4>Основные характеристики</h4>
+            <div class="flex alignCenter">
+                <div class="p6 cols alignCenter">
+                    <label for="product-input-name">Название товара</label>
+                    <input id="product-input-name" name="name" type="text" placeholder="product name" size="100">
+                </div>
+                <div class="p6 cols alignCenter">
+                    <label for="product-input-price">Цена товара</label>
+                    <input id="product-input-price" name="price" type="number" min=0>
+                </div>
+            </div>
+            <div class="p6 cols alignCenter">
+                <label for="product-input-description">Описание товара</label>
+                <textarea id="product-input-description" name="description" minlength="0" maxlength="512" cols="100" rows="10"></textarea>
+            </div>
+        </div>
+        <div class="alignCenter" data-product-constructor="attributes-catalog-container">
+            <h4>Атрибуты</h4>
+            <div class="alignCenter" data-product-constructor="attributes-catalog">
+                <div class="attributeContainer alignCenter" data-product-attributes="attribute-container">
+                    <div class="p3">
+                        <label>Свойство (название)
+                            <input name="key" data-product-attribute="key" type="text" minlength="3" maxlength="32" size="32">
+                        </label>
+                    </div>
+                    <span class="alignCenter p3">:</span>
+                    <div class="p3" data-product-attributes="attribute">
+                        <label>Значение (свойства)
+                            <input name="value" data-product-attribute="value" type="text" minlength="3" maxlength="64" size="64">
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="attributeContainer alignCenter" data-product-constructor="action-container">
+                <button onclick="addAttributeBlock()">Добавить атрибут</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -12,7 +12,7 @@ public class OrderMapper {
 
         OrderDto dto = new OrderDto();
         dto.setId(order.getId());
-        dto.setCustomerId(order.getCustomer().getId());
+        dto.setCustomerId(order.getCustomer().getCustomerId());
         dto.setCustomerName(order.getCustomer().getName() + " " + order.getCustomer().getSurname());
         dto.setOrderDate(order.getOrderDate());
         dto.setStatus(order.getStatus().getDescription());

@@ -6,6 +6,6 @@ import java.util.UUID;
 
 @Data
 public class CreateOrderRequest {
-    private UUID personId;
+    private UUID customerId;
     private OrderItemRequest[] items;
 }

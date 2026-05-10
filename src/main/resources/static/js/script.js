@@ -56,17 +56,15 @@ async function getProductList(page, size) {
 
     return js.data;
 }
-
-
 function addProduct() {
     //Проверяем активность "формы"
     const body = document.getElementById('product-constructor');
     if(body == null)
         return;
     // Собираем данные из формы
-    const name = document.getElementById('product-input-name').value;
-    const description = document.getElementById('product-input-description').value;
-    const price = document.getElementById('product-input-price').value;
+    const name = document.getElementById('product-input-name');
+    const description = document.getElementById('product-input-description');
+    const price = document.getElementById('product-input-price');
     // список атрибутов
     const attributesArray = document.querySelectorAll(`[data-product-attributes="attribute-container"]`);
     // ID продавца
@@ -74,9 +72,9 @@ function addProduct() {
 
     //Формируем объект для отправки
     const productData = {
-        name: name,
-        description: description,
-        price: price,
+        name: name.value,
+        description: description.value,
+        price: price.value,
         vendorId: venId,
         attributes: []
     };
@@ -102,6 +100,11 @@ function addProduct() {
             let text = `Status code: ${json.status}\n
                                 Message: ${json.message}`
             printMessage(text);
+
+            name.value = ``;
+            description.value = ``;
+            price.value = ``;
+            document.querySelector(`[data-product-constructor="attributes-catalog"]`).innerHTML = ``;
         });
 }
 function printMessage(message){
@@ -192,9 +195,6 @@ function isInWishlist(productId) {
 }
 //=============================Wishlist============================================
 async function initPage(methodNumber) {
-    if(localStorage.getItem('theme'))
-        document.documentElement.setAttribute('data-theme', 'dark');
-
     let productData = [];
     switch (methodNumber) {
         case 0: productData = await getProductList(); break;
@@ -350,7 +350,7 @@ function escapeHtml(str) {
         .replace(/'/g, '&#39;');
 }
 //=================================================================================
-function getUserId() {
+function getCustomerId() {
     const cookieString = document.cookie;
 
     if (!cookieString || cookieString.length === 0) {
@@ -358,14 +358,14 @@ function getUserId() {
         return -1;
     }
     const cookieArrayString = cookieString.split(';');
-    const cookieItem = cookieArrayString.find(s => s.trim().startsWith('personId='));
+    const cookieItem = cookieArrayString.find(s => s.trim().startsWith('customerId='));
     if (!cookieItem) {
-        console.error('personId не найден в куках');
+        console.error('customerId не найден в куках');
         return -1;
     }
     const value = cookieItem.split('=')[1];
     if (!value) {
-        console.error('Значение personId пустое');
+        console.error('Значение customerId пустое');
         return -1;
     }
     // const id = parseInt(value, 10);
@@ -399,7 +399,7 @@ function doOrder() {
 
     let requestBody =
     {
-        personId: `${getUserId()}`,
+        customerId: `${getCustomerId()}`,
         items: []
     };
     cart.forEach(id=>{
@@ -456,7 +456,7 @@ function getCustomerInfoForm(data) {
                     <div class="h-list p6">
                         <div class="v-list">
                             <label for="input-email">Почта</label>
-                            <input id="input-email" type="email" maxlength="32" placeholder="xxx@mail.com" name="email" value="${data.user.email}">
+                            <input id="input-email" type="email" maxlength="32" placeholder="xxx@mail.com" name="email" value="${data.email}">
                         </div>
                         <div class="v-list">
                             <label for="input-password">Пароль</label>
@@ -472,7 +472,7 @@ function getCustomerInfoForm(data) {
 }
 //=================================================================================
 function showAccountInfo() {
-    const url = 'api/customer-info';
+    const url = '/api/customer-info';
     const request = new Request(url, {method: "GET"});
     fetch(request)
         .then(response => response.json())
@@ -488,7 +488,7 @@ function showAccountInfo() {
         .catch(e=> console.error(e));
 }
 function showOrders() {
-    let url = `/api/orders/person/${getUserId()}`;
+    let url = `/api/orders/customer/${getCustomerId()}`;
     const request = new Request(url, {
         method: "GET"
     });
@@ -526,7 +526,7 @@ function showOrders() {
                     });
 
                     for(let item of order.items){
-                        const itemDiv = getOrderItemWidget(item.productName, item.quantity, item.subtotal);
+                        const itemDiv = getOrderItemWidget(item.productId, item.productName, item.quantity, item.priceAtOrder);
                         itemsList.appendChild(itemDiv);
                     }
                     main.appendChild(widget);
@@ -555,17 +555,18 @@ function getOrderWidget(orderId, status, date, amount) {
                         </div>`;
     return div;
 }
-function getOrderItemWidget(name, quantity, cost) {
+function getOrderItemWidget(productId, name, quantity, cost) {
     const div = document.createElement('div');
     div.classList.add('order-item');
     div.classList.add('p3');
     div.setAttribute('data-widget', 'item');
     div.innerHTML = `<div class="data-top" data-widget-item="data-top">
-                        <span data-order-item="product-name">${name}</span>
+                        <a data-order-item="product-name" href="/product/${productId}">${name}</a>
                     </div>
                     <div class="flex sb" data-widget-item="data-bottom">
-                        <span data-order-item="product-quantity">${quantity}</span>
-                        <span data-order-item="product-cost">${cost} ₽</span>
+                        <a data-order-item="product-review" href="/product/review/${productId}">Отзыв</a>
+                        <span data-order-item="product-quantity">Количество: ${quantity}</span>
+                        <span data-order-item="product-cost">Цена: ${cost} ₽</span>
                     </div>`;
     return div;
 }
@@ -580,51 +581,51 @@ function getConstructorDiv(){
     div.classList.add('productConstructor');
     div.setAttribute('id', 'product-constructor');
 
-    div.innerHTML = `<div class="alignCenter p6">
-                    <button onclick="addProduct()">Добавить товар</button>
-                    <button onclick="productPreview()">Предпросмотр</button>
+    div.innerHTML =
+    `<div class="alignCenter p6">
+        <button onclick="addProduct()">Добавить товар</button>
+    </div>
+    <div id="constructor-body" class="">
+        <div class="alignCenter">
+            <h4>Основные характеристики</h4>
+            <div class="flex alignCenter">
+                <div class="p6 cols alignCenter">
+                    <label for="product-input-name">Название товара</label>
+                    <input id="product-input-name" name="name" type="text" placeholder="product name" size="100">
                 </div>
-                <div id="preview-body">
+                <div class="p6 cols alignCenter">
+                    <label for="product-input-price">Цена товара</label>
+                    <input id="product-input-price" name="price" type="number" min=0>
                 </div>
-                <div id="constructor-body" class="">
-                    <div class="alignCenter">
-                        <h4>Основные характеристики</h4>
-                        <div class="flex alignCenter">
-                            <div class="p6 cols alignCenter">
-                                <label for="input-product-name">Название товара</label>
-                                <input id="product-input-name" name="input-product-name" type="text" placeholder="product name" size="100">
-                            </div>
-                            <div class="p6 cols alignCenter">
-                                <label for="input-product-price">Цена товара</label>
-                                <input id="product-input-price" name="input-product-price" type="number" min=0>
-                            </div>
-                        </div>
-                        <div class="p6 cols alignCenter">
-                            <label for="product-input-description">Описание товара</label>
-                            <textarea id="product-input-description" minlength="0" maxlength="512" cols="100" rows="10"></textarea>
-                        </div>
+            </div>
+            <div class="p6 cols alignCenter">
+                <label for="product-input-description">Описание товара</label>
+                <textarea id="product-input-description" name="description" minlength="0" maxlength="512" cols="100" rows="10"></textarea>
+            </div>
+        </div>
+        <div class="alignCenter" data-product-constructor="attributes-catalog-container">
+            <h4>Атрибуты</h4>
+            <div class="alignCenter" data-product-constructor="attributes-catalog">
+                <div class="attributeContainer alignCenter" data-product-attributes="attribute-container">
+                    <div class="p3">
+                        <label>Свойство (название)
+                            <input name="key" data-product-attribute="key" type="text" minlength="3" maxlength="32" size="32">
+                        </label>
                     </div>
-                    <div class="alignCenter" data-product-constructor="attributes-catalog-container">
-                        <h4>Атрибуты</h3>
-                        <div class="alignCenter" data-product-constructor="attributes-catalog">
-                            <div class="attributeContainer alignCenter" data-product-attributes="attribute-container">
-                                <div class="p3">
-                                    <label for="attributeKey">Свойство (название)</label>
-                                    <input name="attributeKey" data-product-attribute="key" type="text" minlength="3" maxlength="32" size="32">
-                                </div>
-                                <span class="alignCenter p3">:</span>
-                                <div class="p3" data-product-attributes="attribute">
-                                    <label for="attributeValue">Значение (свойства)</label>
-                                    <input name="attributeValue" data-product-attribute="value" type="text" minlength="3" maxlength="64" size="64">
-                                </div>
-                            </div>
-                        </div>
-                        <hr>
-                        <div class="attributeContainer alignCenter" data-product-constructor="action-container">
-                            <button onclick="addAttribute()">Добавить атрибут</button>
-                        </div>
+                    <span class="alignCenter p3">:</span>
+                    <div class="p3" data-product-attributes="attribute">
+                        <label>Значение (свойства)
+                            <input name="value" data-product-attribute="value" type="text" minlength="3" maxlength="64" size="64">
+                        </label>
                     </div>
-                </div>`;
+                </div>
+            </div>
+            <hr>
+            <div class="attributeContainer alignCenter" data-product-constructor="action-container">
+                <button onclick="addAttributeBlock()">Добавить атрибут</button>
+            </div>
+        </div>
+    </div>`;
     return div;
 }
 function addAttribute(){
@@ -646,6 +647,25 @@ function getAttributeDiv(){
                         <input name="attributeValue" data-product-attribute="value" type="text" minlength="3" maxlength="64" size="64">
                     </div>`;
     return div;
+}
+function addAttributeBlock() {
+    const container = document.createElement('div');
+    container.classList.add('attributeContainer');
+    container.classList.add('alignCenter');
+    container.setAttribute('data-product-attributes', 'attribute-container');
+    container.innerHTML =
+        `<div class='p3'>
+                        <label>Свойство (название)
+                            <input th:name='key' data-product-attribute='key' type='text' minlength='3' maxlength='32' size='32'>
+                        </label>
+                    </div>
+                    <span class='alignCenter p3'>:</span>
+                    <div class='p3' data-product-attributes='attribute'>
+                        <label>Значение (свойства)
+                            <input th:name='value' data-product-attribute='value' type='text' minlength='3' maxlength='64' size='64'>
+                        </label>
+                    </div>`;
+    document.querySelector(`[data-product-constructor='attributes-catalog']`).appendChild(container);
 }
 // ======================================== Reviews ==================================================
 function showProductDetail(productId){
@@ -905,11 +925,11 @@ function addReview(productId) {
     const posText = document.getElementById('review-form-input-positives').value;
     const negText = document.getElementById('review-form-input-negatives').value;
     const descText = document.getElementById('review-form-input-description').value;
-    const userId = getUserId();
+    const userId = getCustomerId();
     if(!posText || !negText || !descText || !userId)
         return;
     const reviewDto = {
-        userId: userId,
+        customerId: userId,
         productId: productId,
         positive: posText,
         negative: negText,
@@ -940,9 +960,14 @@ function getCommentForm(reviewId) {
         `;
     return div;
 }
-
-function setTheme(){
-    if(document.documentElement.getAttribute('data-theme') == null)
+function initTheme() {
+    if(localStorage.getItem('theme') != null)
+        document.documentElement.setAttribute('data-theme', 'dark');
+    else
+        document.documentElement.removeAttribute('data-theme');
+}
+function setTheme(isNightTheme){
+    if(isNightTheme === true)
     {
         document.documentElement.setAttribute('data-theme', 'dark');
         localStorage.setItem('theme', 'dark');
@@ -952,5 +977,4 @@ function setTheme(){
         document.documentElement.removeAttribute('data-theme');
         localStorage.removeItem('theme');
     }
-
 }

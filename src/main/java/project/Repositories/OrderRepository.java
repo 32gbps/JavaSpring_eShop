@@ -17,12 +17,12 @@ import java.util.UUID;
 @Repository
 public interface OrderRepository extends JpaRepository<@NonNull Order, @NonNull UUID> {
 
-    @Query("SELECT o FROM Order o WHERE o.customer.id = :customerId")
+    @Query("SELECT o FROM Order o WHERE o.customer.customerId = :customerId")
     List<Order> findByCustomerId(@Param("customerId") UUID customerId);
 
     List<Order> findByStatus(OrderStatus status);
 
-    Page<Order> findByCustomerId(@Param("customerId") UUID customerId, Pageable pageable);
+    Page<Order> findByCustomer_CustomerId(@Param("customerId") UUID customerId, Pageable pageable);
 
     @Query("SELECT o FROM Order o WHERE o.orderDate BETWEEN :startDate AND :endDate")
     List<Order> findOrdersBetween(@Param("startDate") LocalDateTime startDate,

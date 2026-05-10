@@ -1,4 +1,4 @@
-package homework.javaspring_model;
+package project;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

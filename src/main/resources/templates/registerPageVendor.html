@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ru">
-<head th:replace="fragments/head :: head('Регистрация')">
+<head th:replace="~{fragments/head :: head('Регистрация')}">
     <title>Регистрация</title>
 </head>
 <body>
@@ -18,8 +18,8 @@
             <form class="registerForm" th:action="@{/registerVendor}" method="post">
                 <h2>Регистрация</h2>
                 <div class="input-container">
-                    <label for="input-name">Название компании:</label>
-                    <input id="input-name" type="text" name="name" required>
+                    <label for="input-vendorName">Название юр. лица:</label>
+                    <input id="input-vendorName" type="text" name="vendorName" required>
                 </div>
                 <div class="input-container">
                     <label for="input-identifier">Идентификатор:</label>

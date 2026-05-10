@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 
@@ -17,11 +18,14 @@ import java.util.UUID;
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
-    @Column(name = "authorId", nullable = false)
-    private Long userId;
+    private UUID reviewId;
+
+    @Column(name = "customerId", nullable = false)
+    private UUID customerId;
     @Column(name = "productId", nullable = false)
-    private Long productId;
+    private UUID productId;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
     @Column(name = "positive")
     private String positive;
     @Column(name = "negative")
@@ -30,15 +34,8 @@ public class Review {
     @NotBlank(message = "Поле не может быть пустым")
     private String description;
 
-    public static Review getEntityFromDto(ReviewDto dto){
-        Review entity = new Review();
-        entity.setId(dto.getId());
-        entity.setUserId(dto.getUserId());
-        entity.setProductId(dto.getProductId());
-        entity.setPositive(dto.getPositive());
-        entity.setNegative(dto.getNegative());
-        entity.setDescription(dto.getDescription());
-        return entity;
+    public ReviewDto ToDTO(){
+        return new ReviewDto(this.getReviewId(), this.getCustomerId(),this.getProductId(), this.getCreatedAt(), this.getPositive(), this.getNegative(),this.getDescription());
     }
 
 }

@@ -7,10 +7,11 @@ import project.Models.Product.Comment;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface CommentRepository extends JpaRepository<@NonNull Comment, @NonNull Long> {
-    Optional<Comment> findByUserId(Long id);
-    List<Comment> findByReviewId(Long Id);
-    Long countAllByReviewId(Long id);
+public interface CommentRepository extends JpaRepository<@NonNull Comment, @NonNull UUID> {
+    Optional<Comment> findByCustomerId(UUID id);
+    List<Comment> findByReviewId(UUID Id);
+    Long countAllByReviewId(UUID id);
 }

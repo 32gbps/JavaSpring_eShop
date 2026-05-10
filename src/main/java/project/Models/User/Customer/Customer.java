@@ -17,7 +17,7 @@ import java.util.UUID;
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    private UUID customerId;
 
     @Column(name = "name")
     private String name;
@@ -33,6 +33,11 @@ public class Customer {
     private User user;
 
     public CustomerDto ToDTO(){
-        return new CustomerDto(id, name, surname, birthDate, user.getUsername(), user.getEmail(), user.getPassword());
+        try{
+            var u = getUser();
+            return new CustomerDto(getCustomerId(), getName(), getSurname(), getBirthDate(), u.getUsername(), u.getEmail(), u.getPassword());
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

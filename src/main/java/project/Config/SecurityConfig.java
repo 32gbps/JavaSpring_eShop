@@ -1,5 +1,9 @@
 package project.Config;
 
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
+import project.Services.CustomerService;
+import project.Services.UserService;
 import project.Services.VendorService;
 import jakarta.servlet.http.Cookie;
 import lombok.AllArgsConstructor;
@@ -9,19 +13,17 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import project.Services.UserService;
 
 @AllArgsConstructor
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
     private final UserService userService;
+    private final CustomerService customerService;
     private final VendorService vendorService;
 
     @Bean
@@ -29,9 +31,9 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        //.requestMatchers("/login", "/register", "/css/**", "/js/**").permitAll()
+                        //.requestMatchers("/login","/logout", "/register", "/css/**", "/js/**").permitAll()
                         .requestMatchers("/profile").hasAnyRole("CUSTOMER","VENDOR", "MODERATOR", "ADMIN")
-                        .requestMatchers("/adminPanel").hasAnyRole("ADMIN","MODERATOR")
+                        .requestMatchers("/adminPanel", "/actuator").hasAnyRole("ADMIN","MODERATOR")
                         .anyRequest().permitAll()
 //                        .anyRequest().authenticated()
                 )
@@ -47,6 +49,9 @@ public class SecurityConfig {
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                         .permitAll()
+                )
+                .headers(headers -> headers
+                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
                 );
 
         return http.build();
@@ -55,25 +60,29 @@ public class SecurityConfig {
     public AuthenticationSuccessHandler customAuthenticationSuccessHandler() {
         return (request, response, authentication) -> {
 
-            String username = authentication.getName();
-            userService.findByUsername(username).ifPresent(x->{
-                var id = x.getId();
-                Cookie cookie = new Cookie("personId", id.toString());
-                cookie.setPath("/");
-                cookie.setMaxAge(30 * 24 * 60 * 60); // 30 дней
-                cookie.setHttpOnly(false);
-                //cookie.setSecure(true);
-                response.addCookie(cookie);
-            });
-            vendorService.findByUsername(username).ifPresent(x->{
-                var id = x.id();
-                Cookie cookie = new Cookie("vendorId", id.toString());
-                cookie.setPath("/");
-                cookie.setMaxAge(30 * 24 * 60 * 60); // 30 дней
-                cookie.setHttpOnly(false);
-                //cookie.setSecure(true);
-                response.addCookie(cookie);
-            });
+            var user = userService.findByUsername(authentication.getName());
+            if(user.isPresent())
+            {
+                customerService.findByUsername(user.get().getUsername()).ifPresent(x->{
+                    var id = x.id();
+                    Cookie cookie = new Cookie("customerId", id.toString());
+                    cookie.setPath("/");
+                    cookie.setMaxAge(30 * 24 * 60 * 60); // 30 дней
+                    cookie.setHttpOnly(false);
+                    //cookie.setSecure(true);
+                    response.addCookie(cookie);
+                });
+                vendorService.findByUsername(user.get().getUsername()).ifPresent(x->{
+                    var id = x.id();
+                    Cookie cookie = new Cookie("vendorId", id.toString());
+                    cookie.setPath("/");
+                    cookie.setMaxAge(30 * 24 * 60 * 60); // 30 дней
+                    cookie.setHttpOnly(false);
+                    //cookie.setSecure(true);
+                    response.addCookie(cookie);
+                });
+            }
+
             response.sendRedirect("/");
         };
     }

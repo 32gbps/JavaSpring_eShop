@@ -5,26 +5,22 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Value;
 
 import java.util.UUID;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Value
 @Schema(description = "Пользователь")
 public class UserDto {
-    private UUID userId;
+    UUID userId;
     @Size(min = 8, max = 32)
     @NotBlank
-    private String username;
+    String username;
 
     @Schema(description = "&quot;Электронная почта&quot;, example = &quot;junior@example.com&quot;")
     @Email
     @NotBlank
-    private String email;
+    String email;
 
     @Schema(description = "&quot;Пароль должен содержать от 8 до 32 символов,&quot;" +
             "&quot;как минимум одну букву, одну цифру и один специальный символ&quot;")
@@ -32,12 +28,5 @@ public class UserDto {
     @NotBlank
     //@Pattern(regexp = "&quot;^(?=.*[A-Za-z])(?=.*\\\\d)(?=.*[@$!%*#?^&amp;])[A-Za-z\\\\d@$!%*#?^&amp;]{3,}$&quot;")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private String password;
-
-    public UserDto(User user) {
-        this.userId = user.getId();
-        this.username = user.getUsername();
-        this.email = user.getEmail();
-        this.password = user.getPassword();
-    }
+    String password;
 }

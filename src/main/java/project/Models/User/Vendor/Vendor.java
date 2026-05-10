@@ -16,7 +16,7 @@ import java.util.UUID;
 public class Vendor {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    private UUID vendorId;
 
     @Column(name = "name", unique = true)
     private String vendorName;
@@ -29,6 +29,11 @@ public class Vendor {
     private User user;
 
     public VendorDto ToDTO(){
-        return new VendorDto(id, vendorName, identifier, user.getUsername(), user.getEmail(), user.getPassword());
+        try{
+            var u = getUser();
+            return new VendorDto(getVendorId(), getVendorName(), getIdentifier(), u.getUsername(), u.getEmail(), u.getPassword());
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

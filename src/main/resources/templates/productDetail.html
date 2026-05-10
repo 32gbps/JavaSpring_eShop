@@ -70,26 +70,62 @@
             </div>
             <!--Отзывы-->
             <h2>Отзывы</h2>
-            <div id="Product-Reviews-container">
+            <div id="Product-Reviews-container" th:if="${productReviews != null}">
+                <div class="Review-card" th:data-review-widget-id="${r.reviewId()}" th:each="r :${productReviews}">
+                    <div class="comment-userinfo">
+<!--                        <img src="userProfileAvatar.jpg" alt="User-avatar">-->
+                        <span th:text="'Пользователь ID: '+${r.customerId()}"></span>
+                    </div>
+                    <div class="Review-card-statline">
+                        <div class="comment-date">
+                            <span th:text="${#temporals.format(r.createdAt(), 'dd.MM.yyyy')}">NO DATA</span>
+                        </div>
+                    </div>
+                    <div class="Review-card-text">
+                        <label for="Review-card-positiveSide">Достоинства</label>
+                        <div id="Review-card-positiveSide">
+                            <span th:text="${r.positive()}"></span>
+                        </div>
+                        <label for="Review-card-negativeSide">Недостатки</label>
+                        <div id="Review-card-negativeSide">
+                            <span th:text="${r.negative()}"></span>
+                        </div>
+                        <label for="Review-card-comment-author">Комментарий</label>
+                        <div id="Review-card-comment-author">
+                            <span th:text="${r.description()}"></span>
+                        </div>
+                    </div>
+                    <div class="comment-controls">
+<!--                        <div class="comment-controls-comments">-->
+<!--                            <button data-review-element="btn-switch-commentVisible">Комментарии</button>-->
+<!--                        </div>-->
+<!--                        <div class="comment-controls-votes">-->
+<!--                            <button class="comment-controls-button-like">Like</button>-->
+<!--                            <span class="comment-controls-comment-score">42</span>-->
+<!--                            <button class="comment-controls-button-dislike">Dislike</button>-->
+<!--                        </div>-->
+                    </div>
+                    <div data-review-block="comments" class="commentList"></div>
+                </div>
             </div>
         </div>
     </div>
 </main>
 <footer th:insert="~{fragments/footer::footer}"></footer>
 </body>
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const id = document.querySelector('[data-product-id]').dataset.productId;
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const id = document.querySelector('[data-product-id]').dataset.productId;
 
 
-        const btnWishList = document.querySelector('[data-widget-element="button-wishlist"]');
-        btnWishList.addEventListener('click', () => {
-            toggleWishlistProduct(id);
+            const btnWishList = document.querySelector('[data-widget-element="button-wishlist"]');
+            btnWishList.addEventListener('click', () => {
+                toggleWishlistProduct(id);
+            });
+            const btnBuy = document.querySelector('[data-widget-element="button-buy"]');
+            btnBuy.addEventListener('click', () => {
+                toggleCartProduct(id);
+            });
         });
-        const btnBuy = document.querySelector('[data-widget-element="button-buy"]');
-        btnBuy.addEventListener('click', () => {
-            toggleCartProduct(id);
-        });
-    });
-</script>
+    </script>
 </html>

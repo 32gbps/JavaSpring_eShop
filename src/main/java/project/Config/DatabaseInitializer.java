@@ -2,7 +2,6 @@ package project.Config;
 
 import jakarta.annotation.PostConstruct;
 import project.Models.Product.Product;
-import project.Models.User.Customer.CustomerDto;
 import project.Models.User.Vendor.Vendor;
 import project.Models.User.Customer.Customer;
 import project.Models.User.Role;
@@ -34,8 +33,8 @@ public class DatabaseInitializer {
 
     @PostConstruct
     public void initTestData() {
-        // if(productService.getCount() > 0)
-        //     return;
+         if(productService.getCount() > 0)
+             return;
         //ClearAllTables();
         printCountAll();
         // Администратор
@@ -153,7 +152,9 @@ public class DatabaseInitializer {
     }
     private Customer addCustomerWitchUserAndRoleInfo(String name, String surname, LocalDate birthdate, User user) {
 
-        customerService.findByName(name).orElseThrow();
+        if(customerService.findByName(name).isPresent())
+            log.info("Сущность {} уже существует", name);
+
         Customer nCustomer = new Customer();
         nCustomer.setUser(user);
         nCustomer.setName(name);

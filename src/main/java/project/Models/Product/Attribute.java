@@ -7,6 +7,6 @@ import lombok.*;
 @Setter
 @Getter
 public class Attribute {
-    Object key;
-    Object value;
+    private Object key;
+    private Object value;
 }

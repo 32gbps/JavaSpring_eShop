@@ -1,26 +1,12 @@
 package project.Models.Product;
-import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Data
-public class ReviewDto {
-    private UUID id;
-    private Long userId;
-    private Long productId;
-    private String positive;
-    private String negative;
-    private String description;
-    private Long commentCount;
-
-    public static ReviewDto getDtoFromEntity(Review entity){
-        ReviewDto dto = new ReviewDto();
-        dto.setId(entity.getId());
-        dto.setUserId(entity.getUserId());
-        dto.setProductId(entity.getProductId());
-        dto.setPositive(entity.getPositive());
-        dto.setNegative(entity.getNegative());
-        dto.setDescription(entity.getDescription());
-        return dto;
-    }
-}
+public record ReviewDto(UUID reviewId,
+                        UUID customerId,
+                        UUID productId,
+                        LocalDateTime createdAt,
+                        String positive,
+                        String negative,
+                        String description){}
